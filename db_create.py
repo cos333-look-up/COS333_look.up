@@ -71,13 +71,13 @@ def main():
                 cursor.execute("DROP TABLE IF EXISTS users")
                 cursor.execute("CREATE TABLE users "
                     + "(netid TEXT, is_admin INTEGER, first_name TEXT, "
-                    + "last_name TEXT, photo TEXT, phone INTEGER, "
+                    + "last_name TEXT, photo TEXT, phone TEXT, "
                     + "instagram TEXT, snapchat TEXT)")
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
                     + "('denisac', 1, 'Drew', 'Curran', 'Placeholder', "
-                    + "17037329370, 'drewcurran17', NULL)")
+                    + "'+17037329370', 'drewcurran17', NULL)")
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
@@ -97,7 +97,7 @@ def main():
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
                     + "('rc38', 1, 'Richard', 'Cheng', NULL, "
-                    + "13142952690, NULL, NULL)")
+                    + "'+13142952690', NULL, NULL)")
 
                 #-------------------------------------------------------
 
