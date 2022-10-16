@@ -41,6 +41,7 @@ def editClub(cursor, name, new_vals=[None, None, None]):
 
 def main():
     input = parse_user_input()
+    print(input)
 
     try:
         database_url = os.getenv('DATABASE_URL')
