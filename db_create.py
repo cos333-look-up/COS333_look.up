@@ -54,17 +54,17 @@ def main():
                     + "(name TEXT, netid TEXT, is_moderator BOOL)")
                 cursor.execute("INSERT INTO clubmembers "
                     + "(name, netid, is_moderator) "
-                    + "VALUES ('Cloister', 'bm18', 1)")
+                    + "VALUES ('Cloister', 'bm18', true)")
                 cursor.execute("INSERT INTO clubmembers "
                     + "(name, netid, is_moderator) "
-                    + "VALUES ('Cloister', 'denisac', 0)")
+                    + "VALUES ('Cloister', 'denisac', false)")
                 cursor.execute("INSERT INTO clubmembers "
                     + "(name, netid, is_moderator) "
-                    + "VALUES ('Cloister', 'pmt2', 1)")
+                    + "VALUES ('Cloister', 'pmt2', true)")
                 cursor.execute("INSERT INTO clubmembers "
                     + "(name, netid, is_moderator) "
                     + "VALUES ('Asian-American Students Association', "
-                    + "'evanwang', 0)")
+                    + "'evanwang', false)")
 
                 #-------------------------------------------------------
 
@@ -76,27 +76,27 @@ def main():
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
-                    + "('denisac', 1, 'Drew', 'Curran', 'Placeholder', "
+                    + "('denisac', false, 'Drew', 'Curran', 'Placeholder', "
                     + "'+17037329370', 'drewcurran17', NULL)")
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
-                    + "('dh37', 1, 'Daniel', 'Hu', NULL, "
+                    + "('dh37', true, 'Daniel', 'Hu', NULL, "
                     + "NULL, NULL, NULL)")
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
-                    + "('gleising', 1, NULL, NULL, NULL, "
+                    + "('gleising', true, NULL, NULL, NULL, "
                     + "NULL, NULL, NULL)")
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
-                    + "('evanwang', 1, 'Evan', 'Wang', 'Placeholder', "
+                    + "('evanwang', true, 'Evan', 'Wang', 'Placeholder', "
                     + "NULL, NULL, NULL)")
                 cursor.execute("INSERT INTO users "
                     + "(netid, is_admin, first_name, last_name, photo, "
                     + "phone, instagram, snapchat) VALUES "
-                    + "('rc38', 1, 'Richard', 'Cheng', NULL, "
+                    + "('rc38', true, 'Richard', 'Cheng', NULL, "
                     + "'+13142952690', NULL, NULL)")
 
                 #-------------------------------------------------------
