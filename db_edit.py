@@ -15,9 +15,9 @@ import argparse
 def parse_user_input():
     parser = argparse.ArgumentParser(allow_abbrev = False,
     description = 'Database editor')
-    parser.add_argument('table',
+    parser.add_argument('-t', metavar='table',
     help = 'name of the table edited')
-    parser.add_argument('key',
+    parser.add_argument('-k', metavar='key',
     help = 'primary key of table')
     parser.add_argument('-n', metavar='new',
     help = 'new values', nargs='*')
