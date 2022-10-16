@@ -19,12 +19,8 @@ def parse_user_input():
     help = 'name of the table edited')
     parser.add_argument('key',
     help = 'primary key of table')
-    parser.add_argument('-c', metavar='club',
-    help = 'new club name')
-    parser.add_argument('-d', metavar='desc',
-    help = 'new club description')
-    parser.add_argument('-i', metavar='info',
-    help = 'new club information shared')
+    parser.add_argument('-n', metavar='new',
+    help = 'new values', nargs='*')
     args = parser.parse_args()
     return args
 
