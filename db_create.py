@@ -28,43 +28,42 @@ def main():
 
                 cursor.execute("DROP TABLE IF EXISTS clubs")
                 cursor.execute("CREATE TABLE clubs "
-                    + "(name TEXT, description TEXT, "
+                    + "(clubid INTEGER, name TEXT, description TEXT, "
                     + "info_shared BIT(2))")
                 cursor.execute("INSERT INTO clubs "
-                    + "(name, description, info_shared) "
-                    + "VALUES ('Womens Club Lacrosse', "
+                    + "(clubid, name, description, info_shared) "
+                    + "VALUES (1, 'Womens Club Lacrosse', "
                     + "'Free for all to join!', B'11')")
                 cursor.execute("INSERT INTO clubs "
-                    + "(name, description, info_shared) "
-                    + "VALUES ('Cloister', "
+                    + "(clubid, name, description, info_shared) "
+                    + "VALUES (2, 'Cloister', "
                     + "'Official Cloister Club Page', B'10')")
                 cursor.execute("INSERT INTO clubs "
-                    + "(name, description, info_shared) "
-                    + "VALUES ('Asian-American Students Association', "
+                    + "(clubid, name, description, info_shared) "
+                    + "VALUES (3, 'Asian-American Students Association', "
                     + "'Welcome!', B'01')")
                 cursor.execute("INSERT INTO clubs "
-                    + "(name, description, info_shared) "
-                    + "VALUES ('Cannon', "
+                    + "(clubid, name, description, info_shared) "
+                    + "VALUES (4, 'Cannon', "
                     + "'Cannon Homepage', B'00')")    
 
                 #-------------------------------------------------------
 
                 cursor.execute("DROP TABLE IF EXISTS clubmembers")
                 cursor.execute("CREATE TABLE clubmembers "
-                    + "(name TEXT, netid TEXT, is_moderator BOOL)")
+                    + "(clubid INTEGER, netid TEXT, is_moderator BOOL)")
                 cursor.execute("INSERT INTO clubmembers "
-                    + "(name, netid, is_moderator) "
-                    + "VALUES ('Cloister', 'bm18', true)")
+                    + "(clubid, netid, is_moderator) "
+                    + "VALUES (2, 'bm18', true)")
                 cursor.execute("INSERT INTO clubmembers "
-                    + "(name, netid, is_moderator) "
-                    + "VALUES ('Cloister', 'denisac', false)")
+                    + "(clubid, netid, is_moderator) "
+                    + "VALUES (2, 'denisac', false)")
                 cursor.execute("INSERT INTO clubmembers "
-                    + "(name, netid, is_moderator) "
-                    + "VALUES ('Cloister', 'pmt2', true)")
+                    + "(clubid, netid, is_moderator) "
+                    + "VALUES (2, 'pmt2', true)")
                 cursor.execute("INSERT INTO clubmembers "
-                    + "(name, netid, is_moderator) "
-                    + "VALUES ('Asian-American Students Association', "
-                    + "'evanwang', false)")
+                    + "(clubid, netid, is_moderator) "
+                    + "VALUES (3, 'evanwang', false)")
 
                 #-------------------------------------------------------
 
@@ -118,13 +117,13 @@ def main():
 
                 cursor.execute("DROP TABLE IF EXISTS joinreqs")
                 cursor.execute("CREATE TABLE joinreqs "
-                    + "(name TEXT, netid TEXT)")
+                    + "(clubid INTEGER, netid TEXT)")
                 cursor.execute("INSERT INTO joinreqs (name, netid) "
-                    + "VALUES ('Cloister', 'jasonsun')")
+                    + "VALUES (2, 'jasonsun')")
                 cursor.execute("INSERT INTO joinreqs (name, netid) "
-                    + "VALUES ('Womens Club Lacrosse', 'aleshire')")
+                    + "VALUES (1, 'aleshire')")
                 cursor.execute("INSERT INTO joinreqs (name, netid) "
-                    + "VALUES ('Cloister', 'arobang')")
+                    + "VALUES (2, 'arobang')")
 
                 #-------------------------------------------------------
 

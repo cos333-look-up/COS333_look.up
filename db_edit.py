@@ -30,15 +30,15 @@ def pad_input(list, padding, val=None):
         raise AttributeError("List length is too long.")
     return list + [val] * diff
 
-def editClub(cursor, name, new_vals=[None, None, None]):
+def editClub(cursor, clubid, new_vals=[None, None, None]):
     cursor.execute('BEGIN')
 
     stmt_str = "UPDATE clubs SET name = COALESCE(%s, name), "
     stmt_str += "description = COALESCE(%s, description), "
     stmt_str += "info_shared = COALESCE(%s, info_shared) "
-    stmt_str += "WHERE name = %s"
+    stmt_str += "WHERE clubid = %s"
 
-    cursor.execute(stmt_str, ['Cloi', 'Desc', None, 'Cloister'])
+    cursor.execute(stmt_str, ['Cloi', 'Desc', None, 2])
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
