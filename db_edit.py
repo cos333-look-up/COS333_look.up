@@ -32,8 +32,7 @@ def editClub(cursor, name, new_vals=[None, None, None]):
     stmt_str += "info_shared = COALESCE($3, info_shared) "
     stmt_str += "WHERE name = $4"
 
-    cursor.execute(stmt_str, 
-        [new_vals[0], new_vals[1], new_vals[2], name])
+    cursor.execute(stmt_str, [new_vals, name])
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
@@ -50,9 +49,9 @@ def main():
 
             with connection.cursor() as cursor:
 
-                if (input.table == 'clubs'):
-                    editClub(cursor, input.key,
-                        new_vals=[input.c, input.d, input.i])
+                if (input.t == 'clubs'):
+                    editClub(cursor, input.k, 
+                    new_vals=input.n.extend([None] * (3 - len(input.n))))
 
     except Exception as ex:
         print(ex, file=sys.stderr)
