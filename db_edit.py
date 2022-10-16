@@ -45,10 +45,6 @@ def editClub(cursor, name, new_vals=[None, None, None]):
 def main():
     input = parse_user_input()
 
-    if len(sys.argv) != 1:
-        print('Usage: python ' + sys.argv[0] + "name", file=sys.stderr)
-        sys.exit(1)
-
     try:
         database_url = os.getenv('DATABASE_URL')
 
