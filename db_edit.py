@@ -24,16 +24,21 @@ def parse_user_input():
     args = parser.parse_args()
     return args
 
+def pad_input(list, padding, val=None):
+    diff = padding - len(list)
+    if diff < 0:
+        raise AttributeError("List length is too long.")
+    return list + [val] * diff
+
 def editClub(cursor, name, new_vals=[None, None, None]):
-    print(new_vals)
     cursor.execute('BEGIN')
 
-    stmt_str = "UPDATE clubs SET name = COALESCE($1, name), "
-    stmt_str += "description = COALESCE($2, description), "
-    stmt_str += "info_shared = COALESCE($3, info_shared) "
-    stmt_str += "WHERE name = $4"
+    stmt_str = "UPDATE clubs SET name = COALESCE(%s, name), "
+    stmt_str += "description = COALESCE(%s, description), "
+    stmt_str += "info_shared = COALESCE(%s, info_shared) "
+    stmt_str += "WHERE name = %s"
 
-    cursor.execute(stmt_str, new_vals.append(name))
+    cursor.execute(stmt_str, ['Cloi', 'Desc', 2, 'Cloister'])
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
@@ -41,8 +46,7 @@ def editClub(cursor, name, new_vals=[None, None, None]):
 
 def main():
     input = parse_user_input()
-    print(input)
-
+    
     try:
         database_url = os.getenv('DATABASE_URL')
 
@@ -52,7 +56,7 @@ def main():
 
                 if (input.t == 'clubs'):
                     editClub(cursor, input.k, 
-                    new_vals=input.n.extend([None] * (3 - len(input.n))))
+                    new_vals=pad_input(input.n, 3))
 
     except Exception as ex:
         print(ex, file=sys.stderr)
