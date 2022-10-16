@@ -25,6 +25,7 @@ def parse_user_input():
     return args
 
 def editClub(cursor, name, new_vals=[None, None, None]):
+    print(new_vals)
     cursor.execute('BEGIN')
 
     stmt_str = "UPDATE clubs SET name = COALESCE($1, name), "
@@ -32,7 +33,7 @@ def editClub(cursor, name, new_vals=[None, None, None]):
     stmt_str += "info_shared = COALESCE($3, info_shared) "
     stmt_str += "WHERE name = $4"
 
-    cursor.execute(stmt_str, [new_vals, name])
+    cursor.execute(stmt_str, new_vals.append(name))
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
