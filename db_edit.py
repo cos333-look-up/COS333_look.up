@@ -29,11 +29,11 @@ def parse_user_input():
     return args
 
 def editClub(cursor, name, new_vals=[None, None, None]):
-    cursor.execute('BEGIN')
+    cursor.execute('PREPARE editClub (')
 
-    stmt_str = "UPDATE clubs SET name = ISNULL(?, name), "
-    stmt_str += "description = ISNULL(?, description), "
-    stmt_str += "info_shared = ISNULL(?, info_shared) "
+    stmt_str = "UPDATE clubs SET name = COALESCE(?, name), "
+    stmt_str += "description = COALESCE(?, description), "
+    stmt_str += "info_shared = COALESCE(?, info_shared) "
     stmt_str += "WHERE name = ?"
     cursor.execute(stmt_str, 
         [new_vals[0], new_vals[1], new_vals[2], name])
