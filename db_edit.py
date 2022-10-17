@@ -46,7 +46,7 @@ def editClub(cursor, clubid, new_vals=[None, None, None]):
     stmt_str += "info_shared = COALESCE(%s, info_shared) "
     stmt_str += "WHERE clubid = %s"
 
-    cursor.execute(stmt_str, ["Cloi", "Desc", B'00', 2])
+    cursor.execute(stmt_str, ["Cloi", "Desc", "00", 2])
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
