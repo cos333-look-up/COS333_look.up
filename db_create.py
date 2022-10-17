@@ -118,11 +118,11 @@ def main():
                 cursor.execute("DROP TABLE IF EXISTS joinreqs")
                 cursor.execute("CREATE TABLE joinreqs "
                     + "(clubid INTEGER, netid TEXT)")
-                cursor.execute("INSERT INTO joinreqs (name, netid) "
+                cursor.execute("INSERT INTO joinreqs (clubid, netid) "
                     + "VALUES (2, 'jasonsun')")
-                cursor.execute("INSERT INTO joinreqs (name, netid) "
+                cursor.execute("INSERT INTO joinreqs (clubid, netid) "
                     + "VALUES (1, 'aleshire')")
-                cursor.execute("INSERT INTO joinreqs (name, netid) "
+                cursor.execute("INSERT INTO joinreqs (clubid, netid) "
                     + "VALUES (2, 'arobang')")
 
                 #-------------------------------------------------------
