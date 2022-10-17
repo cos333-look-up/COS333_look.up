@@ -38,7 +38,7 @@ def replace_wild_cards(arg):
     return arg
 
 def editClub(cursor, clubid, new_vals=[None, None, None]):
-    print(new_vals)
+    parameters = new_vals + [clubid]
     cursor.execute('BEGIN')
 
     stmt_str = "UPDATE clubs SET name = COALESCE(%s, name), "
@@ -46,7 +46,7 @@ def editClub(cursor, clubid, new_vals=[None, None, None]):
     stmt_str += "info_shared = COALESCE(%s, info_shared) "
     stmt_str += "WHERE clubid = %s"
 
-    cursor.execute(stmt_str, ["Cloi", "Desc", "00", 2])
+    cursor.execute(stmt_str, parameters)
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
