@@ -48,7 +48,6 @@ class DataStructure:
                     stmt_str += "AND " + key + " = " + val + " "
             except:
                 pass
-            
         return stmt_str
 
     def insert(self, vals):
@@ -65,8 +64,21 @@ class DataStructure:
         stmt_str += "(" + ", ".join(var_vals) + ")"
         return stmt_str
     
-    def delete(self):
-        pass
+    def delete(self, index):
+        stmt_str = "DELETE FROM clubs WHERE "
+        first = True
+        for key in self._attributes.keys():
+            try:
+                if first:
+                    val = self.format_string(index[key])
+                    stmt_str += key + " = " + val + " "
+                    first = False
+                else:
+                    val = self.format_string(index[key])
+                    stmt_str += "AND " + key + " = " + val + " "
+            except:
+                pass
+        return stmt_str
 
     def get_name(self):
         return self._name
@@ -101,7 +113,8 @@ def _test():
     print(clubs.insert({'clubid':1, 
     'name':'Women\'s Club Lacrosse',
     'description':'Free for all to join!', 'info_shared':'11'}))
-    print(clubs.delete())
+    print(clubs.delete({'clubid':1, 
+    'name':'Women\'s Club Lacrosse'}))
     print()
     clubmembers = DataStructure('clubmembers', {'clubid':'INTEGER'},
     {'netid':'TEXT', 'is_moderator':'BOOL'})
@@ -110,7 +123,7 @@ def _test():
     print(clubmembers.select())
     #print(clubmembers.update())
     #print(clubmembers.insert())
-    print(clubmembers.delete())
+    #print(clubmembers.delete())
     print()
     users = DataStructure('users', {'netid':'TEXT'},
     {'is_admin':'BOOL', 'first_name':'TEXT', 'last_name':'TEXT', 
@@ -121,7 +134,7 @@ def _test():
     print(users.select())
     #print(users.update())
     #print(users.insert())
-    print(users.delete())
+    #print(users.delete())
     print()
     creationreqs = DataStructure('creationreqs', {'netid':'TEXT'},
     {'name':'TEXT', 'description':'TEXT', 'info_shared':'BIT(2)'})
@@ -130,7 +143,7 @@ def _test():
     print(creationreqs.select())
     #print(creationreqs.update())
     #print(creationreqs.insert())
-    print(creationreqs.delete())
+    #print(creationreqs.delete())
     print()
     joinreqs = DataStructure('joinreqs', {'clubid':'INTEGER'}, 
     {'netid':'TEXT'})
@@ -139,7 +152,7 @@ def _test():
     print(joinreqs.select())
     #print(joinreqs.update())
     #print(joinreqs.insert())
-    print(joinreqs.delete())
+    #print(joinreqs.delete())
     print()
 
 if __name__ == '__main__':
