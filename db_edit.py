@@ -9,20 +9,22 @@ import os
 import sys
 import psycopg2
 import argparse
+import db_table
 
 # -----------------------------------------------------------------------
 
 def parse_user_input():
-    parser = argparse.ArgumentParser(allow_abbrev = False,
-    description = 'Database editor')
-    parser.add_argument('-t', metavar='table',
-    help = 'name of the table edited')
-    parser.add_argument('-k', metavar='key',
-    help = 'primary key of table')
-    parser.add_argument('-n', metavar='new',
-    help = 'new values', nargs='*')
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(allow_abbrev=False,
+    description='Database editor')
     return args
+
+def format_string(val):
+    if val is not None:
+        val = str(val).replace("'", "''")
+        val = "'" + val + "'"
+    else:
+        val = "NULL"
+    return val
 
 def pad_input(list, padding, val=None):
     diff = padding - len(list)
@@ -30,40 +32,74 @@ def pad_input(list, padding, val=None):
         raise AttributeError("List length is too long.")
     return list + [val] * diff
 
-def replace_wild_cards(arg):
-    if arg is not None:
-        arg = str(arg).replace("\\", "\\\\")
-        arg = str(arg).replace("_", "\\_")
-        arg = str(arg).replace("%", "\\%")
-    return arg
-
-def updateClub(cursor, clubid, vals=[None, None, None]):
+def drop(cursor, table):
     cursor.execute('BEGIN')
+    name = table.get_name()
+    "DROP TABLE IF EXISTS %s" + self._name
 
-    stmt_str = "UPDATE clubs SET name = COALESCE(%s, name), "
-    stmt_str += "description = COALESCE(%s, description), "
-    stmt_str += "info_shared = COALESCE(%s, info_shared) "
-    stmt_str += "WHERE clubid = %s"
-    parameters = vals + [clubid]
-    cursor.execute(stmt_str, parameters)
+def create(self):
+    stmt_str = "CREATE TABLE " + self._name + " "
+    var_types = []
+    for var, type in self._attributes.items():
+        var_types.append(var + " " + type)
+    stmt_str += "(" + ", ".join(var_types) + ")"
+    return stmt_str
 
-    cursor.execute('COMMIT')
-    print('Transaction committed.')
+def select(self, selection="*"):
+    return "SELECT " + selection + " FROM " + self._name
+    
+def update(self, index, vals):
+    stmt_str = "UPDATE clubs SET "
+    for key in self._attributes.keys():
+        try:
+            val = self.format_string(vals[key])
+            stmt_str += key + " = COALESCE(" + val + ", " + key + ") "
+        except:
+            pass
+    stmt_str += "WHERE "
+    first = True
+    for key in self._attributes.keys():
+        try:
+            if first:
+                val = self.format_string(index[key])
+                stmt_str += key + " = " + val + " "
+                first = False
+            else:
+                val = self.format_string(index[key])
+                stmt_str += "AND " + key + " = " + val + " "
+        except:
+            pass
+    return stmt_str
 
-def addClub(cursor, vals=[None, None, None]):
-    cursor.execute('BEGIN')
-
-    cursor.execute("SELECT MAX(clubid) FROM clubs")
-    clubid = cursor.fetchone() + 1
-
-    stmt_str = "INSERT INTO clubs "
-    stmt_str += "(clubid, name, description, info_shared) "
-    stmt_str += "VALUES (%s, %s, %s, %s)"
-    parameters = [clubid] + vals
-    cursor.execute(stmt_str, parameters)
-
-    cursor.execute('COMMIT')
-    print('Transaction committed.')
+def insert(self, vals):
+    stmt_str = "INSERT INTO " + self._name  + " "
+    stmt_str += "(" + ", ".join(self._attributes.keys()) + ") "
+    stmt_str += "VALUES "
+    var_vals = []
+    for key in self._attributes.keys():
+        try:
+            val = self.format_string(vals[key])
+        except:
+            pass
+        var_vals.append(val)
+    stmt_str += "(" + ", ".join(var_vals) + ")"
+    return stmt_str
+    
+def delete(self, index):
+    stmt_str = "DELETE FROM clubs WHERE "
+    first = True
+    for key in self._attributes.keys():
+        try:
+            if first:
+                val = self.format_string(index[key])
+                stmt_str += key + " = " + val + " "
+                first = False
+            else:
+                val = self.format_string(index[key])
+                stmt_str += "AND " + key + " = " + val + " "
+        except:
+            pass
+    return stmt_str
 
 def main():
     input = parse_user_input()
