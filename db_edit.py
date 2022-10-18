@@ -9,6 +9,7 @@ import os
 import sys
 import psycopg2
 from psycopg2 import sql
+from psycopg2.extensions import AsIs
 import db_table
 
 # -----------------------------------------------------------------------
@@ -19,64 +20,70 @@ def format_val(val):
         val = "'" + val + "'"
     return val
 
-def drop(cursor, table):
-    cursor.execute('BEGIN')
-    
-    name = table.get_name()
-    parameters = tuple()
-    stmt_str = "DROP TABLE IF EXISTS {table}"
-    stmt = sql.SQL(stmt_str).format(table=sql.Identifier(name))
-    cursor.execute(stmt, parameters)
+def execute(cursor, stmt_str, p=[], l=[]):
+    stmt = sql.SQL(stmt_str).format(*p)
+    cursor.execute(stmt, l)
+    return stmt.as_string(cursor.connection) % tuple(lit.getquoted() 
+    for lit in l)
 
-    cursor.execute('COMMIT')
+def drop(cursor, table):
+    execute(cursor, 'BEGIN')
+
+    parameters = []
+    name = table.get_name()
+    parameters.append(sql.Identifier(name))
+    stmt_str = "DROP TABLE IF EXISTS {}"
+    execute(cursor, stmt_str, p=parameters)
+
+    execute(cursor, 'COMMIT')
 
 def create(cursor, table):
-    cursor.execute('BEGIN')
+    execute(cursor, 'BEGIN')
 
+    parameters = []
+    literals = []
     name = table.get_name()
+    parameters.append(sql.Identifier(name))    
     attributes = table.get_attributes()
-    var_type = []
-    i = 0
     for key, val in attributes.items():
-        if i < 2:
-            var_type.append(key)
-            var_type.append(val)
-            i += 1
+        parameters.append(sql.Identifier(key))
+        literals.append(AsIs(val))
     stmt_str = "CREATE TABLE {}"
-    for i in range(2):
+    for i in range(len(attributes)):
         if i == 0:
-            stmt_str += " ({} {}"
+            stmt_str += " ({} %s"
         else:
-            stmt_str += ", {} {}"
+            stmt_str += ", {} %s"
         if i == len(attributes) - 1:
             stmt_str += ")"
-    parameters = [sql.Identifier(name)] + list(map(sql.Identifier, var_type))
-    stmt_str = "{} "*len(parameters)
-    print(stmt_str)
-    print(parameters)
-    stmt = sql.SQL(stmt_str).format(tuple(parameters))
-    print("here")
-    print(stmt)
-    cursor.execute(stmt)
+    execute(cursor, stmt_str, p=parameters, l=literals)
 
-    cursor.execute('COMMIT')
+    execute(cursor, 'COMMIT')
 
-def select(cursor, table, selection="*"):
+def selectAll(cursor, table):
+    # execute(cursor, 'BEGIN')
+
+    parameters = []
     name = table.get_name()
-    parameters = tuple()
-    stmt_str = "SELECT " + selection + " FROM " + name
-    cursor.execute(stmt_str, parameters)
+    parameters.append(sql.Identifier(name))
+    stmt_str = "SELECT * FROM {}"
+    execute(cursor, stmt_str, parameters)
+
+    # execute(cursor, 'COMMIT')
 
 def display(cursor, table):
+    execute(cursor, 'BEGIN')
+    
+    selectAll(cursor, table)
+
     name = table.get_name()
-    print('-'*43 + '\n' + name + '\n' + '-'*43)
-
-    select(cursor, table)
-
+    print('-'*43 + '\n%s\n' + '-'*43 % name)
     row = cursor.fetchone()
     while row is not None:
         print(row)
         row = cursor.fetchone()
+
+    execute(cursor, 'COMMIT')
     
 def update(cursor, table, index, vals):
     cursor.execute('BEGIN')
@@ -86,7 +93,6 @@ def update(cursor, table, index, vals):
     
     attr_vals = {}
     for key in keys:
-        print("here")
         try:
             attr_val = vals[key]
         except:
@@ -123,7 +129,11 @@ def update(cursor, table, index, vals):
 
 
 def insert(cursor, table, vals):
+    execute(cursor, 'BEGIN')
+
+    parameters = []
     name = table.get_name()
+    
     keys = table.get_attributes().keys()
     vars = []
     var_vals = []
@@ -135,10 +145,10 @@ def insert(cursor, table, vals):
         vars.append(key)
         var_vals.append(val)
     parameters = tuple(var_vals)
-    stmt_str = "INSERT INTO " + name + " ("
+
     for i in range(len(vars)):
         if i == 0:
-            stmt_str += vars[i]
+            stmt_str += "INSERT INTO {} ({}"
         else:
             stmt_str += ", " + vars[i]
     stmt_str += ") VALUES ("
@@ -150,7 +160,7 @@ def insert(cursor, table, vals):
     stmt_str += ")"
     cursor.execute(stmt_str, parameters)
 
-    cursor.execute('COMMIT')
+    execute(cursor, 'COMMIT')
     
 def delete(cursor, table, index):
     name = table.get_name()
