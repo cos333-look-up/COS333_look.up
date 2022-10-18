@@ -37,20 +37,33 @@ def replace_wild_cards(arg):
         arg = str(arg).replace("%", "\\%")
     return arg
 
-def editClub(cursor, clubid, new_vals=[None, None, None]):
-    parameters = new_vals + [clubid]
+def editClub(cursor, clubid, vals=[None, None, None]):
     cursor.execute('BEGIN')
 
     stmt_str = "UPDATE clubs SET name = COALESCE(%s, name), "
     stmt_str += "description = COALESCE(%s, description), "
     stmt_str += "info_shared = COALESCE(%s, info_shared) "
     stmt_str += "WHERE clubid = %s"
-
+    parameters = vals + [clubid]
     cursor.execute(stmt_str, parameters)
 
     cursor.execute('COMMIT')
     print('Transaction committed.')
 
+def addClub(cursor, vals=[None, None, None]):
+    cursor.execute('BEGIN')
+
+    cursor.execute("SELECT MAX(clubid) FROM clubs")
+    clubid = cursor.fetchone() + 1
+
+    stmt_str = "INSERT INTO clubs "
+    stmt_str += "(clubid, name, description, info_shared) "
+    stmt_str += "VALUES (%s, %s, %s, %s)"
+    parameters = [clubid] + vals
+    cursor.execute(stmt_str, parameters)
+
+    cursor.execute('COMMIT')
+    print('Transaction committed.')
 
 def main():
     input = parse_user_input()
