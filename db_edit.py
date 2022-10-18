@@ -37,7 +37,7 @@ def replace_wild_cards(arg):
         arg = str(arg).replace("%", "\\%")
     return arg
 
-def editClub(cursor, clubid, vals=[None, None, None]):
+def updateClub(cursor, clubid, vals=[None, None, None]):
     cursor.execute('BEGIN')
 
     stmt_str = "UPDATE clubs SET name = COALESCE(%s, name), "
@@ -76,7 +76,7 @@ def main():
             with connection.cursor() as cursor:
 
                 if (input.t == 'clubs'):
-                    editClub(cursor, input.k, 
+                    updateClub(cursor, input.k, 
                     new_vals=pad_input(input.n, 3))
 
     except Exception as ex:
@@ -84,7 +84,6 @@ def main():
         sys.exit(1)
 
 # -----------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     main()

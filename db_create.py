@@ -32,8 +32,8 @@ def main():
                     + "info_shared BIT(2))")
                 cursor.execute("INSERT INTO clubs "
                     + "(clubid, name, description, info_shared) "
-                    + "VALUES (1, 'Womens Club Lacrosse', "
-                    + "'Free for all to join!', B'11')")
+                    + "VALUES ('1', 'Women\'\'s Club Lacrosse', "
+                    + "'Free for all to join!', '11')")
                 cursor.execute("INSERT INTO clubs "
                     + "(clubid, name, description, info_shared) "
                     + "VALUES (2, 'Cloister', "
