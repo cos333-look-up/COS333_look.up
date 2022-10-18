@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #-----------------------------------------------------------------------
-# db_structure.py
+# db_table.py
 # Author: Drew Curran
 #-----------------------------------------------------------------------
 
@@ -30,16 +30,16 @@ class Table:
 def _test():
     clubs = Table('clubs', {'clubid':'INTEGER'}, 
     {'name':'TEXT', 'description':'TEXT', 'info_shared':'BIT(2)'})
-    # print(clubs.drop())
-    # print(clubs.create())
-    # print(clubs.select())
-    # print(clubs.update({'name':'Women\'s Club Lacrosse'}, 
-    # {'clubid':8, 'info_shared':'00'}))
-    # print(clubs.insert({'clubid':1, 
-    # 'name':'Women\'s Club Lacrosse',
-    # 'description':'Free for all to join!', 'info_shared':'11'}))
-    # print(clubs.delete({'clubid':1, 
-    # 'name':'Women\'s Club Lacrosse'}))
+    print(clubs.drop())
+    print(clubs.create())
+    print(clubs.select())
+    print(clubs.update({'name':'Women\'s Club Lacrosse'}, 
+    {'clubid':8, 'info_shared':'00'}))
+    print(clubs.insert({'clubid':1, 
+    'name':'Women\'s Club Lacrosse',
+    'description':'Free for all to join!', 'info_shared':'11'}))
+    print(clubs.delete({'clubid':1, 
+    'name':'Women\'s Club Lacrosse'}))
     print()
     clubmembers = Table('clubmembers', {'clubid':'INTEGER'},
     {'netid':'TEXT', 'is_moderator':'BOOL'})
