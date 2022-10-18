@@ -58,11 +58,7 @@ class DataStructure:
 
     def format_string(self, val):
         if val is not None:
-            val = str(val).replace("\\", "\\\\")
-            val = str(val).replace("_", "\\_")
-            val = str(val).replace("%", "\\%")
-            val = str(val).replace("'", "\\'")
-            val = str(val).replace("\"", "\\\"")
+            val = str(val).replace("'", "''")
             val = "'" + val + "'"
         return val
 
