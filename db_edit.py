@@ -8,7 +8,7 @@
 import os
 import sys
 import argparse
-import tabulate
+from prettytable import PrettyTable as Table_Display
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import AsIs
@@ -169,11 +169,12 @@ class Table:
         self.execute(stmt_str, p=parameters, l=literals)
 
 def display(name, attributes, cursor):
-    print(('-'*43 + '\n%s\n' + '-'*43) % name)
-    row = cursor.fetchone()
-    while row is not None:
-        print(row)
-        row = cursor.fetchone()
+    data = fetch(cursor)
+    table = Table_Display()
+    table.title = name
+    table.field_names = attributes.keys()
+    table.add_rows(data)
+    print(table)
 
 def fetch(cursor):
     rows = []
@@ -182,7 +183,7 @@ def fetch(cursor):
     while row is not None:
         row = cursor.fetchone()
         rows.append(row)
-    return rows
+    return rows[:-1]
 
 def sample(cursor):
     clubs = Table('clubs',
@@ -329,6 +330,8 @@ def parse_user_input():
     description = 'Database editor')
     parser.add_argument('-s', '--sample', action='store_true',
     help = 'run the sample')
+    parser.add_argument('-i', '--input', action='store_true',
+    help = 'give commands as input')
     parser.add_argument('db_url',
     help = 'the file holding the url of the database')
     args = parser.parse_args()
@@ -345,6 +348,8 @@ def main():
             with connection.cursor() as cursor:
                 if input.sample:
                     sample(cursor)
+                if input.input:
+                    while 
 
     except Exception as ex:
         print(ex, file=sys.stderr)
