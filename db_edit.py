@@ -15,15 +15,15 @@ from psycopg2.extensions import AsIs
 
 # -----------------------------------------------------------------------
 
+## TO DO: String parameterization, input commands, cursor scope
+
 class Table:
 
-    def __init__(self, name, index, vals, cursor):
+    def __init__(self, name, index, vals):
         self._name = name
         self._index = index
         self._vals = vals
         self._attributes = {**index, **vals}
-        self._cursor = cursor
-        self._transacting = False
 
     def get_name(self):
         return self._name
@@ -36,40 +36,17 @@ class Table:
 
     def get_attributes(self):
         return self._attributes
-    
-    def get_transacting(self):
-        return self._transacting
-
-    def execute(self, stmt_str, p=[], l=[]):
-        stmt = sql.SQL(stmt_str).format(*p)
-        self._cursor.execute(stmt, l)
-        return stmt.as_string(self._cursor.connection) % tuple(lit.getquoted()
-        for lit in l)
-    
-    def begin(self):
-        if not self._transacting:
-            return self.execute("BEGIN")
-        return None
-    
-    def commit(self):
-        if self._transacting:
-            return self.execute("COMMIT")
-        return None
-    
-    def commit(self):
-        if self._transacting:
-            return self.execute("ROLLBACK")
-        return None
         
-    def drop(self):
+    def drop(self, cursor):
         parameters = []
         parameters.append(sql.Identifier(self._name))
 
         stmt_str = "DROP TABLE IF EXISTS {}"
 
-        self.execute(stmt_str, p=parameters)
+        execute(stmt_str, cursor, p=parameters)
 
-    def create(self):
+    ## ANY WAY TO GET RID OF STRING PARAMETERIZATION?
+    def create(self, cursor):
         parameters = []
         literals = []
         parameters.append(sql.Identifier(self._name))
@@ -86,18 +63,19 @@ class Table:
             if i == len(self._attributes) - 1:
                 stmt_str += ")"
         
-        self.execute(stmt_str, p=parameters, l=literals)
+        execute(stmt_str, cursor, p=parameters, l=literals)
 
-    def selectAll(self):
+    def selectAll(self, cursor):
         parameters = []
         parameters.append(sql.Identifier(self._name))
 
         stmt_str = "SELECT * FROM {}"
 
-        self.execute(stmt_str, parameters)
+        execute(stmt_str, cursor, parameters)
         return self._name, self._attributes
-        
-    def update(self, index, vals):
+    
+    ## ANY WAY TO GET RID OF STRING PARAMETERIZATION?
+    def update(self, cursor, index, vals):
         parameters = []
         literals = []
         parameters.append(sql.Identifier(self._name))
@@ -123,9 +101,9 @@ class Table:
             else:
                 stmt_str += "AND {} = %s{}"
 
-        self.execute(stmt_str, p=parameters, l=literals)
+        execute(stmt_str, cursor, p=parameters, l=literals)
 
-    def insert(self, vals):
+    def insert(self, cursor, vals):
         parameters = []
         parameters.append(sql.Identifier(self._name))
         parameters += list(map(lambda k : sql.Identifier(str(k)), vals.keys()))
@@ -148,9 +126,9 @@ class Table:
             if i == len(vals) - 1:
                 stmt_str += ")"
         
-        self.execute(stmt_str, p=parameters)
+        execute(stmt_str, cursor, p=parameters)
         
-    def delete(self, index):
+    def delete(self, cursor, index):
         parameters = []
         literals = []
         parameters.append(sql.Identifier(self._name))
@@ -166,17 +144,38 @@ class Table:
             else:
                 stmt_str += "AND {} = %s{}"
 
-        self.execute(stmt_str, p=parameters, l=literals)
+        execute(stmt_str, cursor, p=parameters, l=literals)
 
-def display(name, attributes, cursor):
-    data = fetch(cursor)
+def execute(stmt_str, cursor, p=[], l=[]):
+        stmt = sql.SQL(stmt_str).format(*p)
+        cursor.execute(stmt, l)
+        return stmt.as_string(cursor.connection) % tuple(lit.getquoted()
+        for lit in l)
+
+def begin(cursor, transacting):
+    if not transacting:
+        transacting = True
+    execute("BEGIN", cursor)
+    
+def commit(cursor, transacting):
+    if transacting:
+        transacting = False
+    execute("COMMIT", cursor)
+    
+def rollback(cursor, transacting):
+    if transacting:
+        transacting = False
+    execute("ROLLBACK", cursor)
+
+def display(cursor, name, attributes):
+    data = fetchAll(cursor)
     table = Table_Display()
     table.title = name
     table.field_names = attributes.keys()
     table.add_rows(data)
     print(table)
 
-def fetch(cursor):
+def fetchAll(cursor):
     rows = []
     row = cursor.fetchone()
     rows.append(row)
@@ -185,62 +184,61 @@ def fetch(cursor):
         rows.append(row)
     return rows[:-1]
 
-def sample(cursor):
-    clubs = Table('clubs',
-                {'clubid':'INTEGER'}, 
-                {'name':'TEXT', 'description':'TEXT', 'info_shared':'BIT(2)'},
-                cursor)
-    clubs.drop()
-    clubs.create()
-    clubs.insert({'clubid':1, 
+def sample(cursor, tables, transacting):
+    begin(cursor, transacting)
+    clubs = tables[0]
+    clubs.drop(cursor)
+    clubs.create(cursor)
+    clubs.insert(cursor,
+                {'clubid':1, 
                 'name':'Women\'s Club Lacrosse',
                 'description':'Free for all to join!', 
                 'info_shared':'11'})
-    clubs.insert({'clubid':2, 
+    clubs.insert(cursor,
+                {'clubid':2, 
                 'name':'Cloister',
                 'description':'Official Cloister Club Page', 
                 'info_shared':'10'})
-    clubs.insert({'clubid':3, 
+    clubs.insert(cursor,
+                {'clubid':3, 
                 'name':'Asian-American Students Association',
                 'description':'Welcome!', 
                 'info_shared':'01'})
-    clubs.insert({'clubid':4, 
+    clubs.insert(cursor,
+                {'clubid':4, 
                 'name':'Cannon',
                 'description':'Cannon Homepage!', 
                 'info_shared':'00'})
-    name, attributes = clubs.selectAll()
-    display(name, attributes, cursor)
+    name, attributes = clubs.selectAll(cursor)
+    display(cursor, name, attributes)
     
-    clubmembers = Table('clubmembers',
-                {'clubid':'INTEGER', 'netid':'TEXT'},
-                {'is_moderator':'BOOL'},
-                cursor)
-    clubmembers.drop()
-    clubmembers.create()
-    clubmembers.insert({'clubid':2, 
+    clubmembers = tables[1]
+    clubmembers.drop(cursor)
+    clubmembers.create(cursor)
+    clubmembers.insert(cursor,
+                {'clubid':2, 
                 'netid':'bm18',
                 'is_moderator':True})
-    clubmembers.insert({'clubid':2, 
+    clubmembers.insert(cursor,
+                {'clubid':2, 
                 'netid':'denisac',
                 'is_moderator':False})
-    clubmembers.insert({'clubid':2, 
+    clubmembers.insert(cursor,
+                {'clubid':2, 
                 'netid':'pmt2',
                 'is_moderator':True})
-    clubmembers.insert({'clubid':3, 
+    clubmembers.insert(cursor,
+                {'clubid':3, 
                 'netid':'evanwang',
                 'is_moderator':False})
-    name, attributes = clubmembers.selectAll()
-    display(name, attributes, cursor)
+    name, attributes = clubmembers.selectAll(cursor)
+    display(cursor, name, attributes)
 
-    users = Table('users',
-                {'netid':'TEXT'},
-                {'is_admin':'BOOL', 'first_name':'TEXT', 
-                'last_name':'TEXT', 'photo':'TEXT', 'phone':'TEXT', 
-                'instagram':'TEXT', 'snapchat':'TEXT'},
-                cursor)
-    users.drop()
-    users.create()
-    users.insert({'netid':'denisac', 
+    users = tables[2]
+    users.drop(cursor)
+    users.create(cursor)
+    users.insert(cursor,
+                {'netid':'denisac', 
                 'is_admin':False,
                 'first_name':'Drew',
                 'last_name':'Curran', 
@@ -249,7 +247,8 @@ def sample(cursor):
                 'instagram':'drewcurran17', 
                 'snapchat':None
                 })
-    users.insert({'netid':'dh37', 
+    users.insert(cursor,
+                {'netid':'dh37', 
                 'is_admin':True,
                 'first_name':'Daniel',
                 'last_name':'Hu', 
@@ -258,7 +257,8 @@ def sample(cursor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    users.insert({'netid':'gleising', 
+    users.insert(cursor,
+                {'netid':'gleising', 
                 'is_admin':True,
                 'first_name':None,
                 'last_name':None, 
@@ -267,7 +267,8 @@ def sample(cursor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    users.insert({'netid':'evanwang', 
+    users.insert(cursor,
+                {'netid':'evanwang', 
                 'is_admin':True,
                 'first_name':'Evan',
                 'last_name':'Wang', 
@@ -276,7 +277,8 @@ def sample(cursor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    users.insert({'netid':'rc38', 
+    users.insert(cursor,
+                {'netid':'rc38', 
                 'is_admin':True,
                 'first_name':'Richard',
                 'last_name':'Cheng', 
@@ -285,45 +287,45 @@ def sample(cursor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    name, attributes = users.selectAll()
-    display(name, attributes, cursor)
+    name, attributes = users.selectAll(cursor)
+    display(cursor, name, attributes)
 
-    creationreqs = Table('creationreqs',
-                {'name':'TEXT', 'netid':'TEXT'},
-                {'description':'TEXT', 'info_shared':'BIT(2)'},
-                cursor)
-    creationreqs.drop()
-    creationreqs.create()
-    creationreqs.insert({'name':'Club Tennis', 
+    creationreqs = tables[3]
+    creationreqs.drop(cursor)
+    creationreqs.create(cursor)
+    creationreqs.insert(cursor,
+                {'name':'Club Tennis', 
                 'netid':'denisac',
                 'description':'Official club',
                 'info_shared':'11'
                 })
-    creationreqs.insert({'name':'Basketball Group', 
+    creationreqs.insert(cursor,
+                {'name':'Basketball Group', 
                 'netid':'dh37',
                 'description':'Group to play pickup basketball',
                 'info_shared':'10'
                 })
-    name, attributes = creationreqs.selectAll()
-    display(name, attributes, cursor)
+    name, attributes = creationreqs.selectAll(cursor)
+    display(cursor, name, attributes)
     
-    joinreqs = Table('joinreqs',
-                {'clubid':'INTEGER', 'netid':'TEXT'},
-                {},
-                cursor)
-    joinreqs.drop()
-    joinreqs.create()
-    joinreqs.insert({'clubid':2, 
+    joinreqs = tables[4]
+    joinreqs.drop(cursor)
+    joinreqs.create(cursor)
+    joinreqs.insert(cursor,
+                {'clubid':2, 
                 'netid':'jasonsun',
                 })
-    joinreqs.insert({'clubid':1, 
+    joinreqs.insert(cursor,
+                {'clubid':1, 
                 'netid':'aleshire',
                 })      
-    joinreqs.insert({'clubid':2, 
+    joinreqs.insert(cursor,
+                {'clubid':2, 
                 'netid':'arobang',
                 })
-    name, attributes = joinreqs.selectAll()
-    display(name, attributes, cursor)
+    name, attributes = joinreqs.selectAll(cursor)
+    display(cursor, name, attributes)
+    commit(cursor, transacting)
 
 def parse_user_input():
     parser = argparse.ArgumentParser(allow_abbrev = False,
@@ -338,18 +340,50 @@ def parse_user_input():
     return args
 
 def main():
-    input = parse_user_input()
+    user_input = parse_user_input()
+    command = ""
+    
+    clubs = Table('clubs',
+                {'clubid':'INTEGER'}, 
+                {'name':'TEXT', 'description':'TEXT', 'info_shared':'BIT(2)'})
+    clubmembers = Table('clubmembers',
+                {'clubid':'INTEGER', 'netid':'TEXT'},
+                {'is_moderator':'BOOL'})
+    users = Table('users',
+                {'netid':'TEXT'},
+                {'is_admin':'BOOL', 'first_name':'TEXT', 
+                'last_name':'TEXT', 'photo':'TEXT', 'phone':'TEXT', 
+                'instagram':'TEXT', 'snapchat':'TEXT'})
+    creationreqs = Table('creationreqs',
+                {'name':'TEXT', 'netid':'TEXT'},
+                {'description':'TEXT', 'info_shared':'BIT(2)'})
+    joinreqs = Table('joinreqs',
+                {'clubid':'INTEGER', 'netid':'TEXT'},
+                {})
+    tables = [clubs, clubmembers, users, creationreqs, joinreqs]
+    transacting = False
 
     try:
-        with open(input.db_url) as f:
+        with open(user_input.db_url) as f:
             os.environ.update(line.strip().split('=', 1) for line in f)
         db_url = os.getenv('ELEPHANTSQL_URL')
         with psycopg2.connect(db_url) as connection:
             with connection.cursor() as cursor:
-                if input.sample:
-                    sample(cursor)
-                if input.input:
-                    while 
+                if user_input.sample:
+                    sample(cursor, tables, transacting)
+                if user_input.input:
+                    print("Enter q to quit.")
+                    while True:
+                        prompt = ""
+                        for i in range(len(tables)):
+                            prompt += str(i) + ": " + tables[i].get_name()
+                        print(prompt)
+                        command = input()
+                        if (command=='q'):
+                            break
+                        table = tables[int(command)]
+                        prompt = "0: "
+
 
     except Exception as ex:
         print(ex, file=sys.stderr)
