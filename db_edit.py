@@ -65,14 +65,30 @@ class Table:
         
         execute(stmt_str, cursor, p=parameters, l=literals)
 
-    def selectAll(self, cursor):
+    def insert(self, cursor, vals):
         parameters = []
         parameters.append(sql.Identifier(self._name))
+        parameters += list(map(lambda k : sql.Identifier(str(k)), vals.keys()))
+        parameters += list(map(lambda v : sql.Literal(str(v)), vals.values()))
 
-        stmt_str = "SELECT * FROM {}"
-
-        execute(stmt_str, cursor, parameters)
-        return self._name, self._attributes
+        stmt_str = "INSERT INTO {}"
+        for i in range(len(vals)):
+            if i == 0:
+                stmt_str += " ({}"
+            else:
+                stmt_str += ", {}"
+            if i == len(vals) - 1:
+                stmt_str += ")"
+        stmt_str += " VALUES"
+        for i in range(len(vals)):
+            if i == 0:
+                stmt_str += " ({}"
+            else:
+                stmt_str += ", {}"
+            if i == len(vals) - 1:
+                stmt_str += ")"
+        
+        execute(stmt_str, cursor, p=parameters)
     
     ## ANY WAY TO GET RID OF STRING PARAMETERIZATION?
     def update(self, cursor, index, vals):
@@ -101,33 +117,8 @@ class Table:
             else:
                 stmt_str += "AND {} = %s{}"
 
-        execute(stmt_str, cursor, p=parameters, l=literals)
-
-    def insert(self, cursor, vals):
-        parameters = []
-        parameters.append(sql.Identifier(self._name))
-        parameters += list(map(lambda k : sql.Identifier(str(k)), vals.keys()))
-        parameters += list(map(lambda v : sql.Literal(str(v)), vals.values()))
-
-        stmt_str = "INSERT INTO {}"
-        for i in range(len(vals)):
-            if i == 0:
-                stmt_str += " ({}"
-            else:
-                stmt_str += ", {}"
-            if i == len(vals) - 1:
-                stmt_str += ")"
-        stmt_str += " VALUES"
-        for i in range(len(vals)):
-            if i == 0:
-                stmt_str += " ({}"
-            else:
-                stmt_str += ", {}"
-            if i == len(vals) - 1:
-                stmt_str += ")"
-        
-        execute(stmt_str, cursor, p=parameters)
-        
+        execute(stmt_str, cursor, p=parameters, l=literals)   
+      
     def delete(self, cursor, index):
         parameters = []
         literals = []
@@ -145,6 +136,15 @@ class Table:
                 stmt_str += "AND {} = %s{}"
 
         execute(stmt_str, cursor, p=parameters, l=literals)
+    
+    def selectAll(self, cursor):
+        parameters = []
+        parameters.append(sql.Identifier(self._name))
+
+        stmt_str = "SELECT * FROM {}"
+
+        execute(stmt_str, cursor, parameters)
+        return self._name, self._attributes
 
 def execute(stmt_str, cursor, p=[], l=[]):
         stmt = sql.SQL(stmt_str).format(*p)
@@ -361,6 +361,7 @@ def main():
                 {'clubid':'INTEGER', 'netid':'TEXT'},
                 {})
     tables = [clubs, clubmembers, users, creationreqs, joinreqs]
+    execs = ["DROP", "CREATE", "INSERT", "UPDATE", "DELETE"]
     transacting = False
 
     try:
@@ -376,13 +377,23 @@ def main():
                     while True:
                         prompt = ""
                         for i in range(len(tables)):
-                            prompt += str(i) + ": " + tables[i].get_name()
+                            prompt += str(i) + ": " + tables[i].get_name() + " "
                         print(prompt)
                         command = input()
                         if (command=='q'):
                             break
                         table = tables[int(command)]
-                        prompt = "0: "
+                        
+                        prompt = ""
+                        for i in range(len(tables)):
+                            prompt += str(i) + ": " + execs[i] + " "
+                        print(prompt)
+                        command = input()
+                        if (command=='q'):
+                            break
+                        exec = execs[int(command)]
+
+                        
 
 
     except Exception as ex:
