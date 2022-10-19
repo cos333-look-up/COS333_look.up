@@ -7,6 +7,8 @@
 
 import os
 import sys
+import argparse
+import tabulate
 import psycopg2
 from psycopg2 import sql
 from psycopg2.extensions import AsIs
@@ -168,7 +170,6 @@ class Table:
 
 def display(name, attributes, cursor):
     print(('-'*43 + '\n%s\n' + '-'*43) % name)
-
     row = cursor.fetchone()
     while row is not None:
         print(row)
@@ -323,20 +324,27 @@ def sample(cursor):
     name, attributes = joinreqs.selectAll()
     display(name, attributes, cursor)
 
+def parse_user_input():
+    parser = argparse.ArgumentParser(allow_abbrev = False,
+    description = 'Database editor')
+    parser.add_argument('-s', '--sample', action='store_true',
+    help = 'run the sample')
+    parser.add_argument('db_url',
+    help = 'the file holding the url of the database')
+    args = parser.parse_args()
+    return args
+
 def main():
-    if len(sys.argv) != 2:
-        print('usage: python %s db_url' % sys.argv[0],
-            file=sys.stderr)
-        sys.exit(1)
-    db_file = sys.argv[1]
+    input = parse_user_input()
 
     try:
-        with open(db_file) as f:
+        with open(input.db_url) as f:
             os.environ.update(line.strip().split('=', 1) for line in f)
         db_url = os.getenv('ELEPHANTSQL_URL')
         with psycopg2.connect(db_url) as connection:
             with connection.cursor() as cursor:
-                sample(cursor)
+                if input.sample:
+                    sample(cursor)
 
     except Exception as ex:
         print(ex, file=sys.stderr)
