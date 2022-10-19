@@ -9,6 +9,7 @@ import sys
 import argparse
 from psycopg2 import sql
 from psycopg2.extensions import AsIs
+import json
 
 # -----------------------------------------------------------------------
 
@@ -35,17 +36,8 @@ class Table:
 
     def get_attributes(self):
         return self._attributes
-
-    def command_string(self, stmt_str, **kwargs):
-        parameters = list(map(lambda x : x._wrapped, kwargs.get('parameters')))
-        literals = kwargs.get('literals')
-        if parameters:
-            stmt_str = stmt_str.format(*parameters)
-        if literals:
-            stmt_str = stmt_str % tuple(*literals)
-        return stmt_str
         
-    def drop(self, **kwargs):
+    def drop(self, **_):
         parameters = []
         parameters.append(sql.Identifier(self._name))
 
@@ -53,7 +45,7 @@ class Table:
 
         return {'stmt_str':stmt_str, 'parameters':parameters}
 
-    def create(self, **kwargs):
+    def create(self, **_):
         parameters = []
         literals = []
         parameters.append(sql.Identifier(self._name))
@@ -103,7 +95,7 @@ class Table:
     def update(self, **kwargs):
         values = kwargs.get('values')
         indices = kwargs.get('indices')
-        if values or indices is None:
+        if values is None or indices is None:
             raise Exception("Values or Indices dictionary is None")
         parameters = []
         literals = []
@@ -153,7 +145,7 @@ class Table:
 
         return {'stmt_str':stmt_str, 'parameters':parameters, 'literals':literals}
     
-    def select_all(self, **kwargs):
+    def select_all(self, **_):
         parameters = []
         parameters.append(sql.Identifier(self._name))
 
@@ -161,18 +153,46 @@ class Table:
 
         return {'stmt_str':stmt_str, 'parameters':parameters}
 
-    def freeform(self, stmt_str, **kwargs):
-        parameters = kwargs.get('parameters')
-        literals = kwargs.get('literals')
+    def freeform(self, **kwargs):
+        stmt_str = kwargs.get('stmt_str')
+        parameters = []
+        parameters.append(sql.Identifier(self._name))
+        literals = []
         return {'stmt_str':stmt_str, 'parameters':parameters, 'literals':literals}
+
+def command_string(stmt_str, **kwargs):
+    parameters = kwargs.get('parameters')
+    if parameters:
+        if type(parameters) == list:
+            for i in range(len(parameters)):
+                p = parameters[i]
+                p = p._wrapped
+                if (type(parameters[i]) == sql.Identifier):
+                    p = ', '.join(p)
+                parameters[i] = p
+        stmt_str = stmt_str.format(*parameters)
+    literals = kwargs.get('literals')
+    if literals:
+        if type(literals) == list:
+            for i in range(len(literals)):
+                l = literals[i]
+                if (type(parameters[i]) == sql.Literal):
+                    l = l.getquoted()
+                literals[i] = l
+            literals = tuple(literals)
+        stmt_str = stmt_str % literals
+    return stmt_str
 
 def parse_user_input(commands, tables):
     parser = argparse.ArgumentParser(allow_abbrev = False,
-    description = 'Database edit statements')
-    parser.add_argument('-v', '--values', type = dict,
+    formatter_class=argparse.RawTextHelpFormatter,
+    description = '\n'.join(tables[i].get_name() + ": " + ' '.join(attributes for attributes in tables[i].get_attributes()) for i in range(len(tables))))
+    parser.add_argument('-v', '--values', type = json.loads,
     help = 'values given as arguments for the command')
-    parser.add_argument('-i', '--indices', type = dict,
+    parser.add_argument('-i', '--indices', type = json.loads,
     help = 'indices given as arguments for the command')
+    parser.add_argument('-s', '--stmt_str', type = str, nargs = '*',
+    help = 'statement given for a free statement')
     parser.add_argument('command_num', type = int,
     help = ' '.join(str(i) + ": " + commands[i].__name__ for i in range(len(commands))))
     parser.add_argument('table_num', type = int,
@@ -201,20 +221,76 @@ def main():
                 {'clubid':'INTEGER', 'netid':'TEXT'},
                 {})
     tables = [clubs, clubmembers, users, creationreqs, joinreqs]
-
     user_input = parse_user_input(commands, tables)
-    command = commands[user_input.command_num]
-    table = tables[user_input.table_num]
+    command_num = user_input.command_num
+    table_num = user_input.table_num
+    stmt_str = user_input.stmt_str
     values = user_input.values
     indices = user_input.indices
-    print("Command: " + command.__name__)
-    print("Table: " + table.get_name())
-    print("Values: " + str(values))
-    print("Indices: " + str(indices))
+    if command_num is not None:
+        command = commands[command_num]
+        command_name = command.__name__
+        print("Command: %s (%s)" % (command_num, command_name))
+    if table_num is not None:
+        table = tables[table_num]
+        table_name = table.get_name()
+        print("Table: %s (%s)" % (table_num, table_name))
+    if stmt_str is not None:
+        stmt_str = " ".join(stmt_str)
+        print("Statement: %s" % (stmt_str))
+    if values:
+        print("Values: " + str(values))
+    if indices:
+        print("Indices: " + str(indices))
+
+    '''
+    Example Command Line
+    > py db_edit.py 0 0
+    Command: 0 (drop)
+    Table: 0 (clubs)
+    DROP TABLE IF EXISTS clubs
+
+    > py db_edit.py 1 3
+    Command: 1 (create)
+    Table: 3 (creationreqs)
+    CREATE TABLE creationreqs (name TEXT, netid TEXT, description TEXT, info_shared BIT(2))
+
+    > py db_edit.py 2 2 -v "{\"netid\":\"denisac\", \"is_admin\":\"False\"}"
+    Command: 2 (insert)
+    Table: 2 (users)
+    Values: {'netid': 'denisac', 'is_admin': 'False'}
+    INSERT INTO users (netid, is_admin) VALUES (denisac, False)
+
+    > py db_edit.py 3 0 -v {\"clubid\":4} -i {\"info_shared\":\"10\"}
+    >py db_edit.py 3 0 -v {\"clubid\":4} -i {\"info_shared\":\"10\"}
+    Command: 3 (update)
+    Table: 0 (clubs)
+    Values: {'clubid': 4}
+    Indices: {'info_shared': '10'}
+    UPDATE clubs SET clubid = NULLIF(4, NULL) WHERE info_shared = B10
+
+    > py db_edit.py 4 4 -i {"""clubid""":4}
+    py db_edit.py 4 4 -i {"""clubid""":4}
+    Command: 4 (delete)
+    Table: 4 (joinreqs)
+    Indices: {'clubid': 4}
+    DELETE FROM joinreqs WHERE clubid = 4
+
+    > py db_edit.py 5 1
+    Command: 5 (select_all)
+    Table: 1 (clubmembers)
+    SELECT * FROM clubmembers
+
+    py db_edit.py 6 2 -s SELECT * FROM {}
+    Command: 6 (freeform)
+    Table: 2 (users)
+    Statement: SELECT * FROM {}
+    SELECT * FROM users
+    '''
 
     try:
         action = getattr(table, command.__name__)
-        result = action(indices=indices, values=values)
+        result = action(stmt_str=stmt_str, values=values, indices=indices)
         if 'stmt_str' in result:
             stmt_str = result['stmt_str']
         else:
@@ -227,7 +303,7 @@ def main():
             literals = result['literals']
         else:
             literals = []
-        print(table.command_string(stmt_str, parameters=parameters, literals=literals))
+        print(command_string(stmt_str, parameters=parameters, literals=literals))
     except Exception as ex:
         print(ex, file=sys.stderr)
         sys.exit(1)
