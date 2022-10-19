@@ -93,15 +93,7 @@ class Table:
         stmt_str = "SELECT * FROM {}"
 
         self.execute(stmt_str, parameters)
-
-    def displayAll(self):
-        self.selectAll()
-        print(('-'*43 + '\n%s\n' + '-'*43) % self._name)
-
-        row = self._cursor.fetchone()
-        while row is not None:
-            print(row)
-            row = self._cursor.fetchone()
+        return self._name, self._attributes
         
     def update(self, index, vals):
         parameters = []
@@ -174,6 +166,163 @@ class Table:
 
         self.execute(stmt_str, p=parameters, l=literals)
 
+def display(name, attributes, cursor):
+    print(('-'*43 + '\n%s\n' + '-'*43) % name)
+
+    row = cursor.fetchone()
+    while row is not None:
+        print(row)
+        row = cursor.fetchone()
+
+def fetch(cursor):
+    rows = []
+    row = cursor.fetchone()
+    rows.append(row)
+    while row is not None:
+        row = cursor.fetchone()
+        rows.append(row)
+    return rows
+
+def sample(cursor):
+    clubs = Table('clubs',
+                {'clubid':'INTEGER'}, 
+                {'name':'TEXT', 'description':'TEXT', 'info_shared':'BIT(2)'},
+                cursor)
+    clubs.drop()
+    clubs.create()
+    clubs.insert({'clubid':1, 
+                'name':'Women\'s Club Lacrosse',
+                'description':'Free for all to join!', 
+                'info_shared':'11'})
+    clubs.insert({'clubid':2, 
+                'name':'Cloister',
+                'description':'Official Cloister Club Page', 
+                'info_shared':'10'})
+    clubs.insert({'clubid':3, 
+                'name':'Asian-American Students Association',
+                'description':'Welcome!', 
+                'info_shared':'01'})
+    clubs.insert({'clubid':4, 
+                'name':'Cannon',
+                'description':'Cannon Homepage!', 
+                'info_shared':'00'})
+    name, attributes = clubs.selectAll()
+    display(name, attributes, cursor)
+    
+    clubmembers = Table('clubmembers',
+                {'clubid':'INTEGER', 'netid':'TEXT'},
+                {'is_moderator':'BOOL'},
+                cursor)
+    clubmembers.drop()
+    clubmembers.create()
+    clubmembers.insert({'clubid':2, 
+                'netid':'bm18',
+                'is_moderator':True})
+    clubmembers.insert({'clubid':2, 
+                'netid':'denisac',
+                'is_moderator':False})
+    clubmembers.insert({'clubid':2, 
+                'netid':'pmt2',
+                'is_moderator':True})
+    clubmembers.insert({'clubid':3, 
+                'netid':'evanwang',
+                'is_moderator':False})
+    name, attributes = clubmembers.selectAll()
+    display(name, attributes, cursor)
+
+    users = Table('users',
+                {'netid':'TEXT'},
+                {'is_admin':'BOOL', 'first_name':'TEXT', 
+                'last_name':'TEXT', 'photo':'TEXT', 'phone':'TEXT', 
+                'instagram':'TEXT', 'snapchat':'TEXT'},
+                cursor)
+    users.drop()
+    users.create()
+    users.insert({'netid':'denisac', 
+                'is_admin':False,
+                'first_name':'Drew',
+                'last_name':'Curran', 
+                'photo':'Placeholder',
+                'phone':'+17037329370',
+                'instagram':'drewcurran17', 
+                'snapchat':None
+                })
+    users.insert({'netid':'dh37', 
+                'is_admin':True,
+                'first_name':'Daniel',
+                'last_name':'Hu', 
+                'photo':None,
+                'phone':None,
+                'instagram':None, 
+                'snapchat':None
+                })
+    users.insert({'netid':'gleising', 
+                'is_admin':True,
+                'first_name':None,
+                'last_name':None, 
+                'photo':None,
+                'phone':None,
+                'instagram':None, 
+                'snapchat':None
+                })
+    users.insert({'netid':'evanwang', 
+                'is_admin':True,
+                'first_name':'Evan',
+                'last_name':'Wang', 
+                'photo':'Placeholder',
+                'phone':None,
+                'instagram':None, 
+                'snapchat':None
+                })
+    users.insert({'netid':'rc38', 
+                'is_admin':True,
+                'first_name':'Richard',
+                'last_name':'Cheng', 
+                'photo':None,
+                'phone':'+13142952690',
+                'instagram':None, 
+                'snapchat':None
+                })
+    name, attributes = users.selectAll()
+    display(name, attributes, cursor)
+
+    creationreqs = Table('creationreqs',
+                {'name':'TEXT', 'netid':'TEXT'},
+                {'description':'TEXT', 'info_shared':'BIT(2)'},
+                cursor)
+    creationreqs.drop()
+    creationreqs.create()
+    creationreqs.insert({'name':'Club Tennis', 
+                'netid':'denisac',
+                'description':'Official club',
+                'info_shared':'11'
+                })
+    creationreqs.insert({'name':'Basketball Group', 
+                'netid':'dh37',
+                'description':'Group to play pickup basketball',
+                'info_shared':'10'
+                })
+    name, attributes = creationreqs.selectAll()
+    display(name, attributes, cursor)
+    
+    joinreqs = Table('joinreqs',
+                {'clubid':'INTEGER', 'netid':'TEXT'},
+                {},
+                cursor)
+    joinreqs.drop()
+    joinreqs.create()
+    joinreqs.insert({'clubid':2, 
+                'netid':'jasonsun',
+                })
+    joinreqs.insert({'clubid':1, 
+                'netid':'aleshire',
+                })      
+    joinreqs.insert({'clubid':2, 
+                'netid':'arobang',
+                })
+    name, attributes = joinreqs.selectAll()
+    display(name, attributes, cursor)
+
 def main():
     if len(sys.argv) != 2:
         print('usage: python %s db_url' % sys.argv[0],
@@ -187,31 +336,11 @@ def main():
         db_url = os.getenv('ELEPHANTSQL_URL')
         with psycopg2.connect(db_url) as connection:
             with connection.cursor() as cursor:
-                clubs = Table('clubs', {'clubid':'INTEGER'}, 
-                {'name':'TEXT', 'description':'TEXT', 'info_shared':'BIT(2)'},
-                cursor)
-
-                clubs.drop()
-                clubs.create()
-                clubs.insert({'clubid':1, 
-                'name':'Women\'s Club Lacrosse',
-                'description':'Free for all to join!', 
-                'info_shared':'11'})
-                clubs.displayAll()
-
-                clubs.update({'name':'Women\'s Club Lacrosse'},
-                {'clubid':8, 'info_shared':'00'})
-                clubs.displayAll()
-
-                clubs.delete({'clubid':8, 
-                'name':'Women\'s Club Lacrosse'})
-                clubs.displayAll()
+                sample(cursor)
 
     except Exception as ex:
         print(ex, file=sys.stderr)
         sys.exit(1)
-
-# -----------------------------------------------------------------------
 
 if __name__ == '__main__':
     main()
