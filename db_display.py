@@ -12,15 +12,17 @@ import psycopg2
 #-----------------------------------------------------------------------
 
 def main():
-
-    if len(sys.argv) != 1:
-        print('Usage: python display.py', file=sys.stderr)
+    if len(sys.argv) != 2:
+        print('usage: python %s db_url' % sys.argv[0],
+            file=sys.stderr)
         sys.exit(1)
+    db_file = sys.argv[1]
 
     try:
-        database_url = os.getenv('DATABASE_URL')
-
-        with psycopg2.connect(database_url) as connection:
+        with open(db_file) as f:
+            os.environ.update(line.strip().split('=', 1) for line in f)
+        db_url = os.getenv('ELEPHANTSQL_URL')
+        with psycopg2.connect(db_url) as connection:
 
             with connection.cursor() as cursor:
 

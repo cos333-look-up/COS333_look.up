@@ -14,17 +14,11 @@ import db_table
 
 # -----------------------------------------------------------------------
 
-def format_val(val):
-    if val is not None and type(val)==str:
-        val = str(val).replace("'", "''")
-        val = "'" + val + "'"
-    return val
-
 def execute(cursor, stmt_str, p=[], l=[]):
     stmt = sql.SQL(stmt_str).format(*p)
+    print(stmt.as_string(cursor.connection) % tuple(lit.getquoted()
+    for lit in l))
     cursor.execute(stmt, l)
-    return stmt.as_string(cursor.connection) % tuple(lit.getquoted() 
-    for lit in l)
 
 def drop(cursor, table):
     execute(cursor, 'BEGIN')
@@ -32,7 +26,9 @@ def drop(cursor, table):
     parameters = []
     name = table.get_name()
     parameters.append(sql.Identifier(name))
+
     stmt_str = "DROP TABLE IF EXISTS {}"
+
     execute(cursor, stmt_str, p=parameters)
 
     execute(cursor, 'COMMIT')
@@ -48,6 +44,7 @@ def create(cursor, table):
     for key, val in attributes.items():
         parameters.append(sql.Identifier(key))
         literals.append(AsIs(val))
+    
     stmt_str = "CREATE TABLE {}"
     for i in range(len(attributes)):
         if i == 0:
@@ -56,6 +53,7 @@ def create(cursor, table):
             stmt_str += ", {} %s"
         if i == len(attributes) - 1:
             stmt_str += ")"
+    
     execute(cursor, stmt_str, p=parameters, l=literals)
 
     execute(cursor, 'COMMIT')
@@ -66,7 +64,9 @@ def selectAll(cursor, table):
     parameters = []
     name = table.get_name()
     parameters.append(sql.Identifier(name))
+
     stmt_str = "SELECT * FROM {}"
+
     execute(cursor, stmt_str, parameters)
 
     # execute(cursor, 'COMMIT')
@@ -77,7 +77,8 @@ def display(cursor, table):
     selectAll(cursor, table)
 
     name = table.get_name()
-    print('-'*43 + '\n%s\n' + '-'*43 % name)
+    print(('-'*43 + '\n%s\n' + '-'*43) % name)
+
     row = cursor.fetchone()
     while row is not None:
         print(row)
@@ -86,46 +87,34 @@ def display(cursor, table):
     execute(cursor, 'COMMIT')
     
 def update(cursor, table, index, vals):
-    cursor.execute('BEGIN')
+    execute(cursor, 'BEGIN')
 
+    parameters = []
     name = table.get_name()
-    keys = table.get_attributes().keys()
+    parameters.append(sql.Identifier(name))
+    for key, val in vals.items():
+        parameters.append(sql.Identifier(key))
+        parameters.append(sql.Literal(val))
+    for key, val in index.items():
+        parameters.append(sql.Identifier(key))
+        parameters.append(sql.Literal(val))
     
-    attr_vals = {}
-    for key in keys:
-        try:
-            attr_val = vals[key]
-        except:
-            continue
-        attr_vals[key] = attr_val
-    index_vals = {}
-    for key in keys:
-        try:
-            index_val = index[key]
-        except:
-            continue
-        index_vals[key] = index_val
-    parameters = tuple(attr_vals.values()) + tuple(index_vals.values())
-    print(parameters)
-    stmt_str = ""
-    i = 0
-    for key in attr_vals.keys():
+    stmt_str = "UPDATE {} SET"
+    for i in range(len(vals)):
         if i == 0:
-            stmt_str += "UPDATE " + name + " SET"
-            stmt_str += " " + key + " = NULLIF(%s, NULL)"
-            i += 1
+            stmt_str += " {} = NULLIF({}, NULL)"
         else:
-            stmt_str += ", " + key + " = NULLIF(%s, NULL)"
-    i = 0
-    for key in index_vals.keys():
+            stmt_str += ", {} = NULLIF({}, NULL)"
+    stmt_str += " WHERE"
+    for i in range(len(index)):
         if i == 0:
-            stmt_str += " WHERE " + key + " = %s"
+            stmt_str += " {} = {}"
         else:
-            stmt_str += " AND " + key + " = %s"
-    if (len(stmt_str) > 0):
-        cursor.execute(stmt_str, parameters)
+            stmt_str += "AND {} = {}"
 
-    cursor.execute('COMMIT')
+    execute(cursor, stmt_str, p=parameters)
+
+    execute(cursor, 'COMMIT')
 
 
 def insert(cursor, table, vals):
@@ -133,32 +122,28 @@ def insert(cursor, table, vals):
 
     parameters = []
     name = table.get_name()
-    
-    keys = table.get_attributes().keys()
-    vars = []
-    var_vals = []
-    for key in keys:
-        try:
-            val = vals[key]
-        except:
-            pass
-        vars.append(key)
-        var_vals.append(val)
-    parameters = tuple(var_vals)
+    parameters.append(sql.Identifier(name))
+    parameters += list(map(lambda k : sql.Identifier(str(k)), vals.keys()))
+    parameters += list(map(lambda v : sql.Literal(str(v)), vals.values()))
 
-    for i in range(len(vars)):
+    stmt_str = "INSERT INTO {}"
+    for i in range(len(vals)):
         if i == 0:
-            stmt_str += "INSERT INTO {} ({}"
+            stmt_str += " ({}"
         else:
-            stmt_str += ", " + vars[i]
-    stmt_str += ") VALUES ("
-    for i in range(len(var_vals)):
+            stmt_str += ", {}"
+        if i == len(vals) - 1:
+            stmt_str += ")"
+    stmt_str += " VALUES"
+    for i in range(len(vals)):
         if i == 0:
-            stmt_str += "%s"
+            stmt_str += " ({}"
         else:
-            stmt_str += ", %s"
-    stmt_str += ")"
-    cursor.execute(stmt_str, parameters)
+            stmt_str += ", {}"
+        if i == len(vals) - 1:
+            stmt_str += ")"
+    
+    execute(cursor, stmt_str, p=parameters)
 
     execute(cursor, 'COMMIT')
     
@@ -206,7 +191,6 @@ def main():
                 'description':'Free for all to join!', 
                 'info_shared':'11'})
                 display(cursor, clubs)
-
                 update(cursor, clubs,
                 {'name':'Women\'s Club Lacrosse'}, {'clubid':8,
                 'info_shared':'00'
