@@ -1,20 +1,19 @@
 import flask
-
-##import db
+import db_edit
 
 app = flask.Flask(__name__, template_folder=".")
 
 ## Figure out how to store this with CAS or something else
 netid = "netid"
 
-## Fetching data from DB
+## Fetching data from DB (probably a function in a separate file)
 def fetch_data(netid):
     # Do something with DB to fetch profile or return None if
     # no profile exists yet
     pass
 
 
-## Inputs data into the DB
+## Inputs data into the DB (probably a function in a separate file)
 def input_data(netid, data):
     # Add a new profile to the db with the associated data
     # and netid
@@ -54,12 +53,23 @@ def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
-    name = flask.request.args.get("name")
-    number = flask.request.args.get("number")
+    fname = flask.request.args.get("fname")
+    lname = flask.request.args.get("lname")
+    phone = flask.request.args.get("phone")
     email = flask.request.args.get("email")
-    social_media = flask.request.args.get("social_media")
-    data = [name, number, email, social_media]
+    instagram = flask.request.args.get("instagram")
+    snapchat = flask.request.args.get("snapchat")
+    data = {
+        "netid": netid,
+        "is_admin": False,
+        "first_name": fname,
+        "last_name": lname,
+        "phone": phone,
+        "email": email,
+        "instagram": instagram,
+        "snapchat": snapchat,
+    }
     # Input the data set attached to the netid into the DB
-    input_data(netid, data)
+    input_data(data)
     # Redirect to index for loading the user's new page
     return flask.redirect(flask.url_for("index"))
