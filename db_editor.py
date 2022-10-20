@@ -36,13 +36,16 @@ class TableEditor:
         return self._tables
 
     def get_current_table(self):
-        return self._current_table
+        return self._tables[self._current_table]
 
     def set_current_table(self, index):
         self._current_table = index
 
     def get_transacting(self):
         return self._transacting
+
+    def get_queue(self):
+        return self._queue
 
     def enqueue(self, function, **kwargs):
         parameters = []
@@ -57,74 +60,83 @@ class TableEditor:
             parameters = result['parameters']
         if 'literals' in result:
             literals = result['literals']
-        return stmt_str, parameters, literals
+        arguments = [stmt_str, parameters, literals]
+        self._queue.append(arguments)
+        return arguments
 
-    def execute(self, queue):
+    def execute_queue(self):
         statements = ""
-        while queue:
-            query = queue.pop(0)
-
-            try:
-                stmt_str = query[0]
-                stmt = sql.SQL(stmt_str)
-            except:
-                pass
-            try:
-                parameters = query[1]
-                stmt = stmt.format(*parameters)
-                if type(parameters) == list:
-                    for i in range(len(parameters)):
-                        p = parameters[i]
-                        p = p._wrapped
-                        if (type(parameters[i]) == sql.Identifier):
-                            p = ', '.join(p)
-                        parameters[i] = p
-                stmt_str = stmt_str.format(*parameters)
-            except:
-                pass
-
-            try:
-                literals = query[2]
-                self._cursor.execute(stmt, literals)
-                if type(literals) == list:
-                    for i in range(len(literals)):
-                        l = literals[i]
-                        if (type(parameters[i]) == sql.Literal):
-                            l = l.getquoted()
-                        literals[i] = l
-                    literals = tuple(literals)
-                
-                stmt_str = stmt_str % literals
-            except:
-                pass
-            statements += stmt_str + "\n"
+        while self._queue:
+            query = self._queue.pop(0)
+            
+            stmt_str = self.execute(query)
+            
+            statements += stmt_str
 
         return statements
+
+    def execute(self, query):
+        try:
+            stmt_str = query[0]
+            stmt = sql.SQL(stmt_str)
+        except:
+            pass
+        
+        try:
+            parameters = query[1]
+            stmt = stmt.format(*parameters)
+            if type(parameters) == list:
+                for i in range(len(parameters)):
+                    p = parameters[i]
+                    p = p._wrapped
+                    if (type(parameters[i]) == sql.Identifier):
+                        p = ', '.join(p)
+                    parameters[i] = p
+            stmt_str = stmt_str.format(*parameters)
+        except:
+            pass
+        
+        try:
+            literals = query[2]
+            self._cursor.execute(stmt, literals)
+            if type(literals) == list:
+                for i in range(len(literals)):
+                    l = literals[i]
+                    if (type(parameters[i]) == sql.Literal):
+                        l = l.getquoted()
+                    literals[i] = l
+                literals = tuple(literals)
+            
+            stmt_str = stmt_str % literals
+        except:
+            pass
+
+        return stmt_str + "\n"
 
     def begin(self):
         stmt_str = "BEGIN"
         if not self._transacting:
             self._transacting = True
-        return [stmt_str]
+        return self.execute([stmt_str])
         
     def commit(self):
         stmt_str = "COMMIT"
         if self._transacting:
             self._transacting = False
-        return [stmt_str]
+        return self.execute([stmt_str])
         
     def rollback(self):
         stmt_str = "ROLLBACK"
         if self._transacting:
             self._transacting = False
-        return [stmt_str]
+        return self.execute([stmt_str])
 
-    def display(name, attributes, data):
-        table = TableDisplay()
-        table.title = name
-        table.field_names = attributes.keys()
-        table.add_rows(data)
-        print(table)
+    def display(self, name, attributes, data):
+        table_display = TableDisplay()
+        table_display.title = name
+        table_display.field_names = attributes.keys()
+        table_display.add_rows(data)
+        return table_display
 
     def fetch_all(self):
         rows = []
@@ -136,60 +148,78 @@ class TableEditor:
         return rows[:-1]
 
 def sample(editor):
-    queue = []
+    editor.begin()
 
-    queue.append(editor.begin())
-    print(editor.execute(queue))
-
-    # Clubs
-    
+    # clubs
     editor.set_current_table(0)
-    queue.append(editor.queue(Table.drop))
-    queue.append(editor.queue(Table.create))
-    print(editor.execute(queue))
+    table = editor.get_current_table()
+
+    editor.enqueue(Table.drop)
+    editor.enqueue(Table.create)
+    editor.execute_queue()
     
-    
-    editor.insert({'clubid':1, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':1, 
                 'name':'Women\'s Club Lacrosse',
                 'description':'Free for all to join!', 
                 'info_shared':'11'})
-    editor.insert({'clubid':2, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':2, 
                 'name':'Cloister',
                 'description':'Official Cloister Club Page', 
                 'info_shared':'10'})
-    editor.insert({'clubid':3, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':3, 
                 'name':'Asian-American Students Association',
                 'description':'Welcome!', 
                 'info_shared':'01'})
-    editor.insert({'clubid':4, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':4, 
                 'name':'Cannon',
                 'description':'Cannon Homepage!', 
                 'info_shared':'00'})
-    name, attributes = clubs.selectAll()
-    display(name, attributes)
-    
-    clubmembers = tables[1]
-    clubmembers.drop()
-    clubmembers.create()
-    clubmembers.insert({'clubid':2, 
+    editor.execute_queue()
+
+    editor.enqueue(Table.select_all)
+    editor.execute_queue()
+
+    print(editor.display(table.get_name(), table.get_attributes(), editor.fetch_all()))
+
+    # clubmembers
+    editor.set_current_table(1)
+    table = editor.get_current_table()
+    editor.enqueue(Table.drop)
+    editor.enqueue(Table.create)
+    editor.execute_queue()
+    editor.enqueue(Table.insert,
+                values = {'clubid':2, 
                 'netid':'bm18',
                 'is_moderator':True})
-    clubmembers.insert({'clubid':2, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':2, 
                 'netid':'denisac',
                 'is_moderator':False})
-    clubmembers.insert({'clubid':2, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':2, 
                 'netid':'pmt2',
                 'is_moderator':True})
-    clubmembers.insert({'clubid':3, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':3, 
                 'netid':'evanwang',
                 'is_moderator':False})
-    name, attributes = clubmembers.selectAll()
-    display(name, attributes)
+    editor.execute_queue()
+    editor.enqueue(Table.select_all)
+    editor.execute_queue()
+    print(editor.display(table.get_name(), table.get_attributes(), editor.fetch_all()))
 
-    users = tables[2]
-    users.drop()
-    users.create()
-    users.insert({'netid':'denisac', 
+    # users
+    editor.set_current_table(2)
+    table = editor.get_current_table()
+    editor.enqueue(Table.drop)
+    editor.enqueue(Table.create)
+    editor.execute_queue()
+    editor.enqueue(Table.insert,
+                values = {'netid':'denisac', 
                 'is_admin':False,
                 'first_name':'Drew',
                 'last_name':'Curran', 
@@ -198,7 +228,8 @@ def sample(editor):
                 'instagram':'drewcurran17', 
                 'snapchat':None
                 })
-    users.insert({'netid':'dh37', 
+    editor.enqueue(Table.insert,
+                values = {'netid':'dh37', 
                 'is_admin':True,
                 'first_name':'Daniel',
                 'last_name':'Hu', 
@@ -207,7 +238,8 @@ def sample(editor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    users.insert({'netid':'gleising', 
+    editor.enqueue(Table.insert,
+                values = {'netid':'gleising', 
                 'is_admin':True,
                 'first_name':None,
                 'last_name':None, 
@@ -216,7 +248,8 @@ def sample(editor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    users.insert({'netid':'evanwang', 
+    editor.enqueue(Table.insert,
+                values = {'netid':'evanwang', 
                 'is_admin':True,
                 'first_name':'Evan',
                 'last_name':'Wang', 
@@ -225,7 +258,8 @@ def sample(editor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    users.insert({'netid':'rc38', 
+    editor.enqueue(Table.insert,
+                values = {'netid':'rc38', 
                 'is_admin':True,
                 'first_name':'Richard',
                 'last_name':'Cheng', 
@@ -234,40 +268,57 @@ def sample(editor):
                 'instagram':None, 
                 'snapchat':None
                 })
-    name, attributes = users.selectAll()
-    display(name, attributes)
+    editor.execute_queue()
+    editor.enqueue(Table.select_all)
+    editor.execute_queue()
+    print(editor.display(table.get_name(), table.get_attributes(), editor.fetch_all()))
 
-    creationreqs = tables[3]
-    creationreqs.drop()
-    creationreqs.create()
-    creationreqs.insert({'name':'Club Tennis', 
+    # creationreqs
+    editor.set_current_table(3)
+    table = editor.get_current_table()
+    editor.enqueue(Table.drop)
+    editor.enqueue(Table.create)
+    editor.execute_queue()
+    editor.enqueue(Table.insert,
+                values = {'name':'Club Tennis', 
                 'netid':'denisac',
                 'description':'Official club',
                 'info_shared':'11'
                 })
-    creationreqs.insert({'name':'Basketball Group', 
+    editor.enqueue(Table.insert,
+                values = {'name':'Basketball Group', 
                 'netid':'dh37',
                 'description':'Group to play pickup basketball',
                 'info_shared':'10'
                 })
-    name, attributes = creationreqs.selectAll()
-    display(name, attributes)
+    editor.execute_queue()
+    editor.enqueue(Table.select_all)
+    editor.execute_queue()
+    print(editor.display(table.get_name(), table.get_attributes(), editor.fetch_all()))
     
-    joinreqs = tables[4]
-    joinreqs.drop()
-    joinreqs.create()
-    joinreqs.insert({'clubid':2, 
+    # joinreqs
+    editor.set_current_table(4)
+    table = editor.get_current_table()
+    editor.enqueue(Table.drop)
+    editor.enqueue(Table.create)
+    editor.execute_queue()
+    editor.enqueue(Table.insert,
+                values = {'clubid':2, 
                 'netid':'jasonsun',
                 })
-    joinreqs.insert({'clubid':1, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':1, 
                 'netid':'aleshire',
                 })      
-    joinreqs.insert({'clubid':2, 
+    editor.enqueue(Table.insert,
+                values = {'clubid':2, 
                 'netid':'arobang',
                 })
-    name, attributes = joinreqs.selectAll()
-    display(name, attributes)
-    '''
+    editor.execute_queue()
+    editor.enqueue(Table.select_all)
+    editor.execute_queue()
+    print(editor.display(table.get_name(), table.get_attributes(), editor.fetch_all()))
+
     editor.commit()
 
 def parse_user_input():
