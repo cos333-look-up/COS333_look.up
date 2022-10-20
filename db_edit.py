@@ -6,10 +6,10 @@
 # -----------------------------------------------------------------------
 
 import sys
+import json
 import argparse
 from psycopg2 import sql
 from psycopg2.extensions import AsIs
-import json
 
 # -----------------------------------------------------------------------
 
@@ -154,7 +154,7 @@ class Table:
         return {'stmt_str':stmt_str, 'parameters':parameters}
 
     def freeform(self, **kwargs):
-        stmt_str = kwargs.get('stmt_str')
+        stmt_str = kwargs.get('free_stmt')
         parameters = []
         parameters.append(sql.Identifier(self._name))
         literals = []
@@ -191,7 +191,7 @@ def parse_user_input(commands, tables):
     help = 'values given as arguments for the command')
     parser.add_argument('-i', '--indices', type = json.loads,
     help = 'indices given as arguments for the command')
-    parser.add_argument('-s', '--stmt_str', type = str, nargs = '*',
+    parser.add_argument('-f', '--free-stmt', type = str, nargs = '*',
     help = 'statement given for a free statement')
     parser.add_argument('command_num', type = int,
     help = ' '.join(str(i) + ": " + commands[i].__name__ for i in range(len(commands))))
@@ -200,6 +200,48 @@ def parse_user_input(commands, tables):
     user_input = parser.parse_args()
     return user_input
 
+'''
+Example Command Line
+> py db_edit.py 0 0
+Command: 0 (drop)
+Table: 0 (clubs)
+DROP TABLE IF EXISTS clubs
+
+> py db_edit.py 1 3
+Command: 1 (create)
+Table: 3 (creationreqs)
+CREATE TABLE creationreqs (name TEXT, netid TEXT, description TEXT, info_shared BIT(2))
+
+> py db_edit.py 2 2 -v "{\"netid\":\"denisac\", \"is_admin\":\"False\"}"
+Command: 2 (insert)
+Table: 2 (users)
+Values: {'netid': 'denisac', 'is_admin': 'False'}
+INSERT INTO users (netid, is_admin) VALUES (denisac, False)
+
+> py db_edit.py 3 0 -v {\"clubid\":4} -i {\"info_shared\":\"10\"}
+Command: 3 (update)
+Table: 0 (clubs)
+Values: {'clubid': 4}
+Indices: {'info_shared': '10'}
+UPDATE clubs SET clubid = NULLIF(4, NULL) WHERE info_shared = B10
+
+> py db_edit.py 4 4 -i {\"clubid\":4}
+Command: 4 (delete)
+Table: 4 (joinreqs)
+Indices: {'clubid': 4}
+DELETE FROM joinreqs WHERE clubid = 4
+
+> py db_edit.py 5 1
+Command: 5 (select_all)
+Table: 1 (clubmembers)
+SELECT * FROM clubmembers
+
+> py db_edit.py 6 2 -f SELECT * FROM {}
+Command: 6 (freeform)
+Table: 2 (users)
+Statement: SELECT * FROM {}
+SELECT * FROM users
+'''
 def main():
     commands = [Table.drop, Table.create, Table.insert, Table.update,
     Table.delete, Table.select_all, Table.freeform]
@@ -224,7 +266,7 @@ def main():
     user_input = parse_user_input(commands, tables)
     command_num = user_input.command_num
     table_num = user_input.table_num
-    stmt_str = user_input.stmt_str
+    free_stmt = user_input.free_stmt
     values = user_input.values
     indices = user_input.indices
     if command_num is not None:
@@ -235,62 +277,17 @@ def main():
         table = tables[table_num]
         table_name = table.get_name()
         print("Table: %s (%s)" % (table_num, table_name))
-    if stmt_str is not None:
-        stmt_str = " ".join(stmt_str)
-        print("Statement: %s" % (stmt_str))
+    if free_stmt is not None:
+        free_stmt = " ".join(free_stmt)
+        print("Statement: %s" % (free_stmt))
     if values:
         print("Values: " + str(values))
     if indices:
         print("Indices: " + str(indices))
-
-    '''
-    Example Command Line
-    > py db_edit.py 0 0
-    Command: 0 (drop)
-    Table: 0 (clubs)
-    DROP TABLE IF EXISTS clubs
-
-    > py db_edit.py 1 3
-    Command: 1 (create)
-    Table: 3 (creationreqs)
-    CREATE TABLE creationreqs (name TEXT, netid TEXT, description TEXT, info_shared BIT(2))
-
-    > py db_edit.py 2 2 -v "{\"netid\":\"denisac\", \"is_admin\":\"False\"}"
-    Command: 2 (insert)
-    Table: 2 (users)
-    Values: {'netid': 'denisac', 'is_admin': 'False'}
-    INSERT INTO users (netid, is_admin) VALUES (denisac, False)
-
-    > py db_edit.py 3 0 -v {\"clubid\":4} -i {\"info_shared\":\"10\"}
-    >py db_edit.py 3 0 -v {\"clubid\":4} -i {\"info_shared\":\"10\"}
-    Command: 3 (update)
-    Table: 0 (clubs)
-    Values: {'clubid': 4}
-    Indices: {'info_shared': '10'}
-    UPDATE clubs SET clubid = NULLIF(4, NULL) WHERE info_shared = B10
-
-    > py db_edit.py 4 4 -i {"""clubid""":4}
-    py db_edit.py 4 4 -i {"""clubid""":4}
-    Command: 4 (delete)
-    Table: 4 (joinreqs)
-    Indices: {'clubid': 4}
-    DELETE FROM joinreqs WHERE clubid = 4
-
-    > py db_edit.py 5 1
-    Command: 5 (select_all)
-    Table: 1 (clubmembers)
-    SELECT * FROM clubmembers
-
-    py db_edit.py 6 2 -s SELECT * FROM {}
-    Command: 6 (freeform)
-    Table: 2 (users)
-    Statement: SELECT * FROM {}
-    SELECT * FROM users
-    '''
-
+    
     try:
         action = getattr(table, command.__name__)
-        result = action(stmt_str=stmt_str, values=values, indices=indices)
+        result = action(free_stmt=free_stmt, values=values, indices=indices)
         if 'stmt_str' in result:
             stmt_str = result['stmt_str']
         else:
