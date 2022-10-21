@@ -355,7 +355,8 @@ def main():
                 {})
     tables = [clubs, clubmembers, users, creationreqs, joinreqs]
     
-    execs = ["DROP", "CREATE", "INSERT", "UPDATE", "DELETE", "CHANGE ALL INSTANCES"]
+    execs = {Table.drop:[], Table.create:[], Table.insert:['values'], Table.update:['values','indices'],
+            Table.delete:['indices'], Table.select_all:[]}
 
     command = ""
     env_vars = []
@@ -374,8 +375,8 @@ def main():
         '''
         
         with open(user_input.db_url) as f:
-            os.environ.update(line.strip().split('=', 1) for line in f)
-        db_url = os.getenv('ELEPHANTSQL_URL')
+            env_vars = dict(line.strip().split('=', 1) for line in f)
+        db_url = env_vars['ELEPHANTSQL_URL']
         with psycopg2.connect(db_url) as connection:
             with connection.cursor() as cursor:
                 editor = TableEditor(cursor, tables)
@@ -385,25 +386,53 @@ def main():
                     print("Enter q to quit.")
                     while True:
                         prompt = ""
-                        for i in range(len(tables)):
-                            prompt += str(i) + ": " + tables[i].get_name() + " "
+                        table_names = [t.get_name() for t in tables]
+                        table_indices = range(len(table_names))
+                        for i in table_indices:
+                            prompt += str(i) + ": " + table_names[i] + " "
                         print(prompt)
                         command = input()
                         if (command=='q'):
                             break
-                        table = tables[int(command)]
+                        table_num = int(command)
+                        table = tables[table_num]
                         
                         prompt = ""
-                        for i in range(len(tables)):
-                            prompt += str(i) + ": " + execs[i] + " "
+                        exec_names = list(k.__name__ for k in execs.keys())
+                        exec_indices = range(len(exec_names))
+                        for i in exec_indices:
+                            prompt += str(i) + ": " + exec_names[i] + " "
                         print(prompt)
                         command = input()
                         if (command=='q'):
                             break
-                        exec = execs[int(command)]
+                        exec_num = int(command)
+                        exec = list(execs.keys())[exec_num]
+                        exec_reqs = execs[exec]
 
+                        if 'values' in exec_reqs:
+                            print("Enter values - " + table.get_name() + ": " + ' '.join(attributes for attributes in table.get_attributes()))
+                            command = input()
+                            if (command=='q'):
+                                break
+                            values = dict(command)
+                        else:
+                            values = {}
+
+                        if 'indices' in exec_reqs:
+                            print("Enter indices - " + table.get_name() + ": " + ' '.join(attributes for attributes in table.get_attributes()))
+                            command = input()
+                            if (command=='q'):
+                                break
+                            indices = dict(command)
+                        else:
+                            indices = {}
                         
-
+                        editor.begin()
+                        editor.set_current_table(table_num)
+                        editor.enqueue(exec, values = values, indices = indices)
+                        print(editor.execute_queue())
+                        editor.commit()
 
     except Exception as ex:
         print(ex, file=sys.stderr)
