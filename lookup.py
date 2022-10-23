@@ -108,13 +108,6 @@ def profilecreation():
     return flask.render_template("profilecreation.html")
 
 
-## Profile Update Route
-@app.route("/profileupdate", methods=["GET"])
-def profileupdate():
-    # Only needs to render the update form
-    return flask.render_template("profileupdate.html")
-
-
 ## Profile Posting Route
 @app.route("/profilepost", methods=["GET"])
 def profilepost():
