@@ -142,8 +142,9 @@ def profilepost():
         is_admin,
         photo,
     )
-    # Input the data set attached to the netid into the DB
+    # Input the user into the DB
     ####db.session.add(new_user)
+    ####db.session.commit()
     # Redirect to index for loading the user's new page
     return flask.redirect(flask.url_for("index"))
 
@@ -162,4 +163,9 @@ def grouppost():
     share_phone = flask.request.args.get("share_phone")
     share_snap = flask.request.args.get("share_snap")
     share_insta = flask.request.args.get("share_insta")
-    snapchat = flask.request.args.get("snapchat")
+    new_club = ClubsModel(
+        name, description, share_phone, share_snap, share_insta
+    )
+    # Input the club into the DB
+    ####db.session.add(new_club)
+    ####db.session.commit()
