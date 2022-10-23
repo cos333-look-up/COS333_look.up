@@ -16,7 +16,7 @@ class UsersModel(db.Model):
     netid = db.Column(db.String, primary_key=True)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
-    phone_number = db.Column(db.String)
+    phone = db.Column(db.String)
     instagram = db.Column(db.String)
     snapchat = db.Column(db.String)
     is_admin = db.Column(db.Boolean)
@@ -27,7 +27,7 @@ class UsersModel(db.Model):
         netid,
         first_name,
         last_name,
-        phone_number,
+        phone,
         instagram,
         snapchat,
         is_admin,
@@ -36,7 +36,7 @@ class UsersModel(db.Model):
         self.netid = netid
         self.first_name = first_name
         self.last_name = last_name
-        self.phone_number = phone_number
+        self.phone = phone
         self.instagram = instagram
         self.snapchat = snapchat
         self.is_admin = is_admin
@@ -91,7 +91,7 @@ class ClubsModel(db.Model):
 @app.route("/index", methods=["GET"])
 def index():
     # Setup data model
-    netid = "netid"
+    netid = "denisac"
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
