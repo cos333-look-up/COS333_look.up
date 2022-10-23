@@ -96,11 +96,9 @@ def index():
     # If no data is associated with the user, they are redirected
     # to create a profile
     if user is None:
-        print("Here")
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
-        print("THIS WORKS")
         html_code = flask.render_template("index.html")
         response = flask.make_response(html_code)
         return response
@@ -126,25 +124,26 @@ def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
+    netid = "denisac"
     first_name = flask.request.args.get("first_name")
     last_name = flask.request.args.get("last_name")
-    phone_number = flask.request.args.get("phone_number")
+    phone = flask.request.args.get("phone")
     instagram = flask.request.args.get("instagram")
     snapchat = flask.request.args.get("snapchat")
     is_admin = False
     photo = ""
-    data = {
-        "netid": netid,
-        "is_admin": False,
-        "first_name": fname,
-        "last_name": lname,
-        "phone": phone,
-        "email": email,
-        "instagram": instagram,
-        "snapchat": snapchat,
-    }
+    new_user = UsersModel(
+        netid,
+        first_name,
+        last_name,
+        phone,
+        instagram,
+        snapchat,
+        is_admin,
+        photo,
+    )
     # Input the data set attached to the netid into the DB
-    input_data(data)
+    ####db.session.add(new_user)
     # Redirect to index for loading the user's new page
     return flask.redirect(flask.url_for("index"))
 
