@@ -3,9 +3,84 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 app = flask.Flask(__name__, template_folder=".")
-app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = "postgres://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+class UsersModel(db.Model):
+    __tablename__ = "users"
+
+    netid = db.Column(db.String, primary_key=True)
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
+    phone_number = db.Column(db.String)
+    instagram = db.Column(db.String)
+    snapchat = db.Column(db.String)
+    is_admin = db.Column(db.Boolean)
+    photo = db.Column(db.String)
+
+    def __init__(
+        self,
+        netid,
+        first_name,
+        last_name,
+        phone_number,
+        instagram,
+        snapchat,
+        is_admin,
+        photo,
+    ):
+        self.netid = netid
+        self.first_name = first_name
+        self.last_name = last_name
+        self.phone_number = phone_number
+        self.instagram = instagram
+        self.snapchat = snapchat
+        self.is_admin = is_admin
+        self.photo = photo
+
+    def __repr__(self):
+        return f"<Netid {self.netid}>"
+
+
+class ClubsModel(db.Model):
+    __tablename__ = "clubs"
+
+    club_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+    share_photo = db.Column(db.Boolean)
+    share_snap = db.Column(db.Boolean)
+    share_insta = db.Column(db.Boolean)
+
+    def __init__(
+        self,
+        club_id,
+        name,
+        description,
+        share_photo,
+        share_snap,
+        share_insta,
+    ):
+        self.club_id = club_id
+        self.name = name
+        self.description = description
+        self.share_photo = share_photo
+        self.share_snap = share_snap
+        self.share_insta = share_insta
+
+    def __repr__(self):
+        return f"<Club Name {self.name}>"
+
+
+##class ClubMembersModel(db.Model):
+
+##class ClubJoinRequests(db.Model)
+
+##class ClubCreationRequests(db.Model)
 
 
 ## Figure out how to store this with CAS or something else
@@ -16,8 +91,8 @@ netid = "netid"
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
 def index():
-    ##data = fetch_data(netid)
-    data = fetch_data(netid)
+    # Setup data model
+    user = UsersModel.query(User)
     # If no data is associated with the user, they are redirected
     # to create a profile
     if data is None:
@@ -39,18 +114,26 @@ def profilecreation():
     return flask.render_template("profilecreation.html")
 
 
+## Profile Update Route
+@app.route("/profileupdate", methods=["GET"])
+def profileupdate():
+    # Only needs to render the update form
+    return flask.render_template("profileupdate.html")
+
+
 ## Profile Posting Route
 @app.route("/profilepost", methods=["GET"])
 def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
-    fname = flask.request.args.get("fname")
-    lname = flask.request.args.get("lname")
-    phone = flask.request.args.get("phone")
-    email = flask.request.args.get("email")
+    first_name = flask.request.args.get("first_name")
+    last_name = flask.request.args.get("last_name")
+    phone_number = flask.request.args.get("phone_number")
     instagram = flask.request.args.get("instagram")
     snapchat = flask.request.args.get("snapchat")
+    is_admin = False
+    photo = ""
     data = {
         "netid": netid,
         "is_admin": False,
@@ -65,3 +148,20 @@ def profilepost():
     input_data(data)
     # Redirect to index for loading the user's new page
     return flask.redirect(flask.url_for("index"))
+
+
+## Group Creation Route
+@app.route("/groupcreation", methods=["GET"])
+def groupcreation():
+    # Only needs to render the creation form
+    return flask.render_template("groupcreation.html")
+
+
+@app.route("/grouppost", methods=["GET"])
+def grouppost():
+    name = flask.request.args.get("name")
+    description = flask.request.args.get("description")
+    share_phone = flask.request.args.get("share_phone")
+    share_snap = flask.request.args.get("share_snap")
+    share_insta = flask.request.args.get("share_insta")
+    snapchat = flask.request.args.get("snapchat")
