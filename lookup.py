@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 app = flask.Flask(__name__, template_folder=".")
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgres://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
+] = "postgresql://wglelrtk:p-x6cIocX3JJNBIG0En7UiGVUvUfYFi4@lucky.db.elephantsql.com/wglelrtk"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -84,7 +84,6 @@ class ClubsModel(db.Model):
 
 
 ## Figure out how to store this with CAS or something else
-netid = "netid"
 
 
 ## Index Route
@@ -92,17 +91,17 @@ netid = "netid"
 @app.route("/index", methods=["GET"])
 def index():
     # Setup data model
-    user = UsersModel.query(User)
+    netid = "netid"
+    user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
-    if data is None:
+    if user is None:
         print("Here")
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
-        html_code = flask.render_template(
-            "index.html"  ##, friends=data["friends"], clubs=data["clubs"]
-        )
+        print("THIS WORKS")
+        html_code = flask.render_template("index.html")
         response = flask.make_response(html_code)
         return response
 
