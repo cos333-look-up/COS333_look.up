@@ -1,23 +1,15 @@
 import flask
-import db_edit
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = flask.Flask(__name__, template_folder=".")
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 
 ## Figure out how to store this with CAS or something else
 netid = "netid"
-
-## Fetching data from DB (probably a function in a separate file)
-def fetch_data(netid):
-    # Do something with DB to fetch profile or return None if
-    # no profile exists yet
-    pass
-
-
-## Inputs data into the DB (probably a function in a separate file)
-def input_data(netid, data):
-    # Add a new profile to the db with the associated data
-    # and netid
-    pass
 
 
 ## Index Route
