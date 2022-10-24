@@ -83,7 +83,7 @@ class ClubsModel(db.Model):
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
 def index():
-    # Setup data model
+    # Setup data model with authenticated netid
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
@@ -105,6 +105,11 @@ def index():
 ## Profile Creation Route
 @app.route("/profilecreation", methods=["GET"])
 def profilecreation():
+    # Make sure not user can make a profile with the same netid
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is not None:
+        return flask.redirect("/")
     # Only needs to render the form
     return flask.render_template("profilecreation.html")
 
