@@ -78,10 +78,10 @@ class ClubsModel(db.Model):
 
 ## Index Route
 @app.route("/", methods=["GET"])
-@app.route("/index", methods=["GET", "POST"])
+@app.route("/index", methods=["GET"])
 def index():
     # Setup data model
-    netid = "denisac"
+    netid = "rdondero"
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
@@ -140,7 +140,7 @@ def profilepost():
     db.session.add(new_user)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect(flask.url_for(""))
+    return flask.redirect("/")
 
 
 ## Group Creation Route
@@ -170,4 +170,4 @@ def grouppost():
     db.session.add(new_club)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect(flask.url_for(""))
+    return flask.redirect("/")
