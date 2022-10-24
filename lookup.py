@@ -1,10 +1,13 @@
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import auth
+import os
 
 app = flask.Flask(
     __name__, template_folder="src", static_folder="staticFiles"
 )
+app.secret_key = "234rfvbnjkiytfcdertgbn"
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
@@ -81,7 +84,7 @@ class ClubsModel(db.Model):
 @app.route("/index", methods=["GET"])
 def index():
     # Setup data model
-    netid = "rdondero"
+    netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
@@ -89,6 +92,7 @@ def index():
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
+        print(user.netid)
         print(user.first_name)
         print(user.last_name)
         print(user.instagram)
