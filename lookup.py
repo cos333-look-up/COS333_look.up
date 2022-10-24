@@ -2,7 +2,9 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-app = flask.Flask(__name__, template_folder=".")
+app = flask.Flask(
+    __name__, template_folder="src", static_folder="staticFiles"
+)
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
@@ -76,10 +78,10 @@ class ClubsModel(db.Model):
 
 ## Index Route
 @app.route("/", methods=["GET"])
-@app.route("/index", methods=["GET"])
+@app.route("/index", methods=["GET", "POST"])
 def index():
     # Setup data model
-    netid = "bobdondero"
+    netid = "denisac"
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
@@ -138,7 +140,7 @@ def profilepost():
     db.session.add(new_user)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect(flask.url_for("index"))
+    return flask.redirect(flask.url_for(""))
 
 
 ## Group Creation Route
@@ -168,4 +170,4 @@ def grouppost():
     db.session.add(new_club)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect(flask.url_for("index"))
+    return flask.redirect(flask.url_for(""))
