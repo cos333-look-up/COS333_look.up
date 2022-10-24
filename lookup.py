@@ -76,9 +76,6 @@ class ClubsModel(db.Model):
 ##class CreationRequests(db.Model)
 
 
-## Figure out how to store this with CAS or something else
-
-
 ## Index Route
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
