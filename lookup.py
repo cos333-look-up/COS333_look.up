@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 app = flask.Flask(__name__, template_folder=".")
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql+psycopg2://wglelrtk:p-x6cIocX3JJNBIG0En7UiGVUvUfYFi4@lucky.db.elephantsql.com/wglelrtk"
+] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -121,7 +121,7 @@ def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
-    netid = "denisac"
+    netid = "gleising"
     first_name = flask.request.args.get("first_name")
     last_name = flask.request.args.get("last_name")
     phone = flask.request.args.get("phone")
@@ -140,8 +140,8 @@ def profilepost():
         photo,
     )
     # Input the user into the DB
-    ####db.session.add(new_user)
-    ####db.session.commit()
+    db.session.add(new_user)
+    db.session.commit()
     # Redirect to index for loading the user's new page
     return flask.redirect(flask.url_for("index"))
 
