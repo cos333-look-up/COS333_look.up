@@ -87,10 +87,6 @@ def index():
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
-        print(user.first_name)
-        print(user.last_name)
-        print(user.instagram)
-        print(user.phone)
         html_code = flask.render_template("index.html")
         response = flask.make_response(html_code)
         return response
@@ -154,16 +150,12 @@ def grouppost():
     name = flask.request.form["name"]
     description = flask.request.form["description"]
     info_shared = ""
-    try:
-        share_socials = flask.request.form["share_socials"]
-        info_shared = "1"
-    except:
-        info_shared = "0"
-    try:
-        share_phone = flask.request.form["share_phone"]
-        info_shared = info_shared + "1"
-    except:
-        info_shared = info_shared + "0"
+    info_requested = ["share_socials", "share_phone"]
+    for info in info_requested:
+        if flask.request.form[info] is None:
+            info_shared += "0"
+        else:
+            info_shared += "1"
     new_club = ClubsModel(clubid, name, description, info_shared)
     db.session.add(new_club)
     db.session.commit()
