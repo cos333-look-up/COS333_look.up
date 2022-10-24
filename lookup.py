@@ -49,28 +49,16 @@ class UsersModel(db.Model):
 class ClubsModel(db.Model):
     __tablename__ = "clubs"
 
-    club_id = db.Column(db.Integer, primary_key=True)
+    clubid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     description = db.Column(db.String)
-    share_photo = db.Column(db.Boolean)
-    share_snap = db.Column(db.Boolean)
-    share_insta = db.Column(db.Boolean)
+    info_shared = db.Column(db.String)
 
-    def __init__(
-        self,
-        club_id,
-        name,
-        description,
-        share_photo,
-        share_snap,
-        share_insta,
-    ):
-        self.club_id = club_id
+    def __init__(self, clubid, name, description, info_shared):
+        self.clubid = clubid
         self.name = name
         self.description = description
-        self.share_photo = share_photo
-        self.share_snap = share_snap
-        self.share_insta = share_insta
+        self.info_shared = info_shared
 
     def __repr__(self):
         return f"<Club Name {self.name}>"
@@ -78,9 +66,12 @@ class ClubsModel(db.Model):
 
 ##class ClubMembersModel(db.Model):
 
-##class ClubJoinRequests(db.Model)
+##class JoinRequests(db.Model)
 
-##class ClubCreationRequests(db.Model)
+##class CreationRequests(db.Model)
+
+
+## Figure out how to store this with CAS or something else
 
 
 ## Index Route
@@ -88,7 +79,7 @@ class ClubsModel(db.Model):
 @app.route("/index", methods=["GET"])
 def index():
     # Setup data model
-    netid = "denisac"
+    netid = "bobdondero"
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
@@ -96,6 +87,10 @@ def index():
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
+        print(user.first_name)
+        print(user.last_name)
+        print(user.instagram)
+        print(user.phone)
         html_code = flask.render_template("index.html")
         response = flask.make_response(html_code)
         return response
@@ -116,17 +111,17 @@ def profileupdate():
 
 
 ## Profile Posting Route
-@app.route("/profilepost", methods=["GET"])
+@app.route("/profilepost", methods=["POST"])
 def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
-    netid = "gleising"
-    first_name = flask.request.args.get("first_name")
-    last_name = flask.request.args.get("last_name")
-    phone = flask.request.args.get("phone")
-    instagram = flask.request.args.get("instagram")
-    snapchat = flask.request.args.get("snapchat")
+    netid = flask.request.form["netid"]
+    first_name = flask.request.form["first_name"]
+    last_name = flask.request.form["last_name"]
+    phone = flask.request.form["phone"]
+    instagram = flask.request.form["instagram"]
+    snapchat = flask.request.form["snapchat"]
     is_admin = False
     photo = ""
     new_user = UsersModel(
@@ -153,16 +148,24 @@ def groupcreation():
     return flask.render_template("groupcreation.html")
 
 
-@app.route("/grouppost", methods=["GET"])
+@app.route("/grouppost", methods=["POST"])
 def grouppost():
-    name = flask.request.args.get("name")
-    description = flask.request.args.get("description")
-    share_phone = flask.request.args.get("share_phone")
-    share_snap = flask.request.args.get("share_snap")
-    share_insta = flask.request.args.get("share_insta")
-    new_club = ClubsModel(
-        name, description, share_phone, share_snap, share_insta
-    )
-    # Input the club into the DB
-    ####db.session.add(new_club)
-    ####db.session.commit()
+    clubid = db.session.query(ClubsModel).count() + 1
+    name = flask.request.form["name"]
+    description = flask.request.form["description"]
+    info_shared = ""
+    try:
+        share_socials = flask.request.form["share_socials"]
+        info_shared = "1"
+    except:
+        info_shared = "0"
+    try:
+        share_phone = flask.request.form["share_phone"]
+        info_shared = info_shared + "1"
+    except:
+        info_shared = info_shared + "0"
+    new_club = ClubsModel(clubid, name, description, info_shared)
+    db.session.add(new_club)
+    db.session.commit()
+    # Redirect to index for loading the user's new page
+    return flask.redirect(flask.url_for("index"))
