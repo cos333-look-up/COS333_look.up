@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 import auth
 
 app = flask.Flask(
-    __name__, template_folder="src", static_folder="staticFiles"
+    __name__, template_folder="src", static_folder="static_files"
 )
 app.secret_key = "234rfvbnjkiytfcdertgbn"
 app.config[
