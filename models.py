@@ -1,4 +1,4 @@
-from lookup import db
+from app import db
 
 ## Model for users in the database
 class UsersModel(db.Model):
