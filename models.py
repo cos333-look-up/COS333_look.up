@@ -50,8 +50,11 @@ class ClubsModel(db.Model):
         self.info_shared = info_shared
 
 
+## Model for club member requests in database
 ##class ClubMembersModel(db.Model):
 
+## Model for club join requests in database
 ##class JoinRequests(db.Model)
 
+## Model for club creation requests in database
 ##class CreationRequests(db.Model)
