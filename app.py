@@ -28,11 +28,6 @@ def index():
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
-        print(user.netid)
-        print(user.first_name)
-        print(user.last_name)
-        print(user.instagram)
-        print(user.phone)
         html_code = flask.render_template("index.html", netid=netid)
         response = flask.make_response(html_code)
         return response
