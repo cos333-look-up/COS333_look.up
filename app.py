@@ -33,7 +33,7 @@ def index():
         print(user.last_name)
         print(user.instagram)
         print(user.phone)
-        html_code = flask.render_template("index.html")
+        html_code = flask.render_template("index.html", netid=netid)
         response = flask.make_response(html_code)
         return response
 
@@ -41,6 +41,10 @@ def index():
 ## Profile Creation Route
 @app.route("/profilecreation", methods=["GET"])
 def profilecreation():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is not None:
+        return flask.redirect("/")
     # Only needs to render the form
     return flask.render_template("profilecreation.html")
 
@@ -48,10 +52,6 @@ def profilecreation():
 ## Profile Update Route
 @app.route("/profileupdate", methods=["GET"])
 def profileupdate():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is not None:
-        return flask.redirect("/")
     # Only needs to render the update form
     return flask.render_template("profileupdate.html")
 
