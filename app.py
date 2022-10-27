@@ -94,8 +94,7 @@ def profilepost():
 ## Profile Posting Route
 @app.route("/profileupdatepost", methods=["POST"])
 def profileput():
-    # Get all important pieces of the form and turn them into
-    # a data set
+    # Get all important pieces of the form and change them in the user's info
     ## ADD MORE AS NEEDED
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
