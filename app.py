@@ -49,11 +49,13 @@ def profilecreation():
 def profileupdate():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
-    if user is not None:
-        return flask.redirect("/")
+    if user is None:
+        return flask.redirect(flask.url_for("profilecreation"))
     # Only needs to render the update form
     else:
-        html_code = flask.render_template("index.html", user=user)
+        html_code = flask.render_template(
+            "profileupdate.html", user=user
+        )
         response = flask.make_response(html_code)
         return response
 
@@ -64,7 +66,7 @@ def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
-    netid = flask.request.form["netid"]
+    netid = auth.authenticate()
     first_name = flask.request.form["first_name"]
     last_name = flask.request.form["last_name"]
     phone = flask.request.form["phone"]
@@ -89,9 +91,33 @@ def profilepost():
     return flask.redirect("/")
 
 
+## Profile Posting Route
+@app.route("/profileupdatepost", methods=["POST"])
+def profileput():
+    # Get all important pieces of the form and turn them into
+    # a data set
+    ## ADD MORE AS NEEDED
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    user.first_name = flask.request.form["first_name"]
+    user.last_name = flask.request.form["last_name"]
+    user.phone = flask.request.form["phone"]
+    user.instagram = flask.request.form["instagram"]
+    user.snapchat = flask.request.form["snapchat"]
+    # Input the user into the DB
+    db.session.add(user)
+    db.session.commit()
+    # Redirect to index for loading the user's new page
+    return flask.redirect("/")
+
+
 ## Group Creation Route
 @app.route("/groupcreation", methods=["GET"])
 def groupcreation():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profilecreation"))
     # Only needs to render the creation form
     return flask.render_template("groupcreation.html")
 
