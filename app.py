@@ -47,8 +47,15 @@ def profilecreation():
 ## Profile Update Route
 @app.route("/profileupdate", methods=["GET"])
 def profileupdate():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is not None:
+        return flask.redirect("/")
     # Only needs to render the update form
-    return flask.render_template("profileupdate.html")
+    else:
+        html_code = flask.render_template("index.html", user=user)
+        response = flask.make_response(html_code)
+        return response
 
 
 ## Profile Posting Route
@@ -91,7 +98,12 @@ def groupcreation():
 
 @app.route("/grouppost", methods=["POST"])
 def grouppost():
-    clubid = db.session.query(ClubsModel).count() + 1
+    recent_club = (
+        db.session.query(ClubsModel)
+        .order_by(ClubsModel.clubid.desc())
+        .first()
+    )
+    clubid = recent_club.clubid + 1
     name = flask.request.form["name"]
     description = flask.request.form["description"]
     info_shared = ""
