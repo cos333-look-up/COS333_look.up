@@ -28,33 +28,33 @@ def index():
         return flask.redirect(flask.url_for("profilecreation"))
     # Otherwise index is loaded with their clubs
     else:
-        html_code = flask.render_template("index.html", netid=netid)
+        html_code = flask.render_template("index.html", user=user)
         response = flask.make_response(html_code)
         return response
 
 
 ## Profile Creation Route
-@app.route("/profilecreation", methods=["GET"])
+@app.route("/profile-create", methods=["GET"])
 def profilecreation():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is not None:
         return flask.redirect("/")
     # Only needs to render the form
-    return flask.render_template("profilecreation.html")
+    return flask.render_template("profile-create.html")
 
 
 ## Profile Update Route
-@app.route("/profileupdate", methods=["GET"])
+@app.route("/profile-update", methods=["GET"])
 def profileupdate():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
+        return flask.redirect(flask.url_for("profile-create"))
     # Only needs to render the update form
     else:
         html_code = flask.render_template(
-            "profileupdate.html", user=user
+            "profile-update.html", user=user
         )
         response = flask.make_response(html_code)
         return response
@@ -111,14 +111,14 @@ def profileput():
 
 
 ## Group Creation Route
-@app.route("/groupcreation", methods=["GET"])
+@app.route("/group-create", methods=["GET"])
 def groupcreation():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
+        return flask.redirect(flask.url_for("profile-create"))
     # Only needs to render the creation form
-    return flask.render_template("groupcreation.html")
+    return flask.render_template("group-create.html")
 
 
 @app.route("/grouppost", methods=["POST"])
