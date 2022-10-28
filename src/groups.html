@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href='/static_files/output.css' />
+    <!-- import fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    </style>
+</head>
+
+<body>
+    {% if clubs|length != 0: %}
+    {% for club in clubs: %}
+    <div>{{club.name}}</div>
+    {% endfor %}
+    {% endif %}
+</body>
+
+<script src="/static_files/index.js"></script>
+
+</html>

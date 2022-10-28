@@ -51,7 +51,18 @@ class ClubsModel(db.Model):
 
 
 ## Model for club member requests in database
-##class ClubMembersModel(db.Model):
+class ClubMembersModel(db.Model):
+    __tablename__ = "clubmembers"
+
+    netid = db.Column(db.String, primary_key=True)
+    clubid = db.Column(db.Integer)
+    is_moderator = db.Column(db.Boolean)
+
+    def __init__(self, clubid, netid, is_moderator):
+        self.clubid = clubid
+        self.netid = netid
+        self.is_moderator = is_moderator
+
 
 ## Model for club join requests in database
 ##class JoinRequests(db.Model)

@@ -12,7 +12,7 @@ app.config[
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-from models import UsersModel, ClubsModel
+from models import ClubMembersModel, UsersModel, ClubsModel
 
 
 ## Index Route
@@ -147,3 +147,25 @@ def grouppost():
     db.session.commit()
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
+
+
+@app.route("/groups", methods=["GET"])
+def groups():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    group_member = (
+        db.session.query(ClubMembersModel.clubid)
+        .filter(ClubMembersModel.netid == netid)
+        .all()
+    )
+    clubs = []
+    for club in group_member:
+        clubs.append(db.session.get(ClubsModel, club.clubid))
+    else:
+        html_code = flask.render_template(
+            "groups.html", user=user, clubs=clubs
+        )
+        response = flask.make_response(html_code)
+        return response
