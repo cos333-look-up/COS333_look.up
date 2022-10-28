@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href='/static_files/styles.css' />
-  <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="stylesheet" href='output.css' />
   <!-- import fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -14,7 +13,7 @@
 
 <body class="bg-slate-50 reveal">
   <div class="flex items-center justify-between px-7 py-6 bg-white">
-    <svg onclick="openMenu()" class="w-7 cursor-pointer" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50"
+    <svg onclick="toggleMenu()" class="w-7 cursor-pointer" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50"
       height="50" viewBox="0 0 50 50" style=" fill:#000000;">
       <path d="M 0 9 L 0 11 L 50 11 L 50 9 Z M 0 24 L 0 26 L 50 26 L 50 24 Z M 0 39 L 0 41 L 50 41 L 50 39 Z"></path>
     </svg>
@@ -22,7 +21,7 @@
       <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
     </h1>
     <div>
-      <span class="dot cursor-pointer"></span><span>{{netid}}</span>
+      <span class="dot cursor-pointer">{{netid}}</span>
     </div>
   </div>
 
@@ -78,9 +77,29 @@
 
 </body>
 
-<!-- <div class="menu bg-white absolute top-0 h-full w-5/6 ">
-</div> -->
+<!-- dark filter -->
+<div id="filter" onclick="toggleMenu()"class="hidden absolute top-0 h-full w-full z-10 opacity-50 bg-black">
+</div> 
+ 
+<!-- navigation menu -->
+<div id="menu" class="hidden bg-white absolute top-0 h-full w-5/6 z-20
+px-8 py-10">
+  <div class="flex items-center mb-10">
+    <span class="dot !h-16 !w-16 cursor-pointer mr-5"></span>
+    <span class="text-2xl font-medium">Richard<br>Cheng</span>
+  </div>
 
-<script src="/static_files/index.js"></script>
+  <div class="mb-10">
+    <div class="menu-item" onclick="window.location='http://www.google.com'">Update Profile</div>
+    <div class="menu-item" onclick="window.location='http://www.google.com'">My Groups</div>
+    <div class="menu-item" onclick="window.location='http://www.google.com'">Search Groups</div>
+  </div>
+
+  <div class="flex w-fit px-7 py-5 bg-amber-400 rounded-3xl">
+    <span class="font-medium text-xl">Create a Group</span>
+  </div>
+</div>
+
+<script src="index.js"></script>
 
 </html>
