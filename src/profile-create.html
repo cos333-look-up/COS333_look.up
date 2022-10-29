@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href='output.css' />
+  <link rel="stylesheet" href='/static_files/output.css' />
   <!-- import fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -12,79 +12,99 @@
 </head>
 
 <body class="bg-slate-50">
-  <div id="name-form" class="flex h-screen justify-center items-center">
-    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
-      <div class="text-2xl text-center header-font">
-        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-      </div>
+  <form id="FormId" action="/profilepost" method="post">
+    <div id="first-name-form" class="flex h-screen justify-center items-center">
+      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="first_name">
+        <div class="text-2xl text-center header-font">
+          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+        </div>
 
-      <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <span>Let's set up your profile.<br>What is your name?</span>
-      </div>
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+          <span>Let's update your profile.<br>What is your first name?</span>
+        </div>
 
-      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="first_name" name="first_name">
 
-      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-        <div class="font-medium text-lg" onclick="profileNext('name-form', 'phone-form')">Next</div>
-      </div>
-    </div>
-  </div>
-
-  <div id="phone-form" class="hidden flex h-screen justify-center items-center">
-    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
-      <div class="text-2xl text-center header-font">
-        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-      </div>
-
-      <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <span>What is your phone number?</span>
-      </div>
-
-      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
-
-      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-        <div class="font-medium text-lg" onclick="profileNext('phone-form','ig-form')">Next</div>
+        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+          <div class="font-medium text-lg" onclick="profileNext('first-name-form', 'last-name-form')">Next</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div id="ig-form" class="hidden flex h-screen justify-center items-center">
-    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
-      <div class="text-2xl text-center header-font">
-        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-      </div>
+    <div id="last-name-form" class="hidden flex h-screen justify-center items-center">
+      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="last_name">
+        <div class="text-2xl text-center header-font">
+          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+        </div>
 
-      <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <span>What's your Instagram handle?</span>
-      </div>
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+          <span>Let's update your profile.<br>What is your last name?</span>
+        </div>
 
-      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="last_name" name="last_name">
 
-      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-        <div class="font-medium text-lg" onclick="profileNext('ig-form','snap-form')">Next</div>
-      </div>
-    </div>
-  </div>
-
-  <div id="snap-form" class="hidden flex h-screen justify-center items-center">
-    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
-      <div class="text-2xl text-center header-font">
-        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-      </div>
-
-      <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <span>What's your Snapchat handle?</span>
-      </div>
-
-      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
-
-      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-        <div class="font-medium text-lg" onclick="profileNext('snap-form', null)">Next</div>
+        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+          <div class="font-medium text-lg" onclick="profileNext('last-name-form', 'phone-form')">Next</div>
+        </div>
       </div>
     </div>
-  </div>
+
+    <div id="phone-form" class="hidden flex h-screen justify-center items-center">
+      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="phone">
+        <div class="text-2xl text-center header-font">
+          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+        </div>
+
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+          <span>What is your phone number?</span>
+        </div>
+
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="phone" name="phone">
+
+        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+          <div class="font-medium text-lg" onclick="profileNext('phone-form','ig-form')">Next</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ig-form" class="hidden flex h-screen justify-center items-center">
+      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="instagram">
+        <div class="text-2xl text-center header-font">
+          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+        </div>
+
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+          <span>What's your Instagram handle?</span>
+        </div>
+
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="instagram" name="instagram">
+
+        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+          <div class="font-medium text-lg" onclick="profileNext('ig-form','snap-form')">Next</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="snap-form" class="hidden flex h-screen justify-center items-center">
+      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="snapchat">
+        <div class="text-2xl text-center header-font">
+          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+        </div>
+
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+          <span>What's your Snapchat handle?</span>
+        </div>
+
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="snapchat" name="snapchat">
+
+        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+          <div class="font-medium text-lg" onclick="document.getElementById('FormId').submit();">Next</div>
+        </div>
+      </div>
+    </div>
+  </form>
 </body>
 
-<script src="index.js"></script>
+<script src="/static_files/index.js"></script>
 
-</html> 
+</html>
