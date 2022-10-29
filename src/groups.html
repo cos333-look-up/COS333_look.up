@@ -11,10 +11,15 @@
     </style>
 </head>
 
-<body>
+<body class="bg-slate-50">
+    <div class="text-2xl text-center header-font">
+        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+    </div>
     {% if clubs|length != 0: %}
     {% for club in clubs: %}
-    <div>{{club.name}}</div>
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <span>{{club.name}}</span>
+    </div>
     {% endfor %}
     {% endif %}
 </body>

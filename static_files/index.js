@@ -9,7 +9,7 @@ function toggleMenu() {
 
 function profileNext(currId, nextId) {
   if (!nextId) {
-    window.location="index.html"
+    window.location = "index"
     return
   }
   let currForm = document.getElementById(currId)
