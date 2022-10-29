@@ -4,19 +4,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="stylesheet" href='output.css' />
   <!-- import fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
   </style>
 </head>
 
-<body>
-  <div>
-    <span class="text-4xl">This is group create page.</span>
+<body class="bg-slate-50">
+  <div id="name-form" class="flex h-screen justify-center items-center">
+    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
+      <div class="text-2xl text-center header-font">
+        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+      </div>
+
+      <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <span>Let's create your group.<br>What is your group name?</span>
+      </div>
+
+      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
+
+      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div class="font-medium text-lg" onclick="profileNext('name-form', 'descrip-form')">Next</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="descrip-form" class="hidden flex h-screen justify-center items-center">
+    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
+      <div class="text-2xl text-center header-font">
+        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+      </div>
+
+      <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <span>Group description:</span>
+      </div>
+
+      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
+
+      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div class="font-medium text-lg" onclick="profileNext('descrip-form','admin-form')">Next</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="admin-form" class="hidden flex h-screen justify-center items-center">
+    <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
+      <div class="text-2xl text-center header-font">
+        <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+      </div>
+
+      <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <span>Who are your other admin?</span>
+      </div>
+
+      <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
+
+      <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div class="font-medium text-lg" onclick="profileNext('admin-form', null)">Next</div>
+      </div>
+    </div>
   </div>
 </body>
 
-<script src="/static_files/index.js"></script>
+<script src="index.js"></script>
 
-</html>
+</html> 
