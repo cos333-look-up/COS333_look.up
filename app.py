@@ -214,6 +214,9 @@ def memberinfo():
     member = db.session.get(ClubMembersModel, (netid, clubid))
     if member is None:
         return flask.redirect("/")
+    member = db.session.get(ClubMembersModel, (member_netid, clubid))
+    if member is None:
+        return flask.redirect("/")
     member_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
         "member-info.html", member_user=member_user
