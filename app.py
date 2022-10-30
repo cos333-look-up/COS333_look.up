@@ -1,12 +1,14 @@
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import auth
+
+##import auth
+##import os
 
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-app.secret_key = "234rfvbnjkiytfcdertgbn"
+##app.secret_key = os.environ["APP_SECRET_KEY"]
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
@@ -20,7 +22,7 @@ from models import ClubMembersModel, UsersModel, ClubsModel
 @app.route("/index", methods=["GET"])
 def index():
     # Setup data model
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     # If no data is associated with the user, they are redirected
     # to create a profile
@@ -36,7 +38,7 @@ def index():
 ## Profile Creation Route
 @app.route("/profile-create", methods=["GET"])
 def profilecreation():
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     if user is not None:
         return flask.redirect("/")
@@ -47,7 +49,7 @@ def profilecreation():
 ## Profile Update Route
 @app.route("/profile-update", methods=["GET"])
 def profileupdate():
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
@@ -66,7 +68,7 @@ def profilepost():
     # Get all important pieces of the form and turn them into
     # a data set
     ## ADD MORE AS NEEDED
-    netid = auth.authenticate()
+    netid = "rc38"
     first_name = flask.request.form["first_name"]
     last_name = flask.request.form["last_name"]
     phone = flask.request.form["phone"]
@@ -96,7 +98,7 @@ def profilepost():
 def profileput():
     # Get all important pieces of the form and change them in the user's info
     ## ADD MORE AS NEEDED
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     user.first_name = flask.request.form["first_name"]
     user.last_name = flask.request.form["last_name"]
@@ -113,7 +115,7 @@ def profileput():
 ## Group Creation Route
 @app.route("/group-create", methods=["GET"])
 def groupcreation():
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
@@ -123,7 +125,7 @@ def groupcreation():
 
 @app.route("/grouppost", methods=["POST"])
 def grouppost():
-    netid = auth.authenticate()
+    netid = "rc38"
     recent_club = (
         db.session.query(ClubsModel)
         .order_by(ClubsModel.clubid.desc())
@@ -154,7 +156,7 @@ def grouppost():
 
 @app.route("/groups", methods=["GET"])
 def groups():
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
@@ -177,7 +179,7 @@ def groups():
 
 @app.route("/group-members", methods=["GET"])
 def groupmembers():
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
@@ -205,7 +207,7 @@ def groupmembers():
 
 @app.route("/member-info", methods=["GET"])
 def memberinfo():
-    netid = auth.authenticate()
+    netid = "rc38"
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
@@ -219,7 +221,7 @@ def memberinfo():
         return flask.redirect("/")
     member_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
-        "member-info.html", member_user=member_user
+        "member-info.html", member_user=member_user, user=user
     )
     response = flask.make_response(html_code)
     return response
