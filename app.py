@@ -123,6 +123,7 @@ def groupcreation():
 
 @app.route("/grouppost", methods=["POST"])
 def grouppost():
+    netid = auth.authenticate()
     recent_club = (
         db.session.query(ClubsModel)
         .order_by(ClubsModel.clubid.desc())
@@ -143,7 +144,9 @@ def grouppost():
     except:
         info_shared = info_shared + "0"
     new_club = ClubsModel(clubid, name, description, info_shared)
+    new_club_member = ClubMembersModel(clubid, netid, True)
     db.session.add(new_club)
+    db.session.add(new_club_member)
     db.session.commit()
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
@@ -156,16 +159,64 @@ def groups():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     group_member = (
-        db.session.query(ClubMembersModel.clubid)
+        db.session.query(ClubMembersModel.clubid, ClubsModel.name)
         .filter(ClubMembersModel.netid == netid)
+        .filter(ClubsModel.clubid == ClubMembersModel.clubid)
+        .order_by(ClubsModel.name)
         .all()
     )
     clubs = []
     for club in group_member:
         clubs.append(db.session.get(ClubsModel, club.clubid))
-    else:
-        html_code = flask.render_template(
-            "groups.html", user=user, clubs=clubs
-        )
-        response = flask.make_response(html_code)
-        return response
+    html_code = flask.render_template(
+        "groups.html", user=user, clubs=clubs
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/group-members", methods=["GET"])
+def groupmembers():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member is None:
+        return flask.redirect("/")
+    group_member = (
+        db.session.query(ClubMembersModel.netid, UsersModel.netid)
+        .filter(ClubMembersModel.clubid == clubid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+    print(group_member)
+    members = []
+    for member in group_member:
+        members.append(db.session.get(UsersModel, member.netid))
+    html_code = flask.render_template(
+        "group-members.html", user=user, members=members, clubid=clubid
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/member-info", methods=["GET"])
+def memberinfo():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    member_netid = flask.request.args.get("netid")
+    clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member is None:
+        return flask.redirect("/")
+    member_user = db.session.get(UsersModel, member_netid)
+    html_code = flask.render_template(
+        "member-info.html", member_user=member_user
+    )
+    response = flask.make_response(html_code)
+    return response

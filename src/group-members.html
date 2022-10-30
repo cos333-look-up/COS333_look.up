@@ -15,10 +15,10 @@
     <div class="text-2xl text-center header-font">
         <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
     </div>
-    {% if clubs|length != 0: %}
-    {% for club in clubs: %}
+    {% if members|length != 0: %}
+    {% for member in members: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
+        <a href="/member-info?netid={{member.netid}}&clubid={{clubid}}">{{member.first_name}} {{member.last_name}}</a>
     </div>
     {% endfor %}
     {% endif %}

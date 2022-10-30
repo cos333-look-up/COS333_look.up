@@ -73,27 +73,24 @@ class ClubMembersModel(db.Model):
 class JoinRequests(db.Model):
     __tablename__ = "joinreqs"
 
-    joinid = db.Column(db.Integer, primary_key=True)
-    clubid = db.Column(db.Integer)
-    netid = db.Column(db.Integer)
+    netid = db.Column(db.String, primary_key=True)
+    clubid = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self, joinid, clubid, netid):
-        self.joinid = joinid
+    def __init__(self, clubid, netid):
         self.clubid = clubid
         self.netid = netid
+
 
 ## Model for club creation requests in database
 class CreationRequests(db.Model):
     __tablename__ = "creationreqs"
 
-    createid = db.Column(db.Integer, primary_key=True)
+    netid = db.Column(db.String, primary_key=True)
     name = db.Column(db.String)
-    netid = db.Column(db.Integer)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
 
-    def __init__(self, createid, name, netid, description, info_shared):
-        self.createid = createid
+    def __init__(self, name, netid, description, info_shared):
         self.name = name
         self.netid = netid
         self.description = description
