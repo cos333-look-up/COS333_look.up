@@ -1,7 +1,7 @@
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+import cloudinary
 ##import auth
 ##import os
 
@@ -14,6 +14,11 @@ app.config[
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+cloudinary.config( 
+  cloud_name = "dqv7e2cyi", 
+  api_key = "244334546783172", 
+  api_secret = "P-0gM5gXEWHk7UCcQr1xIav3pQg" 
+)
 from models import ClubMembersModel, UsersModel, ClubsModel
 
 
