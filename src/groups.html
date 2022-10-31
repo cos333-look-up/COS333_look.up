@@ -22,7 +22,7 @@
             <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
         </h1>
         <div>
-            <span class="dot cursor-pointer">{{user.netid}}</span>
+            <img class="dot border cursor-pointer" src="{{user.photo}}">
         </div>
     </div>
     {% if clubs|length != 0: %}
@@ -41,7 +41,7 @@
 <div id="menu" class="hidden bg-white absolute top-0 h-full w-5/6 z-20
 px-8 py-10">
     <div class="flex items-center mb-10">
-        <span class="dot !h-16 !w-16 cursor-pointer mr-5"></span>
+        <img class="dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}">
         <span class="text-2xl font-medium">{{user.first_name}}<br>{{user.last_name}}</span>
     </div>
 
