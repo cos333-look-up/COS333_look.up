@@ -25,16 +25,16 @@
             <img class="dot border cursor-pointer" src="{{user.photo}}">
         </div>
     </div>
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/group-invite-request?clubid={{clubid}}">Invite</a>
-    </div>
-    {% if members|length != 0: %}
-    {% for member in members: %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/member-info?netid={{member.netid}}&clubid={{clubid}}">{{member.first_name}} {{member.last_name}}</a>
-    </div>
-    {% endfor %}
-    {% endif %}
+    <form action="/groupinvitepost?clubid={{club.clubid}}" method="post">
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <span>Enter the NetID of the invited user: </span>
+        </div>
+
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="netid" name="netid">
+        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+            <div class="font-medium text-lg" onclick="submit">Submit</div>
+        </div>
+    </form>
 </body>
 
 <div id="filter" onclick="toggleMenu()" class="hidden absolute top-0 h-full w-full z-10 opacity-50 bg-black">

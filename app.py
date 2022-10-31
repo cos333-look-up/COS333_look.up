@@ -286,6 +286,45 @@ def groupjoinpost():
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
 
+@app.route("/group-invite-request", methods=["GET"])
+def groupinviterequest():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    non_group_members = (
+        db.session.query(ClubMembersModel.netid, UsersModel.netid)
+        .filter(ClubMembersModel.clubid != clubid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+    if non_group_members is None:
+        return flask.redirect("/group-members")
+    club = db.session.get(ClubsModel, clubid)
+    if club is None:
+        return flask.redirect("/")
+    html_code = flask.render_template(
+        "group-invite-request.html", user=user, club=club
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/groupinvitepost", methods=["POST"])
+def groupinvitepost():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    request = JoinRequests(netid, clubid)
+    db.session.add(request)
+    db.session.commit()
+    # Redirect to index for loading the user's new page
+    return flask.redirect("/")
+
 
 @app.route("/member-info", methods=["GET"])
 def memberinfo():
