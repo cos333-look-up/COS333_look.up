@@ -322,7 +322,7 @@ def groupinvitepost():
     netid = flask.request.form["netid"]
     user = db.session.get(UsersModel, netid)
     if user is None:
-        return flask.redirect(flask.url_for("group-invite-request"))
+        return flask.redirect("/")
     request = JoinRequests(netid, clubid)
     db.session.add(request)
     db.session.commit()
