@@ -125,20 +125,7 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
-<<<<<<< HEAD
-
-    # # photo upload code
-    # upload_response = cloudinary.uploader.upload(flask.request.files['photo'])
-    # user.photo = upload_response['url']
-    # print(user.photo)
-
-    # delete photos when profile photos are changed
-    cloudinary.uploader.destroy(user.photo)
     user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['url']
-
-=======
-    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
->>>>>>> parent of 74737df (Update app.py)
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
