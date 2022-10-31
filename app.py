@@ -84,17 +84,7 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
-<<<<<<< HEAD
-    photo = None
-    try:
-        photo = cloudinary.uploader.upload(
-            flask.request.files["photo"]
-        )["public_id"]
-    except:
-        pass
-=======
-    photo = cloudinary.uploader.upload(flask.request.files["photo"])['secure_url']
->>>>>>> parent of 74737df (Update app.py)
+    photo = cloudinary.uploader.upload(flask.request.files["photo"])['url']
     is_admin = False
     new_user = UsersModel(
         netid,
