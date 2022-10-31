@@ -114,7 +114,7 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
-    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['secure_url']
+    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
