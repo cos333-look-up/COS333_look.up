@@ -1,3 +1,4 @@
+from sys import prefix
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -89,14 +90,13 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
-    photo = None
     try:
         photo = cloudinary.uploader.upload(
             flask.request.files["photo"], 
             public_id = netid
             )["url"]
     except:
-        photo = None
+        photo = cloudinary.api.resource(prefix="/Additional Files/", public_id="default_user_icon")
     is_admin = False
     new_user = UsersModel(
         netid,
@@ -128,14 +128,17 @@ def profileput():
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
     try:
-        cloudinary.api.resources(public_ids=[netid])
-        cloudinary.uploader.destroy(user.photo)
+        photo = cloudinary.api.resource(netid)
+        cloudinary.uploader.destroy(photo)
+    except:
+        pass
+    try:
         user.photo = cloudinary.uploader.upload(
             flask.request.files["photo"], 
             public_id = netid
             )["url"]
     except:
-        user.photo = None
+        user.photo = cloudinary.api.resource("/Additional%20Files/default_user_icon")['url']
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
