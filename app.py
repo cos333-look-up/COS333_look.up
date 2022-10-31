@@ -1,3 +1,11 @@
+import cloudinary
+cloudinary.config(
+cloud_name = "dqv7e2cyi",
+api_key = "244334546783172",
+api_secret = "P-0gM5gXEWHk7UCcQr1xIav3pQg",
+)
+import cloudinary.uploader
+import cloudinary.api
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -72,8 +80,11 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
+    photo = flask.request.files['photo']
+    print('test')
+    print(photo)
+    cloudinary.uploader.upload(photo)
     is_admin = False
-    photo = ""
     new_user = UsersModel(
         netid,
         first_name,
@@ -82,7 +93,6 @@ def profilepost():
         instagram,
         snapchat,
         is_admin,
-        photo,
     )
     # Input the user into the DB
     db.session.add(new_user)
@@ -103,6 +113,13 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
+
+    # photo upload code
+    upload_response = cloudinary.uploader.upload(flask.request.files['photo'])
+    user.photo = upload_response['url']
+    print(user.photo)
+
+    # delete photos when profile photos are changed
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
