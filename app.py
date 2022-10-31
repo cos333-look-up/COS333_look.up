@@ -161,17 +161,13 @@ def grouppost():
     clubid = recent_club.clubid + 1
     name = flask.request.form["name"]
     description = flask.request.form["description"]
+    attributes = ["share_socials", "share_phone"]
     info_shared = ""
-    try:
-        share_socials = flask.request.form["share_socials"]
-        info_shared = "1"
-    except:
-        info_shared = "0"
-    try:
-        share_phone = flask.request.form["share_phone"]
-        info_shared = info_shared + "1"
-    except:
-        info_shared = info_shared + "0"
+    for attribute in attributes:
+        if flask.request.form.get(attribute) is None:
+            info_shared += "0"
+        else:
+            info_shared += "1"
     new_club = ClubsModel(clubid, name, description, info_shared)
     new_club_member = ClubMembersModel(clubid, netid, True)
     db.session.add(new_club)
