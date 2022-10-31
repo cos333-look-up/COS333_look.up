@@ -76,9 +76,9 @@ class JoinRequests(db.Model):
     netid = db.Column(db.String, primary_key=True)
     clubid = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self, clubid, netid):
-        self.clubid = clubid
+    def __init__(self, netid, clubid):
         self.netid = netid
+        self.clubid = clubid
 
 
 ## Model for club creation requests in database

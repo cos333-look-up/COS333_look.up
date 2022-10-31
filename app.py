@@ -24,7 +24,12 @@ app.config[
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from models import ClubMembersModel, UsersModel, ClubsModel
+from models import (
+    ClubMembersModel,
+    UsersModel,
+    ClubsModel,
+    JoinRequests,
+)
 
 
 ## Index Route
@@ -84,7 +89,9 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
-    photo = cloudinary.uploader.upload(flask.request.files["photo"])['url']
+    photo = cloudinary.uploader.upload(flask.request.files["photo"])[
+        "url"
+    ]
     is_admin = False
     new_user = UsersModel(
         netid,
@@ -115,7 +122,9 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
-    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['url']
+    user.photo = cloudinary.uploader.upload(
+        flask.request.files["photo"]
+    )["url"]
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
@@ -188,6 +197,27 @@ def groups():
     return response
 
 
+@app.route("/groups-search", methods=["GET"])
+def groupssearch():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    group_member = (
+        db.session.query(ClubsModel.clubid, ClubsModel.name)
+        .order_by(ClubsModel.name)
+        .all()
+    )
+    clubs = []
+    for club in group_member:
+        clubs.append(db.session.get(ClubsModel, club.clubid))
+    html_code = flask.render_template(
+        "groups-search.html", user=user, clubs=clubs
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
 @app.route("/group-members", methods=["GET"])
 def groupmembers():
     netid = auth.authenticate()
@@ -197,7 +227,7 @@ def groupmembers():
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
     if member is None:
-        return flask.redirect("/")
+        return flask.redirect("/group-join-request?clubid=" + clubid)
     group_member = (
         db.session.query(ClubMembersModel.netid, UsersModel.netid)
         .filter(ClubMembersModel.clubid == clubid)
@@ -214,6 +244,37 @@ def groupmembers():
     )
     response = flask.make_response(html_code)
     return response
+
+
+@app.route("/group-join-request", methods=["GET"])
+def groupjoinrequest():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    club = db.session.get(ClubsModel, clubid)
+    if club is None:
+        return flask.redirect("/")
+    html_code = flask.render_template(
+        "group-join-request.html", user=user, club=club
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/groupjoinpost", methods=["POST"])
+def groupjoinpost():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    request = JoinRequests(netid, clubid)
+    db.session.add(request)
+    db.session.commit()
+    # Redirect to index for loading the user's new page
+    return flask.redirect("/")
 
 
 @app.route("/member-info", methods=["GET"])
