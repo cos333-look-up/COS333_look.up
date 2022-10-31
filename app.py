@@ -10,16 +10,27 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import auth
+import cloudinary
+cloudinary.config(
+  cloud_name = "dqv7e2cyi",
+  api_key = "244334546783172",
+  api_secret = "P-0gM5gXEWHk7UCcQr1xIav3pQg"
+)
+import cloudinary.uploader
+import cloudinary.api
 
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-app.secret_key = "234rfvbnjkiytfcdertgbn"
+with open('secret_key') as f:
+    env_vars = dict(line.strip().split('=', 1) for line in f)
+app.secret_key = env_vars['APP_SECRET_KEY']
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 from models import ClubMembersModel, UsersModel, ClubsModel
 
 
@@ -120,6 +131,8 @@ def profileput():
     print(user.photo)
 
     # delete photos when profile photos are changed
+    # cloudinary.uploader.destroy(user.photo)
+    # user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
@@ -236,7 +249,7 @@ def memberinfo():
         return flask.redirect("/")
     member_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
-        "member-info.html", member_user=member_user
+        "member-info.html", member_user=member_user, user=user
     )
     response = flask.make_response(html_code)
     return response

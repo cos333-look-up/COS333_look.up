@@ -12,7 +12,7 @@
 </head>
 
 <body class="bg-slate-50">
-  <form id="FormId" action="/profilepost" method="post">
+  <form id="FormId" action="/profilepost" method="post" enctype="multipart/form-data">
     <div id="first-name-form" class="flex h-screen justify-center items-center">
       <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="first_name">
         <div class="text-2xl text-center header-font">
@@ -98,7 +98,7 @@
         <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="snapchat" name="snapchat">
 
         <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-          <div class="font-medium text-lg" onclick="profileNext('snap-form', 'photo-form')">Next</div>
+          <div class="font-medium text-lg" onclick="profileNext('snap-form','photo-form')">Next</div>
         </div>
       </div>
     </div>
@@ -110,10 +110,11 @@
         </div>
 
         <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Upload a photo</span>
+          <span>What's your Profile photo?</span>
         </div>
 
-        <input type="file" id="photo" name="photo" accept="image/*">
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="file" accept="image/*" id="photo" name="photo"
+          value="{{user.photo}}">
 
         <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg" onclick="document.getElementById('FormId').submit();">Next</div>

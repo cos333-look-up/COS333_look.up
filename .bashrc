@@ -1,0 +1,1 @@
+export APP_SECRET_KEY="test1234567890"
