@@ -41,12 +41,8 @@ class ClubsModel(db.Model):
     clubid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     description = db.Column(db.String)
-    # Possible to make info_shared a collection of boolean columns?
-    # Would help for modularity and readability
-    # Could keep it as a string - would need to encode/decode
-    # Could have a boolean var for each attribute also
-    # More generally, store information everywhere as a list or as separate vars?
     info_shared = db.Column(db.String)
+    #info_shared = db.Column(db.LargeBinary)
 
     def __init__(self, clubid, name, description, info_shared):
         self.clubid = clubid
@@ -89,9 +85,12 @@ class CreationRequests(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
+    #info_shared = db.Column(db.LargeBinary)
 
     def __init__(self, name, netid, description, info_shared):
         self.name = name
         self.netid = netid
         self.description = description
+        # for key, value in info_shared.items():
+        #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
