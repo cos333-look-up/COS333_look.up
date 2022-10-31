@@ -132,7 +132,7 @@ def profileput():
 
     # delete photos when profile photos are changed
     cloudinary.uploader.destroy(user.photo)
-    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
+    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['url']
 
     # Input the user into the DB
     db.session.add(user)
