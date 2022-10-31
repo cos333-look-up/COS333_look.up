@@ -86,7 +86,7 @@ class CreationRequests(db.Model):
     __tablename__ = "creationreqs"
 
     netid = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String, primary_key=True)
+    name = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
 
