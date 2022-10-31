@@ -312,13 +312,14 @@ def groupinviterequest():
     return response
 
 
-@app.route("/groupinvitepost", methods=["POST"])
+@app.route("/groupinvitepost", methods=["GET", "POST"])
 def groupinvitepost():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    netid = flask.request.form["netid"]
     request = JoinRequests(netid, clubid)
     db.session.add(request)
     db.session.commit()
