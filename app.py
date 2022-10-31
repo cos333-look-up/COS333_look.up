@@ -91,9 +91,7 @@ def profilepost():
     snapchat = flask.request.form["snapchat"]
     photo = None
     try:
-        photo = cloudinary.uploader.upload(
-            flask.request.files["photo"]
-        )["url"]
+        photo = cloudinary.uploader.upload(flask.request.files["photo"])["public_id"]
     except:
         photo = None
     is_admin = False
@@ -105,7 +103,7 @@ def profilepost():
         instagram,
         snapchat,
         is_admin,
-        photo,
+        photo
     )
     # Input the user into the DB
     db.session.add(new_user)
@@ -127,9 +125,8 @@ def profileput():
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
     try:
-        user.photo = cloudinary.uploader.upload(
-            flask.request.files["photo"]
-        )["url"]
+        cloudinary.uploader.destroy(user.photo)
+        user.photo = cloudinary.uploader.upload(flask.request.files["photo"])["public_id"]
     except:
         user.photo = None
     # Input the user into the DB
@@ -230,7 +227,7 @@ def groupmembers():
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
     if member is None:
-        return flask.redirect("/group-join-request?clubid=" + clubid)
+        return flask.redirect("/group-join-request?clubid=" + str(clubid))
     group_member = (
         db.session.query(ClubMembersModel.netid, UsersModel.netid)
         .filter(ClubMembersModel.clubid == clubid)

@@ -22,7 +22,7 @@ class UsersModel(db.Model):
         instagram,
         snapchat,
         is_admin,
-        photo,
+        photo
     ):
         self.netid = netid
         self.first_name = first_name
@@ -32,7 +32,6 @@ class UsersModel(db.Model):
         self.snapchat = snapchat
         self.is_admin = is_admin
         self.photo = photo
-
 
 ## Models for clubs in the database
 class ClubsModel(db.Model):
