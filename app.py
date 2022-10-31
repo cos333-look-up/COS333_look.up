@@ -83,7 +83,7 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
-    photo = cloudinary.uploader.upload(flask.request.files["photo"])['secure_url']
+    photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
     is_admin = False
     photo = ""
     new_user = UsersModel(
@@ -115,6 +115,7 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
+    cloudinary.uploader.destroy(user.photo)
     user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
     # Input the user into the DB
     db.session.add(user)
