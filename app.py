@@ -2,6 +2,7 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import auth
+import os
 import cloudinary
 cloudinary.config( 
   cloud_name = "dqv7e2cyi", 
