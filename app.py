@@ -2,7 +2,14 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import auth
-import os
+import cloudinary
+cloudinary.config( 
+  cloud_name = "dqv7e2cyi", 
+  api_key = "244334546783172", 
+  api_secret = "P-0gM5gXEWHk7UCcQr1xIav3pQg" 
+)
+import cloudinary.uploader
+import cloudinary.api
 
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
@@ -13,6 +20,7 @@ app.config[
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 from models import ClubMembersModel, UsersModel, ClubsModel
 
 
@@ -73,6 +81,7 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
+    photo = flask.request.form["photo"]
     is_admin = False
     photo = ""
     new_user = UsersModel(
@@ -104,6 +113,7 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
+    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['secure_url']
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
