@@ -1,20 +1,13 @@
-import cloudinary
-cloudinary.config(
-cloud_name = "dqv7e2cyi",
-api_key = "244334546783172",
-api_secret = "P-0gM5gXEWHk7UCcQr1xIav3pQg",
-)
-import cloudinary.uploader
-import cloudinary.api
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import auth
 import cloudinary
+
 cloudinary.config(
-  cloud_name = "dqv7e2cyi",
-  api_key = "244334546783172",
-  api_secret = "P-0gM5gXEWHk7UCcQr1xIav3pQg"
+    cloud_name="dqv7e2cyi",
+    api_key="244334546783172",
+    api_secret="P-0gM5gXEWHk7UCcQr1xIav3pQg",
 )
 import cloudinary.uploader
 import cloudinary.api
@@ -22,9 +15,9 @@ import cloudinary.api
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-with open('secret_key') as f:
-    env_vars = dict(line.strip().split('=', 1) for line in f)
-app.secret_key = env_vars['APP_SECRET_KEY']
+with open("secret_key") as f:
+    env_vars = dict(line.strip().split("=", 1) for line in f)
+app.secret_key = env_vars["APP_SECRET_KEY"]
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
@@ -91,10 +84,13 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
-    photo = flask.request.files['photo']
-    print('test')
-    print(photo)
-    cloudinary.uploader.upload(photo)
+    photo = None
+    try:
+        photo = cloudinary.uploader.upload(
+            flask.request.files["photo"]
+        )["public_id"]
+    except:
+        pass
     is_admin = False
     new_user = UsersModel(
         netid,
@@ -104,6 +100,7 @@ def profilepost():
         instagram,
         snapchat,
         is_admin,
+        photo,
     )
     # Input the user into the DB
     db.session.add(new_user)
@@ -124,16 +121,14 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
-
-    # # photo upload code
-    # upload_response = cloudinary.uploader.upload(flask.request.files['photo'])
-    # user.photo = upload_response['url']
-    # print(user.photo)
-
-    # delete photos when profile photos are changed
-    cloudinary.uploader.destroy(user.photo)
-    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
-
+    if user.photo is not None:
+        cloudinary.uploader.destroy(user.photo)
+    try:
+        user.photo = cloudinary.uploader.upload(
+            flask.request.files["photo"]
+        )["public_id"]
+    except:
+        user.photo = None
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
