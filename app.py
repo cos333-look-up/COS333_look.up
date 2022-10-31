@@ -91,7 +91,10 @@ def profilepost():
     snapchat = flask.request.form["snapchat"]
     photo = None
     try:
-        photo = cloudinary.uploader.upload(flask.request.files["photo"])["public_id"]
+        photo = cloudinary.uploader.upload(
+            flask.request.files["photo"], 
+            public_id = netid
+            )["url"]
     except:
         photo = None
     is_admin = False
@@ -125,8 +128,12 @@ def profileput():
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
     try:
+        cloudinary.api.resources(public_ids=[netid])
         cloudinary.uploader.destroy(user.photo)
-        user.photo = cloudinary.uploader.upload(flask.request.files["photo"])["public_id"]
+        user.photo = cloudinary.uploader.upload(
+            flask.request.files["photo"], 
+            public_id = netid
+            )["url"]
     except:
         user.photo = None
     # Input the user into the DB
