@@ -84,6 +84,7 @@ def profilepost():
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
+<<<<<<< HEAD
     photo = None
     try:
         photo = cloudinary.uploader.upload(
@@ -91,6 +92,9 @@ def profilepost():
         )["public_id"]
     except:
         pass
+=======
+    photo = cloudinary.uploader.upload(flask.request.files["photo"])['secure_url']
+>>>>>>> parent of 74737df (Update app.py)
     is_admin = False
     new_user = UsersModel(
         netid,
@@ -121,6 +125,7 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
+<<<<<<< HEAD
 
     # # photo upload code
     # upload_response = cloudinary.uploader.upload(flask.request.files['photo'])
@@ -131,6 +136,9 @@ def profileput():
     cloudinary.uploader.destroy(user.photo)
     user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['url']
 
+=======
+    user.photo = cloudinary.uploader.upload(flask.request.files["photo"])['public_id']
+>>>>>>> parent of 74737df (Update app.py)
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
