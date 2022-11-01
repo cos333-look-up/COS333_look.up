@@ -271,6 +271,9 @@ def groupjoinrequest():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member is not None:
+        return flask.redirect("/group-members?clubid=" + str(clubid))
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
@@ -334,11 +337,11 @@ def groupinvitepost():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
-    netid = flask.request.form["netid"]
-    user = db.session.get(UsersModel, netid)
-    if user is None:
+    invite_netid = flask.request.form["netid"]
+    invite_user = db.session.get(UsersModel, netid)
+    if invite_user is None:
         return flask.redirect("/")
-    request = JoinRequests(netid, clubid)
+    request = JoinRequests(invite_netid, clubid)
     db.session.add(request)
     db.session.commit()
     # Redirect to index for loading the user's new page
