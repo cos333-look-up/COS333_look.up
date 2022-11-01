@@ -302,6 +302,9 @@ def groupinviterequest():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member.is_moderator is False:
+        return flask.redirect("groups")
     non_group_members = (
         db.session.query(ClubMembersModel.netid, UsersModel.netid)
         .filter(ClubMembersModel.clubid != clubid)
