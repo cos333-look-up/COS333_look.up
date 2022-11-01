@@ -288,6 +288,9 @@ def groupjoinpost():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    active_request = db.session.get(JoinRequests, (netid, clubid))
+    if active_request is not None:
+        return flask.redirect("/")
     request = JoinRequests(netid, clubid)
     db.session.add(request)
     db.session.commit()
