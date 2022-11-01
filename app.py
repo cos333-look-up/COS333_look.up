@@ -92,11 +92,12 @@ def profilepost():
     snapchat = flask.request.form["snapchat"]
     try:
         photo = cloudinary.uploader.upload(
-            flask.request.files["photo"], 
-            public_id = netid
-            )["url"]
+            flask.request.files["photo"], public_id=netid
+        )["url"]
     except:
-        photo = cloudinary.api.resource(prefix="/Additional Files/", public_id="default_user_icon")
+        photo = cloudinary.api.resource(
+            prefix="/Additional Files/", public_id="default_user_icon"
+        )
     is_admin = False
     new_user = UsersModel(
         netid,
@@ -106,7 +107,7 @@ def profilepost():
         instagram,
         snapchat,
         is_admin,
-        photo
+        photo,
     )
     # Input the user into the DB
     db.session.add(new_user)
@@ -134,11 +135,12 @@ def profileput():
         pass
     try:
         user.photo = cloudinary.uploader.upload(
-            flask.request.files["photo"], 
-            public_id = netid
-            )["url"]
+            flask.request.files["photo"], public_id=netid
+        )["url"]
     except:
-        user.photo = cloudinary.api.resource("/Additional%20Files/default_user_icon")['url']
+        user.photo = cloudinary.api.resource(
+            "/Additional%20Files/default_user_icon"
+        )["url"]
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
@@ -237,7 +239,9 @@ def groupmembers():
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
     if member is None:
-        return flask.redirect("/group-join-request?clubid=" + str(clubid))
+        return flask.redirect(
+            "/group-join-request?clubid=" + str(clubid)
+        )
     group_member = (
         db.session.query(ClubMembersModel.netid, UsersModel.netid)
         .filter(ClubMembersModel.clubid == clubid)
@@ -250,7 +254,11 @@ def groupmembers():
     for member in group_member:
         members.append(db.session.get(UsersModel, member.netid))
     html_code = flask.render_template(
-        "group-members.html", user=user, members=members, clubid=clubid
+        "group-members.html",
+        user=user,
+        members=members,
+        clubid=clubid,
+        clubmember=member,
     )
     response = flask.make_response(html_code)
     return response
@@ -285,6 +293,7 @@ def groupjoinpost():
     db.session.commit()
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
+
 
 @app.route("/group-invite-request", methods=["GET"])
 def groupinviterequest():

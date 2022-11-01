@@ -25,9 +25,11 @@
             <img class="dot border cursor-pointer" src="{{user.photo}}">
         </div>
     </div>
+    {% if clubmember.is_moderator == True %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         <a href="/group-invite-request?clubid={{clubid}}">Invite</a>
     </div>
+    {% endif %}
     {% if members|length != 0: %}
     {% for member in members: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
