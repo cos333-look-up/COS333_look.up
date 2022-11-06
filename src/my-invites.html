@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href='/static_files/output.css' />
+  <!-- import fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+  </style>
+</head>
+
+<body class="bg-slate-50 reveal">
+  {% include "header.html" %}
+  {% for invite in invites: %}
+  <div class="text-lg text-center mt-5 font-medium text-slate-800">
+      <div>You were invited to {{ invite[0] }} by {{ invite[1] }}</div>
+  </div>
+  {% endfor %}
+</body>
+
+{% include "navigation-menu.html" %}
+
+<script src="/static_files/index.js"></script>
+
+</html>
