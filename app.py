@@ -225,7 +225,8 @@ def groupresults():
     search = flask.request.args.get("search")
     clubs = []
     for club in group_member:
-        if search in club.name:
+        name = club.name
+        if search.lower() in name.lower():
             clubs.append(db.session.get(ClubsModel, club.clubid))
     html_code = flask.render_template(
         "group-search-results.html", clubs=clubs
@@ -259,7 +260,8 @@ def groupsearchresults():
     search = flask.request.args.get("search")
     clubs = []
     for club in group_member:
-        if search in club.name:
+        name = club.name
+        if search.lower() in name.lower():
             clubs.append(db.session.get(ClubsModel, club.clubid))
     html_code = flask.render_template(
         "group-search-results.html", clubs=clubs
