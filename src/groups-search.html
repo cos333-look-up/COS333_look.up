@@ -11,16 +11,44 @@
     </style>
 </head>
 
-<body class="bg-slate-50">
+<body class="bg-slate-50" onload="getResults()">
     {% include "header.html" %}
+    <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="search" name="search">
 
-    {% if clubs|length != 0: %}
-    {% for club in clubs: %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
-    </div>
-    {% endfor %}
-    {% endif %}
+    <div id="results"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        'use strict';
+
+        function handleResponse(response) {
+            $('#results').html(response);
+        }
+
+        var request = null;
+
+        function getResults() {
+            let search = $('#search').val();
+            search = encodeURIComponent(search);
+            let url = '/group-search-results?search=' + search;
+            if (request != null)
+                request.abort();
+            request = $.ajax(
+                {
+                    type: 'GET',
+                    url: url,
+                    success: handleResponse
+                }
+            );
+        }
+
+        function setup() {
+            $('#search').on('input', getResults);
+        }
+
+        $('document').ready(setup);
+    </script>
 </body>
 
 {% include "navigation-menu.html" %}

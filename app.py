@@ -209,8 +209,44 @@ def groups():
     return response
 
 
+@app.route("/group-results", methods=["GET"])
+def groupresults():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    group_member = (
+        db.session.query(ClubMembersModel.clubid, ClubsModel.name)
+        .filter(ClubMembersModel.netid == netid)
+        .filter(ClubsModel.clubid == ClubMembersModel.clubid)
+        .order_by(ClubsModel.name)
+        .all()
+    )
+    search = flask.request.args.get("search")
+    clubs = []
+    for club in group_member:
+        if search in club.name:
+            clubs.append(db.session.get(ClubsModel, club.clubid))
+    html_code = flask.render_template(
+        "group-search-results.html", clubs=clubs
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
 @app.route("/groups-search", methods=["GET"])
 def groupssearch():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    html_code = flask.render_template("groups-search.html", user=user)
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/group-search-results", methods=["GET"])
+def groupsearchresults():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is None:
@@ -220,11 +256,13 @@ def groupssearch():
         .order_by(ClubsModel.name)
         .all()
     )
+    search = flask.request.args.get("search")
     clubs = []
     for club in group_member:
-        clubs.append(db.session.get(ClubsModel, club.clubid))
+        if search in club.name:
+            clubs.append(db.session.get(ClubsModel, club.clubid))
     html_code = flask.render_template(
-        "groups-search.html", user=user, clubs=clubs
+        "group-search-results.html", clubs=clubs
     )
     response = flask.make_response(html_code)
     return response
@@ -347,6 +385,7 @@ def groupinvitepost():
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
 
+
 @app.route("/user-info", methods=["GET"])
 def userinfo():
     netid = auth.authenticate()
@@ -356,9 +395,13 @@ def userinfo():
     requested_netid = flask.request.args.get("netid")
     found = False
     for (clubid,) in db.session.query(ClubsModel.clubid).all():
-        user_is_member = db.session.get(ClubMembersModel, (netid, clubid))
+        user_is_member = db.session.get(
+            ClubMembersModel, (netid, clubid)
+        )
         if user_is_member is not None:
-            requested_is_member = db.session.get(ClubMembersModel, (requested_netid, clubid))
+            requested_is_member = db.session.get(
+                ClubMembersModel, (requested_netid, clubid)
+            )
             if requested_is_member is not None:
                 found = True
     if not found:
