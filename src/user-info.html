@@ -13,7 +13,7 @@
 
 <body class="bg-slate-50">
     {% include "header.html" %}
-    
+
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         <img class="dot cursor-pointer !h-20 !w-20 border" src="{{requested_user.photo}}">
     </div>
@@ -29,6 +29,12 @@
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         Snapchat: {{requested_user.snapchat}}
     </div>
+
+    {% if requested_user == user %}
+    <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div class="font-medium text-lg" onclick="window.location='profile-update'">Edit Profile</div>
+    </div>
+    {% endif %}
 
 
 </body>
