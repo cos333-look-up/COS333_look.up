@@ -1,0 +1,23 @@
+<!-- dark filter -->
+<div id="filter" onclick="toggleMenu()" class="hidden absolute top-0 h-full w-full z-10 opacity-50 bg-black">
+</div>
+
+<!-- navigation menu -->
+<div id="menu" class="hidden bg-white absolute top-0 h-full w-5/6 z-20
+px-8 py-10">
+  <div class="flex items-center mb-10">
+    <img class="dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}">
+    <span class="text-2xl font-medium">{{user.first_name}}<br>{{user.last_name}}</span>
+  </div>
+
+  <div class="mb-10">
+    <div class="menu-item" onclick="window.location='/'">Home</div>
+    <div class="menu-item" onclick="window.location='profile-update'">Update Profile</div>
+    <div class="menu-item" onclick="window.location='groups'">My Groups</div>
+    <div class="menu-item" onclick="window.location='groups-search'">Search Groups</div>
+  </div>
+
+  <div class="flex w-fit px-7 py-5 bg-amber-400 rounded-3xl">
+    <span class="font-medium text-xl" onclick="window.location='group-create'">Create a Group</span>
+  </div>
+</div>
