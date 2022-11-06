@@ -347,22 +347,23 @@ def groupinvitepost():
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
 
-
-@app.route("/member-info", methods=["GET"])
-def memberinfo():
+@app.route("/user-info", methods=["GET"])
+def userinfo():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
-    member_netid = flask.request.args.get("netid")
-    clubid = flask.request.args.get("clubid")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
-    if member is None:
+    requested_netid = flask.request.args.get("netid")
+    found = False
+    for (clubid,) in db.session.query(ClubsModel.clubid).all():
+        user_is_member = db.session.get(ClubMembersModel, (netid, clubid))
+        if user_is_member is not None:
+            requested_is_member = db.session.get(ClubMembersModel, (requested_netid, clubid))
+            if requested_is_member is not None:
+                found = True
+    if not found:
         return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (member_netid, clubid))
-    if member is None:
-        return flask.redirect("/")
-    member_user = db.session.get(UsersModel, member_netid)
+    member_user = db.session.get(UsersModel, requested_netid)
     html_code = flask.render_template(
         "member-info.html", member_user=member_user, user=user
     )
