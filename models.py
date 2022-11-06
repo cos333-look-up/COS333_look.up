@@ -22,7 +22,7 @@ class UsersModel(db.Model):
         instagram,
         snapchat,
         is_admin,
-        photo
+        photo,
     ):
         self.netid = netid
         self.first_name = first_name
@@ -33,6 +33,7 @@ class UsersModel(db.Model):
         self.is_admin = is_admin
         self.photo = photo
 
+
 ## Models for clubs in the database
 class ClubsModel(db.Model):
     __tablename__ = "clubs"
@@ -41,7 +42,7 @@ class ClubsModel(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
-    #info_shared = db.Column(db.LargeBinary)
+    # info_shared = db.Column(db.LargeBinary)
 
     def __init__(self, clubid, name, description, info_shared):
         self.clubid = clubid
@@ -76,6 +77,18 @@ class JoinRequests(db.Model):
         self.clubid = clubid
 
 
+## Model for club invite requests in database
+class InviteRequests(db.Model):
+    __tablename__ = "invitereqs"
+
+    netid = db.Column(db.String, primary_key=True)
+    clubid = db.Column(db.Integer, primary_key=True)
+
+    def __init__(self, netid, clubid):
+        self.netid = netid
+        self.clubid = clubid
+
+
 ## Model for club creation requests in database
 class CreationRequests(db.Model):
     __tablename__ = "creationreqs"
@@ -84,7 +97,7 @@ class CreationRequests(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
-    #info_shared = db.Column(db.LargeBinary)
+    # info_shared = db.Column(db.LargeBinary)
 
     def __init__(self, name, netid, description, info_shared):
         self.name = name

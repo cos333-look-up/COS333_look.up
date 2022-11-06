@@ -30,6 +30,7 @@ from models import (
     UsersModel,
     ClubsModel,
     JoinRequests,
+    InviteRequests,
 )
 
 
@@ -311,6 +312,8 @@ def grouprequests():
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
     clubmember = db.session.get(ClubMembersModel, (netid, clubid))
+    if clubmember is None:
+        return flask.redirect("groups")
     if clubmember.is_moderator is False:
         return flask.redirect("groups")
     requests = (
@@ -411,7 +414,7 @@ def groupinvitepost():
     invite_user = db.session.get(UsersModel, netid)
     if invite_user is None:
         return flask.redirect("/")
-    request = JoinRequests(invite_netid, clubid)
+    request = InviteRequests(invite_netid, clubid)
     db.session.add(request)
     db.session.commit()
     # Redirect to index for loading the user's new page

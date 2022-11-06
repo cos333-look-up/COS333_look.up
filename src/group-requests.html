@@ -17,7 +17,7 @@
     {% if students|length != 0: %}
     {% for student in students: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}">{{student.first_name}} {{student.last_name}}
+        <a href="/user-info?netid={{clubmember.netid}}&clubid={{clubid}}">{{student.first_name}} {{student.last_name}}
     </div>
     {% endfor %}
     {% endif %}
