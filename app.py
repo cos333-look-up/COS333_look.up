@@ -224,13 +224,26 @@ def groupresults():
         .all()
     )
     search = flask.request.args.get("search")
-    clubs = []
+    adminclubs = []
+    nonadminclubs = []
     for club in group_member:
         name = club.name
         if search.lower() in name.lower():
-            clubs.append(db.session.get(ClubsModel, club.clubid))
+            clubmember = db.session.get(
+                ClubMembersModel, (netid, club.clubid)
+            )
+            if clubmember.is_moderator:
+                adminclubs.append(
+                    db.session.get(ClubsModel, club.clubid)
+                )
+            else:
+                nonadminclubs.append(
+                    db.session.get(ClubsModel, club.clubid)
+                )
     html_code = flask.render_template(
-        "group-search-results.html", clubs=clubs
+        "group-results.html",
+        adminclubs=adminclubs,
+        nonadminclubs=nonadminclubs,
     )
     response = flask.make_response(html_code)
     return response

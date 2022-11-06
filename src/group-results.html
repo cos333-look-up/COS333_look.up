@@ -1,0 +1,14 @@
+{% if adminclubs|length != 0: %}
+{% for club in adminclubs: %}
+<div class="text-lg text-center mt-5 font-medium text-slate-800">
+    <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
+</div>
+{% endfor %}
+{% endif %}
+{% if nonadminclubs|length != 0: %}
+{% for club in nonadminclubs: %}
+<div class="text-lg text-center mt-5 font-medium text-slate-800">
+    <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
+</div>
+{% endfor %}
+{% endif %}
