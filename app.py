@@ -324,7 +324,7 @@ def grouprequests():
     for student in requests:
         students.append(db.session.get(UsersModel, student.netid))
     html_code = flask.render_template(
-        "group-members.html",
+        "group-requests.html",
         user=user,
         students=students,
         clubid=clubid,
