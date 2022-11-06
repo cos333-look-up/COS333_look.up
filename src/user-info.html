@@ -20,15 +20,19 @@
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         Name: {{requested_user.first_name}} {{requested_user.last_name}}
     </div>
+    {% if club.info_shared[1] == "1" %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         Phone: {{requested_user.phone}}
     </div>
+    {% endif %}
+    {% if club.info_shared[0] == "1" %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         Instagram: {{requested_user.instagram}}
     </div>
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         Snapchat: {{requested_user.snapchat}}
     </div>
+    {% endif %}
 
     {% if requested_user == user %}
     <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">

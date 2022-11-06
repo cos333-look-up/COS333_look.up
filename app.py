@@ -394,23 +394,21 @@ def userinfo():
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
-    requested_netid = flask.request.args.get("netid")
-    found = False
-    for (clubid,) in db.session.query(ClubsModel.clubid).all():
-        user_is_member = db.session.get(
-            ClubMembersModel, (netid, clubid)
-        )
-        if user_is_member is not None:
-            requested_is_member = db.session.get(
-                ClubMembersModel, (requested_netid, clubid)
-            )
-            if requested_is_member is not None:
-                found = True
-    if not found:
+    member_netid = flask.request.args.get("netid")
+    clubid = flask.request.args.get("clubid")
+    club = db.session.get(ClubsModel, clubid)
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member is None:
         return flask.redirect("/")
-    requested_user = db.session.get(UsersModel, requested_netid)
+    member = db.session.get(ClubMembersModel, (member_netid, clubid))
+    if member is None:
+        return flask.redirect("/")
+    requested_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
-        "user-info.html", requested_user=requested_user, user=user
+        "user-info.html",
+        requested_user=requested_user,
+        user=user,
+        club=club,
     )
     response = flask.make_response(html_code)
     return response
