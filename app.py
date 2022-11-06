@@ -277,8 +277,8 @@ def groupmembers():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
-    if member is None:
+    clubmember = db.session.get(ClubMembersModel, (netid, clubid))
+    if clubmember is None:
         return flask.redirect(
             "/group-join-request?clubid=" + str(clubid)
         )
@@ -289,7 +289,6 @@ def groupmembers():
         .order_by(UsersModel.first_name)
         .all()
     )
-    print(group_member)
     members = []
     for member in group_member:
         members.append(db.session.get(UsersModel, member.netid))
@@ -298,7 +297,38 @@ def groupmembers():
         user=user,
         members=members,
         clubid=clubid,
-        clubmember=member,
+        clubmember=clubmember,
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/group-requests", methods=["GET"])
+def grouprequests():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    clubmember = db.session.get(ClubMembersModel, (netid, clubid))
+    if clubmember.is_moderator is False:
+        return flask.redirect("groups")
+    requests = (
+        db.session.query(JoinRequests.netid, UsersModel.netid)
+        .filter(JoinRequests.clubid == clubid)
+        .filter(UsersModel.netid == JoinRequests.netid)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+    students = []
+    for student in requests:
+        students.append(db.session.get(UsersModel, student.netid))
+    html_code = flask.render_template(
+        "group-members.html",
+        user=user,
+        students=students,
+        clubid=clubid,
+        clubmember=clubmember,
     )
     response = flask.make_response(html_code)
     return response
