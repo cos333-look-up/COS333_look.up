@@ -33,7 +33,7 @@
     {% if members|length != 0: %}
     {% for member in members: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/member-info?netid={{member.netid}}">{{member.first_name}} {{member.last_name}}</a>
+        <a href="/user-info?netid={{member.netid}}">{{member.first_name}} {{member.last_name}}</a>
     </div>
     {% endfor %}
     {% endif %}

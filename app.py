@@ -363,9 +363,9 @@ def userinfo():
                 found = True
     if not found:
         return flask.redirect("/")
-    member_user = db.session.get(UsersModel, requested_netid)
+    requested_user = db.session.get(UsersModel, requested_netid)
     html_code = flask.render_template(
-        "member-info.html", member_user=member_user, user=user
+        "user-info.html", requested_user=requested_user, user=user
     )
     response = flask.make_response(html_code)
     return response
