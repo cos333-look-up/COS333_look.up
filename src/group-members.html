@@ -22,8 +22,15 @@
         <a href="/group-requests?clubid={{clubid}}">Join Requests</a>
     </div>
     {% endif %}
-    {% if members|length != 0: %}
-    {% for member in members: %}
+    {% if adminmembers|length != 0: %}
+    {% for member in adminmembers: %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}">{{member.first_name}} {{member.last_name}}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if nonadminmembers|length != 0: %}
+    {% for member in nonadminmembers: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}">{{member.first_name}} {{member.last_name}}
     </div>

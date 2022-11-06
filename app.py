@@ -303,13 +303,25 @@ def groupmembers():
         .order_by(UsersModel.first_name)
         .all()
     )
-    members = []
+    adminmembers = []
+    nonadminmembers = []
     for member in group_member:
-        members.append(db.session.get(UsersModel, member.netid))
+        current = db.session.get(
+            ClubMembersModel, (member.netid, clubid)
+        )
+        if current.is_moderator:
+            adminmembers.append(
+                db.session.get(UsersModel, member.netid)
+            )
+        else:
+            nonadminmembers.append(
+                db.session.get(UsersModel, member.netid)
+            )
     html_code = flask.render_template(
         "group-members.html",
         user=user,
-        members=members,
+        adminmembers=adminmembers,
+        nonadminmembers=nonadminmembers,
         clubid=clubid,
         clubmember=clubmember,
     )
