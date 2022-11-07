@@ -96,7 +96,7 @@ def profilepost():
             flask.request.files["photo"], public_id=netid
         )["url"]
     except:
-        cloudinary.api.resource(
+        photo = cloudinary.api.resource(
             "/Additional%20Files/default_user_icon"
         )["url"]
     is_admin = False
