@@ -1,14 +1,51 @@
 {% if adminclubs|length != 0: %}
-{% for club in adminclubs: %}
-<div class="text-lg text-center mt-5 font-medium text-slate-800">
-    <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
+<div class="text-lg px-7">
+    Admin Privileges
 </div>
-{% endfor %}
+<div class="browse">
+    {% for club in adminclubs: %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <div class="info-box mx-20">
+            <div class="dot"></div> 
+            <br>
+
+            <div class="text-base">
+                {{club.name}}
+            </div>
+
+            <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                <a href="/group-members?clubid={{club.clubid}}" class="text-sm">See More</a>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endif %}
+
 {% if nonadminclubs|length != 0: %}
-{% for club in nonadminclubs: %}
-<div class="text-lg text-center mt-5 font-medium text-slate-800">
-    <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
+<div class="text-lg px-7">
+    Member Privileges
 </div>
-{% endfor %}
+<div class="browse">
+    {% for club in nonadminclubs: %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <div class="info-box">
+            <div class="dot"></div> 
+            <br>
+
+            <div class="text-base">
+                {{club.name}}
+            </div>
+
+            <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                <a href="/group-members?clubid={{club.clubid}}" class="text-sm">See More</a>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endif %}
