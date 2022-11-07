@@ -116,6 +116,7 @@ def profilepost():
     # Redirect to index for loading the user's new page
     return flask.redirect("/")
 
+
 ## Profile Posting Route (update profile)
 @app.route("/profileupdatepost", methods=["POST"])
 def profileput():
@@ -167,7 +168,9 @@ def grouppost():
         .order_by(ClubsModel.clubid.desc())
         .first()
     )
-    clubid = recent_club.clubid + 1
+    clubid = 0
+    if recent_club is not None:
+        clubid = recent_club.clubid + 1
     name = flask.request.form["name"]
     description = flask.request.form["description"]
     attributes = ["share_socials", "share_phone"]
@@ -444,7 +447,8 @@ def groupinvitepost():
         db.session.query(InviteRequests.invitee_netid)
         .filter(InviteRequests.invitee_netid == invite_netid)
         .filter(InviteRequests.clubid == clubid)
-        .first() is not None
+        .first()
+        is not None
     )
 
     # if an invite hasn't been sent yet, add to database
@@ -455,8 +459,6 @@ def groupinvitepost():
 
     # No matter what, r edirect to index for loading the user's new page
     return flask.redirect("/")
-
-
 
 
 @app.route("/user-info", methods=["GET"])
@@ -494,6 +496,7 @@ def userinfo():
     response = flask.make_response(html_code)
     return response
 
+
 @app.route("/my-invites", methods=["GET"])
 def myinvites():
     netid = auth.authenticate()
@@ -501,21 +504,24 @@ def myinvites():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     invited_clubs = (
-        db.session.query(InviteRequests.clubid, InviteRequests.inviter_netid)
+        db.session.query(
+            InviteRequests.clubid, InviteRequests.inviter_netid
+        )
         .filter(UsersModel.netid == InviteRequests.invitee_netid)
         .all()
     )
     invites = []
     for clubid, inviter_netid in invited_clubs:
-        invites.append((db.session.get(ClubsModel, clubid).name, inviter_netid))
+        invites.append(
+            (db.session.get(ClubsModel, clubid).name, inviter_netid)
+        )
 
     html_code = flask.render_template(
-        "my-invites.html",
-        user=user,
-        invites=invites
-        )
+        "my-invites.html", user=user, invites=invites
+    )
     response = flask.make_response(html_code)
     return response
+
 
 @app.route("/pending-invites", methods=["GET"])
 def pendinginvites():
@@ -525,18 +531,20 @@ def pendinginvites():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     invited_clubs = (
-        db.session.query(InviteRequests.clubid, InviteRequests.invitee_netid)
+        db.session.query(
+            InviteRequests.clubid, InviteRequests.invitee_netid
+        )
         .filter(UsersModel.netid == InviteRequests.inviter_netid)
         .all()
     )
     invites = []
     for clubid, invitee_netid in invited_clubs:
-        invites.append((db.session.get(ClubsModel, clubid).name, invitee_netid))
+        invites.append(
+            (db.session.get(ClubsModel, clubid).name, invitee_netid)
+        )
 
     html_code = flask.render_template(
-        "pending-invites.html",
-        user=user,
-        invites=invites
-        )
+        "pending-invites.html", user=user, invites=invites
+    )
     response = flask.make_response(html_code)
     return response
