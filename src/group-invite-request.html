@@ -18,10 +18,15 @@
         <div class="text-lg text-center mt-5 font-medium text-slate-800">
             <span>Enter the NetID of the invited user: </span>
         </div>
-        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="netid" name="netid">
-        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-            <button name="join" type="submit">Invite to {{club.name}}</button>
-        </div>
+        <center>
+            <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="netid" name="netid"
+                placeholder="Netid">
+        </center>
+        <center>
+            <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10">
+                <button name="join" type="submit">Invite to {{club.name}}</button>
+            </div>
+        </center>
     </form>
 </body>
 
