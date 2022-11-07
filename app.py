@@ -97,8 +97,8 @@ def profilepost():
         )["url"]
     except:
         photo = cloudinary.api.resource(
-            prefix="/Additional Files/", public_id="default_user_icon"
-        )
+            "/Additional%20Files/default_user_icon"
+        )["url"]
     is_admin = False
     new_user = UsersModel(
         netid,
