@@ -81,14 +81,18 @@ class JoinRequests(db.Model):
 class InviteRequests(db.Model):
     __tablename__ = "invitereqs"
 
-    invitee_netid = db.Column(db.String, primary_key=True)
-    inviter_netid = db.Column(db.String, primary_key=True)
-    clubid = db.Column(db.Integer, primary_key=True)
+    invite_id = db.Column(db.Integer, primary_key=True)
+    invitee_netid = db.Column(db.String, primary_key=False)
+    inviter_netid = db.Column(db.String, primary_key=False)
+    clubid = db.Column(db.Integer, primary_key=False)
+    accepted = db.Column(db.Boolean, primary_key=False)
 
-    def __init__(self, invitee_netid, inviter_netid, clubid):
+    def __init__(self, invite_id, invitee_netid, inviter_netid, clubid, accepted):
+        self.invite_id = invite_id
         self.invitee_netid = invitee_netid
         self.inviter_netid = inviter_netid
         self.clubid = clubid
+        self.accepted = accepted
 
 
 ## Model for club creation requests in database

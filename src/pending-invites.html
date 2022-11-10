@@ -14,10 +14,25 @@
 <body class="bg-slate-50 reveal">
     {% include "header.html" %}
     {% for invite in invites: %}
+
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <div>You invited {{ invite[1] }} to {{ invite[0] }}</div>
+      {% if invite.accepted == None: %}
+      <div>You invited {{ invite.invitee_netid }} to {{ club_name }} </div>
+
+      {% else: %}
+
+        {% if invite.accepted: %}
+          <div>{{ invite.invitee_netid }} accepted the invitation to {{ club_name }}</div>
+        {% else: %}
+          <div>{{ invite.invitee_netid }} rejected the invitation to {{ club_name }}</div>
+        {% endif %}
+        <form action = "/dismiss-invitation?invite_id={{ invite.invite_id }}" method="post">
+          <button name="join" type="submit">Dismiss</button>
+        </form>
+      {% endif %}
+
+      {% endfor %}
     </div>
-    {% endfor %}
 </body>
 
 {% include "navigation-menu.html" %}

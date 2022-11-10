@@ -15,9 +15,36 @@
   {% include "header.html" %}
   {% for invite in invites: %}
   <div class="text-lg text-center mt-5 font-medium text-slate-800">
-      <div>You were invited to {{ invite[0] }} by {{ invite[1] }}</div>
+      {% if invite[0].accepted == None: %}
+      <div>You were invited to {{ invite[1] }} by {{ invite[0].inviter_netid }}</div>
+      <form action = "/accept-invitation?invite_id={{ invite[2] }}" method="post">
+        <button name="join" type="submit">Accept</button>
+      </form>
+      <form action = "/reject-invitation?invite_id={{ invite[2] }}" method="post">
+        <button name="join" type="submit">Reject</button>
+      </form>
+      {% elif invite[0].accepted: %}
+      <div>You accepted the invitation to {{ invite[1] }} by {{ invite[0].inviter_netid }}</div>
+      {% else: %}
+      <div>You rejected the invitation to {{ invite[1] }} by {{ invite[0].inviter_netid }}</div>
+
+      {% endif %}
+
+
+
   </div>
   {% endfor %}
+  <script>
+    function accept() {
+      console.log("bitch made")
+
+    }
+
+    function reject() {
+      return;
+    }
+
+  </script>
 </body>
 
 {% include "navigation-menu.html" %}
