@@ -16,8 +16,20 @@
 
     {% if students|length != 0: %}
     {% for student in students: %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/user-info?netid={{clubmember.netid}}&clubid={{clubid}}">{{student.first_name}} {{student.last_name}}
+    <div class="browse">
+        <div class="flex flex-col justify-center text-lg text-center mt-5 font-medium text-slate-800">
+            {{student.first_name}} {{student.last_name}}
+        </div>
+        <div>
+            <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
+                action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=1" method="post">
+                <button type="submit" name="Accept" value="Accept">Accept</button>
+            </form>
+            <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
+                action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=0" method="post">
+                <button type="submit" name="Deny" value="Deny">Deny</button>
+            </form>
+        </div>
     </div>
     {% endfor %}
     {% endif %}

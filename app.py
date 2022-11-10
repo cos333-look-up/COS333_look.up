@@ -401,6 +401,27 @@ def groupjoinpost():
     return flask.redirect("/")
 
 
+@app.route("/groupjoinfulfill", methods=["POST"])
+def groupjoinfulfill():
+    netid = auth.authenticate()
+    clubid = flask.request.args.get("clubid")
+    join_netid = flask.request.args.get("join_netid")
+    accept = flask.request.args.get("accept")
+    clubmember = db.session.get(ClubMembersModel, (netid, clubid))
+    if clubmember is None:
+        return flask.redirect("groups")
+    if clubmember.is_moderator is False:
+        return flask.redirect("groups")
+    join_request = db.session.get(JoinRequests, (join_netid, clubid))
+    db.session.delete(join_request)
+    db.session.commit()
+    if accept == "1":
+        new_club_member = ClubMembersModel(clubid, join_netid, False)
+        db.session.add(new_club_member)
+        db.session.commit()
+    return flask.redirect("/group-requests?clubid=" + clubid)
+
+
 @app.route("/group-invite-request", methods=["GET"])
 def groupinviterequest():
     netid = auth.authenticate()
