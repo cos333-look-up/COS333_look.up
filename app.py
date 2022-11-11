@@ -2,6 +2,7 @@ from sys import prefix
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import os
 import auth
 import cloudinary
 
@@ -16,9 +17,7 @@ import cloudinary.api
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-with open("secret_key") as f:
-    env_vars = dict(line.strip().split("=", 1) for line in f)
-app.secret_key = env_vars["APP_SECRET_KEY"]
+app.secret_key = os.environ["APP_SECRET_KEY"]
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
@@ -293,6 +292,8 @@ def groupmembers():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    club = db.session.get(ClubsModel, clubid)
+    name = club.name
     clubmember = db.session.get(ClubMembersModel, (netid, clubid))
     if clubmember is None:
         return flask.redirect(
@@ -326,6 +327,7 @@ def groupmembers():
         nonadminmembers=nonadminmembers,
         clubid=clubid,
         clubmember=clubmember,
+        name=name,
     )
     response = flask.make_response(html_code)
     return response
@@ -338,6 +340,8 @@ def grouprequests():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    club = db.session.get(ClubsModel, clubid)
+    name = club.name
     clubmember = db.session.get(ClubMembersModel, (netid, clubid))
     if clubmember is None:
         return flask.redirect("groups")
@@ -359,6 +363,7 @@ def grouprequests():
         students=students,
         clubid=clubid,
         clubmember=clubmember,
+        name=name,
     )
     response = flask.make_response(html_code)
     return response
@@ -551,6 +556,8 @@ def pendinginvites():
     user = db.session.get(UsersModel, netid)
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
+    club = db.session.get(ClubsModel, clubid)
+    name = club.name
     invited_clubs = (
         db.session.query(
             InviteRequests.clubid, InviteRequests.invitee_netid
@@ -565,7 +572,7 @@ def pendinginvites():
         )
 
     html_code = flask.render_template(
-        "pending-invites.html", user=user, invites=invites
+        "pending-invites.html", user=user, invites=invites, name=name
     )
     response = flask.make_response(html_code)
     return response

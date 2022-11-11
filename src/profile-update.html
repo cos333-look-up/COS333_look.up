@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Look.Up: Profile Update</title>
   <link rel="stylesheet" href='/static_files/output.css' />
   <!-- import fonts -->
   <style>
@@ -26,7 +27,8 @@
         <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="first_name" name="first_name"
           value="{{user.first_name}}">
 
-        <div onclick="profileNext('first-name-form', 'last-name-form')" class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div onclick="profileNext('first-name-form', 'last-name-form')"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Next</div>
         </div>
       </div>
@@ -45,7 +47,8 @@
         <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="last_name" name="last_name"
           value="{{user.last_name}}">
 
-        <div onclick="profileNext('last-name-form', 'phone-form')" class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div onclick="profileNext('last-name-form', 'phone-form')"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Next</div>
         </div>
       </div>
@@ -64,7 +67,8 @@
         <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="phone" name="phone"
           value="{{user.phone}}">
 
-        <div onclick="profileNext('phone-form','ig-form')" class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div onclick="profileNext('phone-form','ig-form')"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Next</div>
         </div>
       </div>
@@ -83,7 +87,8 @@
         <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="instagram" name="instagram"
           value="{{user.instagram}}">
 
-        <div onclick="profileNext('ig-form','snap-form')" class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div onclick="profileNext('ig-form','snap-form')"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Next</div>
         </div>
       </div>
@@ -102,7 +107,8 @@
         <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="snapchat" name="snapchat"
           value="{{user.snapchat}}">
 
-        <div onclick="profileNext('snap-form', 'photo-form')" class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div onclick="profileNext('snap-form', 'photo-form')"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Next</div>
         </div>
       </div>
@@ -118,10 +124,11 @@
           <span>What's your Profile photo?</span>
         </div>
 
-        <input class="px-3 py-2 w-fit mt-5 bg-gray-200 rounded-3xl h-10" type="file" accept="image/*" id="photo" name="photo"
-          value="{{user.photo}}">
+        <input class="px-3 py-2 w-fit mt-5 bg-gray-200 rounded-3xl h-10" type="file" accept="image/*" id="photo"
+          name="photo" value="{{user.photo}}">
 
-        <div onclick="document.getElementById('FormId').submit();" class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+        <div onclick="document.getElementById('FormId').submit();"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Next</div>
         </div>
       </div>

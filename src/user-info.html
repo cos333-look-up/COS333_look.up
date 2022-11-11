@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if requested_user == user %}
+    <title>Look.Up: Profile Information</title>
+    {% else %}
+    <title>Look.Up: {{requested_user.first_name}} {{requested_user.last_name}} Information</title>
+    {% endif %}
     <link rel="stylesheet" href='/static_files/output.css' />
     <!-- import fonts -->
     <style>
