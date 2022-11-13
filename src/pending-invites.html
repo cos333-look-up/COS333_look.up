@@ -16,7 +16,7 @@
   {% include "header.html" %}
   {% for invite in invites: %}
   <div class="text-lg text-center mt-5 font-medium text-slate-800">
-    <div>You invited {{ invite[1] }} to {{ invite[0] }}</div>
+    <div>{{ invite[0] }} {{ invite[1] }} has a pending invite</div>
   </div>
   {% endfor %}
 </body>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look.Up: Admin Console</title>
+    <link rel="stylesheet" href='/static_files/output.css' />
+    <!-- import fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    </style>
+</head>
+
+<body class="bg-slate-50">
+    {% include "header.html" %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/group-creation-requests">Group Creation Requests</a>
+    </div>
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/group-removal">Remove a Group</a>
+    </div>
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/ban-user">Ban a User</a>
+    </div>
+</body>
+
+{% include "navigation-menu.html" %}
+
+<script src="/static_files/index.js"></script>
+
+</html>

@@ -82,12 +82,10 @@ class InviteRequests(db.Model):
     __tablename__ = "invitereqs"
 
     invitee_netid = db.Column(db.String, primary_key=True)
-    inviter_netid = db.Column(db.String, primary_key=True)
     clubid = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self, invitee_netid, inviter_netid, clubid):
+    def __init__(self, invitee_netid, clubid):
         self.invitee_netid = invitee_netid
-        self.inviter_netid = inviter_netid
         self.clubid = clubid
 
 
