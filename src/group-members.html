@@ -26,7 +26,13 @@
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
         <a href="/group-requests?clubid={{clubid}}">Join Requests</a>
     </div>
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/group-remove-member?clubid={{clubid}}">Remove Members</a>
+    </div>
     {% endif %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/group-leave?clubid={{clubid}}">Leave Group</a>
+    </div>
     {% if adminmembers|length != 0: %}
     {% for member in adminmembers: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">

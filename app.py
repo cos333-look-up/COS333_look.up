@@ -428,6 +428,94 @@ def groupjoinfulfill():
     return flask.redirect("/group-requests?clubid=" + clubid)
 
 
+@app.route("/group-leave", methods=["GET"])
+def groupleave():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member is None:
+        return flask.redirect("/groups")
+    club = db.session.get(ClubsModel, clubid)
+    if club is None:
+        return flask.redirect("/groups")
+    html_code = flask.render_template(
+        "group-leave.html", user=user, club=club
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/groupleavepost", methods=["POST"])
+def groupleavepost():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    db.session.delete(member)
+    db.session.commit()
+    # Redirect to index for loading the user's new page
+    return flask.redirect("/groups")
+
+
+@app.route("/group-remove-member", methods=["GET"])
+def groupremovemember():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+    clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member.is_moderator is False:
+        return flask.redirect("groups")
+    members_helper = (
+        db.session.query(ClubMembersModel)
+        .filter(ClubMembersModel.clubid == clubid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+    members = []
+    for member in members_helper:
+        user = db.session.get(UsersModel, member.netid)
+        members.append(
+            (
+                member.is_moderator,
+                user.first_name,
+                user.last_name,
+                user.netid,
+            )
+        )
+    html_code = flask.render_template(
+        "group-remove-member.html",
+        user=user,
+        members=members,
+        clubid=clubid,
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/removemember", methods=["POST"])
+def removemember():
+    netid = auth.authenticate()
+    clubid = flask.request.args.get("clubid")
+    member = db.session.get(ClubMembersModel, (netid, clubid))
+    if member.is_moderator is False:
+        return flask.redirect("groups")
+    member_netid = flask.request.args.get("netid")
+    deleted_member = db.session.get(
+        ClubMembersModel, (member_netid, clubid)
+    )
+    db.session.delete(deleted_member)
+    db.session.commit()
+    return flask.redirect("/group-remove-member?clubid=" + clubid)
+
+
 @app.route("/group-invite-request", methods=["GET"])
 def groupinviterequest():
     netid = auth.authenticate()
