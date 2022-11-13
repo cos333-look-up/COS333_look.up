@@ -13,17 +13,7 @@ class UsersModel(db.Model):
     is_admin = db.Column(db.Boolean)
     photo = db.Column(db.String)
 
-    def __init__(
-        self,
-        netid,
-        first_name,
-        last_name,
-        phone,
-        instagram,
-        snapchat,
-        is_admin,
-        photo,
-    ):
+    def __init__(self, netid, first_name, last_name, phone, instagram, snapchat, is_admin, photo):
         self.netid = netid
         self.first_name = first_name
         self.last_name = last_name
@@ -81,11 +71,11 @@ class JoinRequests(db.Model):
 class InviteRequests(db.Model):
     __tablename__ = "invitereqs"
 
-    invitee_netid = db.Column(db.String, primary_key=True)
+    netid = db.Column(db.String, primary_key=True)
     clubid = db.Column(db.Integer, primary_key=True)
 
-    def __init__(self, invitee_netid, clubid):
-        self.invitee_netid = invitee_netid
+    def __init__(self, netid, clubid):
+        self.netid = netid
         self.clubid = clubid
 
 
@@ -93,13 +83,15 @@ class InviteRequests(db.Model):
 class CreationRequests(db.Model):
     __tablename__ = "creationreqs"
 
-    netid = db.Column(db.String, primary_key=True)
+    reqid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    netid = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
     # info_shared = db.Column(db.LargeBinary)
 
-    def __init__(self, name, netid, description, info_shared):
+    def __init__(self, reqid, name, netid, description, info_shared):
+        self.reqid = reqid
         self.name = name
         self.netid = netid
         self.description = description
