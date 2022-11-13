@@ -180,6 +180,14 @@ def grouprequestpost():
         return flask.redirect("/")
     description = flask.request.form["description"]
     attributes = ["share_socials", "share_phone"]
+    recent_req = (
+        db.session.query(CreationRequests)
+        .order_by(CreationRequests.reqid.desc())
+        .first()
+    )
+    reqid = 0
+    if recent_req is not None:
+        reqid = recent_req.reqid + 1
     info_shared = ""
     for attribute in attributes:
         if flask.request.form.get(attribute) is None:
@@ -187,7 +195,7 @@ def grouprequestpost():
         else:
             info_shared += "1"
     new_club_request = CreationRequests(
-        name, netid, description, info_shared
+        reqid, name, netid, description, info_shared
     )
     db.session.add(new_club_request)
     db.session.commit()
