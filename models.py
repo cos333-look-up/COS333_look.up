@@ -13,7 +13,17 @@ class UsersModel(db.Model):
     is_admin = db.Column(db.Boolean)
     photo = db.Column(db.String)
 
-    def __init__(self, netid, first_name, last_name, phone, instagram, snapchat, is_admin, photo):
+    def __init__(
+        self,
+        netid,
+        first_name,
+        last_name,
+        phone,
+        instagram,
+        snapchat,
+        is_admin,
+        photo,
+    ):
         self.netid = netid
         self.first_name = first_name
         self.last_name = last_name

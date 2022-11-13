@@ -164,36 +164,22 @@ def groupcreation():
 def grouprequestpost():
     netid = auth.authenticate()
     name = flask.request.form["name"]
-    club = (
-        db.session.query(ClubsModel.name)
-        .filter(ClubsModel.name == name)
-        .all()
-    )
-    if len(club) != 0:
-        return flask.redirect("/")
-    club = (
-        db.session.query(CreationRequests.name)
-        .filter(CreationRequests.name == name)
-        .all()
-    )
-    if len(club) != 0:
-        return flask.redirect("/")
     description = flask.request.form["description"]
     attributes = ["share_socials", "share_phone"]
-    recent_req = (
-        db.session.query(CreationRequests)
-        .order_by(CreationRequests.reqid.desc())
-        .first()
-    )
-    reqid = 0
-    if recent_req is not None:
-        reqid = recent_req.reqid + 1
     info_shared = ""
     for attribute in attributes:
         if flask.request.form.get(attribute) is None:
             info_shared += "0"
         else:
             info_shared += "1"
+    recent_request = (
+        db.session.query(CreationRequests)
+        .order_by(CreationRequests.reqid.desc())
+        .first()
+    )
+    reqid = 0
+    if recent_request is not None:
+        reqid = recent_request.reqid + 1
     new_club_request = CreationRequests(
         reqid, name, netid, description, info_shared
     )
@@ -476,14 +462,14 @@ def groupinvitepost():
 
     # check if an invite has already been sent
     request_exists = (
-        db.session.query(InviteRequests.invitee_netid)
-        .filter(InviteRequests.invitee_netid == invited_netid)
+        db.session.query(InviteRequests.netid)
+        .filter(InviteRequests.netid == invited_netid)
         .filter(InviteRequests.clubid == clubid)
         .first()
     )
 
     # if an invite hasn't been sent yet, add to database
-    if len(request_exists) != 0:
+    if request_exists is None:
         request = InviteRequests(invited_netid, clubid)
         db.session.add(request)
         db.session.commit()
@@ -536,17 +522,32 @@ def myinvites():
         return flask.redirect(flask.url_for("profile-create"))
     invited_clubs = (
         db.session.query(InviteRequests.clubid)
-        .filter(InviteRequests.invitee_netid == netid)
+        .filter(InviteRequests.netid == netid)
         .all()
     )
     invites = []
     for clubid in invited_clubs:
-        invites.append((db.session.get(ClubsModel, clubid).name))
+        invites.append(db.session.get(ClubsModel, clubid))
     html_code = flask.render_template(
         "my-invites.html", user=user, invites=invites
     )
     response = flask.make_response(html_code)
     return response
+
+
+@app.route("/invitefulfill", methods=["POST"])
+def invitefulfill():
+    netid = auth.authenticate()
+    clubid = flask.request.args.get("clubid")
+    accept = flask.request.args.get("accept")
+    invite_request = db.session.get(InviteRequests, (netid, clubid))
+    db.session.delete(invite_request)
+    db.session.commit()
+    if accept == "1":
+        new_club_member = ClubMembersModel(clubid, netid, False)
+        db.session.add(new_club_member)
+        db.session.commit()
+    return flask.redirect("/my-invites")
 
 
 @app.route("/pending-invites", methods=["GET"])
@@ -560,18 +561,14 @@ def pendinginvites():
     if club is None:
         return flask.redirect("/")
     name = club.name
-    invited_clubs = (
-        db.session.query(InviteRequests.invitee_netid)
+    invited_members = (
+        db.session.query(InviteRequests)
         .filter(InviteRequests.clubid == clubid)
         .all()
     )
     invites = []
-    for invitee_netid in invited_clubs:
-        invited_user = db.session.get(UsersModel, invitee_netid)
-        invites.append(
-            (invited_user.first_name, invited_user.last_name)
-        )
-
+    for invite in invited_members:
+        invites.append(db.session.get(UsersModel, invite.netid))
     html_code = flask.render_template(
         "pending-invites.html", user=user, invites=invites, name=name
     )
@@ -597,7 +594,7 @@ def groupcreationrequests():
     if not user.is_admin:
         return flask.redirect("/")
     requests = (
-        db.session.query(CreationRequests.netid, CreationRequests.name)
+        db.session.query(CreationRequests)
         .order_by(CreationRequests.name)
         .all()
     )
@@ -614,14 +611,14 @@ def groupfulfill():
     user = db.session.get(UsersModel, netid)
     if not user.is_admin:
         return flask.redirect("/")
-    creation_id = flask.request.args.get("creationid")
+    reqid = flask.request.args.get("reqid")
+    creator_netid = flask.request.args.get("netid")
     accept = flask.request.args.get("accept")
-    created_club = db.one_or_404(
-        db.select(CreationRequests).filter_by(name=creation_id)
-    )
+    created_club = db.session.get(CreationRequests, reqid)
     if accept == "0":
         db.session.delete(created_club)
         db.session.commit()
+        return flask.redirect("/group-creation-requests")
     recent_club = (
         db.session.query(ClubsModel)
         .order_by(ClubsModel.clubid.desc())
@@ -630,11 +627,11 @@ def groupfulfill():
     clubid = 0
     if recent_club is not None:
         clubid = recent_club.clubid + 1
-    name = creation_id
+    name = created_club.name
     description = created_club.description
     info_shared = created_club.info_shared
     new_club = ClubsModel(clubid, name, description, info_shared)
-    new_club_member = ClubMembersModel(clubid, netid, True)
+    new_club_member = ClubMembersModel(clubid, creator_netid, True)
     db.session.add(new_club)
     db.session.add(new_club_member)
     db.session.commit()
