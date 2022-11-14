@@ -291,6 +291,7 @@ def groupmembers():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     clubid = flask.request.args.get("clubid")
+    name = club.name
     clubmember = db.session.get(ClubMembersModel, (netid, clubid))
     if clubmember is None:
         return flask.redirect(
@@ -324,6 +325,7 @@ def groupmembers():
         nonadminmembers=nonadminmembers,
         clubid=clubid,
         clubmember=clubmember,
+        name = name,
     )
     response = flask.make_response(html_code)
     return response
