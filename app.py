@@ -21,7 +21,10 @@ os.environ["APP_SECRET_KEY"] = "secret_key_test"
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-app.secret_key = os.environ["APP_SECRET_KEY"]
+with open("secret_key") as f:
+    env_vars = dict(line.strip().split("=", 1) for line in f)
+app.secret_key = env_vars["APP_SECRET_KEY"]
+
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
@@ -801,6 +804,7 @@ def users():
         return flask.redirect(flask.url_for("profile-create"))
 
     req = req_lib.ReqLib()
+    # figure out group name to get all students
     result = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
     student_data = []
     counter = 0
