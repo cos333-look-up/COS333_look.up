@@ -15,9 +15,14 @@
 <body class="bg-slate-50">
     {% include "header.html" %}
 
+    <div class="header-font text-2xl px-7 py-5">
+        <span class="text-slate-700">{{name}}</span>
+      </div>
+
     {% if clubmember.is_moderator %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/group-invite-request?clubid={{clubid}}">Invite</a>
+
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+        <a href="/group-invite-request?clubid={{clubid}}" class="text-sm">Invite</a>
     </div>
     <!-- pending invites -->
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
@@ -34,18 +39,57 @@
         <a href="/group-leave?clubid={{clubid}}">Leave Group</a>
     </div>
     {% if adminmembers|length != 0: %}
-    {% for member in adminmembers: %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}">{{member.first_name}} {{member.last_name}}
+    <div class="text-lg px-7">
+        Admin
     </div>
-    {% endfor %}
+
+
+    <div class="browse mx-4">
+        {% for member in adminmembers: %}
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <div class="info-box">
+                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member.photo}}">
+                <br>
+
+                <div class="text-base">
+                    {{member.first_name}} {{member.last_name}}
+                </div>
+
+                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm">See More</a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
+
     {% if nonadminmembers|length != 0: %}
-    {% for member in nonadminmembers: %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-        <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}">{{member.first_name}} {{member.last_name}}
+    <div class="text-lg px-7">
+        Members
     </div>
-    {% endfor %}
+
+
+    <div class="browse mx-4">
+        {% for member in nonadminmembers: %}
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <div class="info-box">
+                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member.photo}}">
+                <br>
+
+                <div class="text-base">
+                    {{member.first_name}} {{member.last_name}}
+                </div>
+
+                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm">See More</a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
 </body>
 
