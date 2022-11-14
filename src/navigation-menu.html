@@ -12,12 +12,16 @@ px-8 py-10">
 
   <div class="mb-10">
     <div class="menu-item" onclick="window.location='/'">Home</div>
+    <div class="menu-item" onclick="window.location='my-invites'">My Invites</div>
     <div class="menu-item" onclick="window.location='profile-update'">Update Profile</div>
     <div class="menu-item" onclick="window.location='groups'">My Groups</div>
     <div class="menu-item" onclick="window.location='groups-search'">Search Groups</div>
+    {% if user.is_admin %}
+    <div class="menu-item" onclick="window.location='admin-console'">Admin Console</div>
+    {% endif %}
   </div>
 
   <div class="flex w-fit px-7 py-5 bg-amber-400 rounded-3xl">
-    <span class="font-medium text-xl" onclick="window.location='group-create'">Create a Group</span>
+    <span class="font-medium text-xl" onclick="window.location='group-create-request'">Create a Group</span>
   </div>
 </div>

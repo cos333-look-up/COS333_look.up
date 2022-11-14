@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look.Up: Group Creation Requests</title>
+    <link rel="stylesheet" href='/static_files/output.css' />
+    <!-- import fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    </style>
+</head>
+
+<body class="bg-slate-50 reveal">
+    {% include "header.html" %}
+    {% for request in requests: %}
+    <div class="flex flex-col justify-center text-lg text-center mt-5 font-medium text-slate-800">
+        {{request.name}}
+    </div>
+    <div class="flex flex-col justify-center text-lg text-center mt-5 font-medium text-slate-800">
+        <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
+            action="/groupfulfill?reqid={{request.reqid}}&netid={{request.netid}}&accept=1" method="post">
+            <button type="submit" name="Accept" value="Accept">Accept</button>
+        </form>
+        <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
+            action="/groupfulfill?reqid={{request.reqid}}&netid={{request.netid}}&accept=0" method="post">
+            <button type="submit" name="Deny" value="Deny">Deny</button>
+        </form>
+    </div>
+    {% endfor %}
+</body>
+
+{% include "navigation-menu.html" %}
+
+<script src="/static_files/index.js"></script>
+
+</html>

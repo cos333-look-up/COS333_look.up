@@ -93,13 +93,15 @@ class InviteRequests(db.Model):
 class CreationRequests(db.Model):
     __tablename__ = "creationreqs"
 
-    netid = db.Column(db.String, primary_key=True)
+    reqid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    netid = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
     # info_shared = db.Column(db.LargeBinary)
 
-    def __init__(self, name, netid, description, info_shared):
+    def __init__(self, reqid, name, netid, description, info_shared):
+        self.reqid = reqid
         self.name = name
         self.netid = netid
         self.description = description

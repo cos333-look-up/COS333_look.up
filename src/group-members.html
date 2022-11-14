@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look.Up: Members of {{name}}</title>
     <link rel="stylesheet" href='/static_files/output.css' />
     <!-- import fonts -->
     <style>
@@ -23,10 +24,21 @@
     <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/group-invite-request?clubid={{clubid}}" class="text-sm">Invite</a>
     </div>
+    
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+        <a href="/pending-invites?clubid={{clubid}}" class="text-sm">Pending Invites</a>
+    </div>
+
     <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/group-requests?clubid={{clubid}}" class="text-sm">Join Requests</a>
     </div>
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/group-remove-member?clubid={{clubid}}">Remove Members</a>
+    </div>
     {% endif %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <a href="/group-leave?clubid={{clubid}}">Leave Group</a>
+    </div>
     {% if adminmembers|length != 0: %}
     <div class="text-lg px-7">
         Admin
