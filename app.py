@@ -669,7 +669,7 @@ def pendinginvites():
     )
     response = flask.make_response(html_code)
     return response
-
+    
 
 @app.route("/admin-console", methods=["GET"])
 def adminconsole():
