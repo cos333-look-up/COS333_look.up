@@ -17,7 +17,10 @@ import cloudinary.api
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-app.secret_key = os.environ["APP_SECRET_KEY"]
+with open("secret_key") as f:
+    env_vars = dict(line.strip().split("=", 1) for line in f)
+app.secret_key = env_vars["APP_SECRET_KEY"]
+
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
