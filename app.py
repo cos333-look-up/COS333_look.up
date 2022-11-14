@@ -5,6 +5,9 @@ from flask_migrate import Migrate
 import os
 import auth
 import cloudinary
+import json
+
+from api import req_lib
 
 cloudinary.config(
     cloud_name="dqv7e2cyi",
@@ -14,6 +17,7 @@ cloudinary.config(
 import cloudinary.uploader
 import cloudinary.api
 
+os.environ["APP_SECRET_KEY"] = "secret_key_test"
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
@@ -32,7 +36,6 @@ from models import (
     InviteRequests,
     CreationRequests,
 )
-
 
 ## Index Route
 @app.route("/", methods=["GET"])
@@ -788,3 +791,29 @@ def banuserpost():
     if not user.is_admin:
         return flask.redirect("/")
     return flask.redirect("/ban-user")
+
+@app.route("/users", methods=["GET"])
+def users():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+
+    req = req_lib.ReqLib()
+    result = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
+    student_data = []
+    counter = 0
+    for member in result[0]['member']:
+        if counter > 50:
+            break
+        uid = member.split(',')[0][3:]
+        data = req.getJSON(req.configs.USERS, uid=uid)
+        if data:
+            student_data.append((data[0]['displayname'], data[0]['mail'].lower()))
+        counter += 1
+
+    html_code = flask.render_template(
+        "users.html", user=user, student_data=student_data
+    )
+    response = flask.make_response(html_code)
+    return response
