@@ -108,3 +108,13 @@ class CreationRequests(db.Model):
         # for key, value in info_shared.items():
         #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
+
+## Models for all undergraduates
+class UndergraduatesModel(db.Model):
+    __tablename__ = "allundergrads"
+
+    netid = db.Column(db.String, primary_key=True)
+    classyear = db.Column(db.Integer)
+    def __init__(self, netid, classyear):
+        self.netid = netid
+        self.classyear = classyear
