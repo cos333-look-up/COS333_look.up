@@ -5,7 +5,6 @@ from flask_migrate import Migrate
 import os
 import auth
 import cloudinary
-import json
 
 from api import req_lib
 
@@ -38,6 +37,7 @@ from models import (
     JoinRequests,
     InviteRequests,
     CreationRequests,
+    UndergraduatesModel
 )
 
 ## Index Route
@@ -669,7 +669,7 @@ def pendinginvites():
     )
     response = flask.make_response(html_code)
     return response
-    
+
 
 @app.route("/admin-console", methods=["GET"])
 def adminconsole():
@@ -822,3 +822,48 @@ def users():
     )
     response = flask.make_response(html_code)
     return response
+
+@app.route("/refresh-database", methods=["POST"])
+def refreshdatabase():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+
+    # clear database
+    db.session.query(UndergraduatesModel).delete()
+
+    req = req_lib.ReqLib()
+
+    class2023 = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2023")
+    class2024 = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
+    class2025 = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2025")
+
+    # class of 2026 has no members right now
+    # class2026 = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2026")
+
+    def get_uid(member):
+        return member.split(',')[0][3:]
+
+    for member in class2023[0]['member']:
+        uid = get_uid(member)
+        undergraduate = UndergraduatesModel(uid, 2023)
+        db.session.add(undergraduate)
+
+    for member in class2024[0]['member']:
+        uid = get_uid(member)
+        undergraduate = UndergraduatesModel(uid, 2024)
+        db.session.add(undergraduate)
+
+    for member in class2025[0]['member']:
+        uid = get_uid(member)
+        undergraduate = UndergraduatesModel(uid, 2025)
+        db.session.add(undergraduate)
+
+    # for member in class2026[0]['member']:
+    #     uid = get_uid(member)
+    #     undergraduate = UndergraduatesModel(uid, 2026)
+    #     db.session.add(undergraduate)
+
+    db.session.commit()
+    return flask.redirect("/")
