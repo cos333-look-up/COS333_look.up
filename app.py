@@ -580,6 +580,8 @@ def userinfo():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     member_netid = flask.request.args.get("netid")
+
+    # if you're looking at your own profile, show all info
     if member_netid == netid:
         requested_user = db.session.get(UsersModel, member_netid)
         html_code = flask.render_template(
@@ -590,6 +592,30 @@ def userinfo():
         )
         response = flask.make_response(html_code)
         return response
+
+    # find all shared clubs
+    member_clubs = (
+        db.session.query(ClubMembersModel.clubid)
+        .filter(ClubMembersModel.netid == member_netid)
+    )
+
+    user_clubs = (
+        db.session.query(ClubMembersModel.clubid)
+        .filter(ClubMembersModel.netid == netid)
+    )
+    shared_clubs = set(member_clubs).intersection(set(user_clubs))
+
+
+    # if looking at someone you're in clubs with, show union of all available information
+        # query database for all clubids for current user and clubids for desired user
+        # check union of clubids
+        # query all share-info booleans
+        # show information based on the OR of all these share-info booleans
+
+
+    # if looking at someone's profile, show name, netid, email
+    # else:
+
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     member = db.session.get(ClubMembersModel, (netid, clubid))
@@ -598,6 +624,7 @@ def userinfo():
     member = db.session.get(ClubMembersModel, (member_netid, clubid))
     if member is None:
         return flask.redirect("/")
+
     requested_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
         "user-info.html",
