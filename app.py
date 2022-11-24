@@ -5,7 +5,6 @@ from flask_migrate import Migrate
 import os
 import auth
 import cloudinary
-import json
 
 from api import req_lib
 
@@ -38,6 +37,8 @@ from models import (
     JoinRequests,
     InviteRequests,
     CreationRequests,
+    UndergraduatesModel,
+    BannedUsers,
 )
 
 ## Index Route
@@ -569,7 +570,7 @@ def groupinvitepost():
         db.session.add(request)
         db.session.commit()
 
-    # No matter what, r edirect to index for loading the user's new page
+    # No matter what, redirect to index for loading the user's new page
     return flask.redirect("/group-members?clubid=" + clubid)
 
 
@@ -580,6 +581,8 @@ def userinfo():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
     member_netid = flask.request.args.get("netid")
+
+    # if you're looking at your own profile, show all info
     if member_netid == netid:
         requested_user = db.session.get(UsersModel, member_netid)
         html_code = flask.render_template(
@@ -590,6 +593,26 @@ def userinfo():
         )
         response = flask.make_response(html_code)
         return response
+
+    # find all shared clubs
+    member_clubs = db.session.query(ClubMembersModel.clubid).filter(
+        ClubMembersModel.netid == member_netid
+    )
+
+    user_clubs = db.session.query(ClubMembersModel.clubid).filter(
+        ClubMembersModel.netid == netid
+    )
+    shared_clubs = set(member_clubs).intersection(set(user_clubs))
+
+    # if looking at someone you're in clubs with, show union of all available information
+    # query database for all clubids for current user and clubids for desired user
+    # check union of clubids
+    # query all share-info booleans
+    # show information based on the OR of all these share-info booleans
+
+    # if looking at someone's profile, show name, netid, email
+    # else:
+
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     member = db.session.get(ClubMembersModel, (netid, clubid))
@@ -598,6 +621,7 @@ def userinfo():
     member = db.session.get(ClubMembersModel, (member_netid, clubid))
     if member is None:
         return flask.redirect("/")
+
     requested_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
         "user-info.html",
@@ -669,7 +693,7 @@ def pendinginvites():
     )
     response = flask.make_response(html_code)
     return response
-    
+
 
 @app.route("/admin-console", methods=["GET"])
 def adminconsole():
@@ -767,9 +791,17 @@ def removegroup():
             .filter(ClubMembersModel.clubid == clubid)
             .first()
         )
-        if member is None:
+        req = (
+            db.session.query(JoinRequests)
+            .filter(JoinRequests.clubid == clubid)
+            .first()
+        )
+        if member is None and req is None:
             break
-        db.session.delete(member)
+        if member is not None:
+            db.session.delete(member)
+        if req is not None:
+            db.session.delete(req)
         db.session.commit()
     club = db.session.get(ClubsModel, clubid)
     db.session.delete(club)
@@ -794,7 +826,51 @@ def banuserpost():
     user = db.session.get(UsersModel, netid)
     if not user.is_admin:
         return flask.redirect("/")
+    banned_netid = flask.request.form["netid"]
+    banned_user = db.session.get(UsersModel, banned_netid)
+    ban = BannedUsers(banned_netid)
+    db.session.add(ban)
+    db.session.delete(banned_user)
+    db.session.commit()
     return flask.redirect("/ban-user")
+
+
+@app.route("/banned-users", methods=["GET"])
+def bannedusers():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if not user.is_admin:
+        return flask.redirect("/")
+    banned_members = (
+        db.session.query(
+            BannedUsers.netid,
+            UsersModel.first_name,
+            UsersModel.last_name,
+        )
+        .filter(BannedUsers.netid == UsersModel.netid)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+    html_code = flask.render_template(
+        "banned-users.html", user=user, banned_members=banned_members
+    )
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/unbanuserpost", methods=["POST"])
+def unbanuserpost():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if not user.is_admin:
+        return flask.redirect("/")
+    unbanned_netid = flask.request.form["netid"]
+    banned_user = db.session.get(BannedUsers, unbanned_netid)
+    ## ADD BACK IN A PROFILE HERE SOMEHOW
+    db.session.delete(banned_user)
+    db.session.commit()
+    return flask.redirect("/unban-user")
+
 
 @app.route("/users", methods=["GET"])
 def users():
@@ -805,16 +881,20 @@ def users():
 
     req = req_lib.ReqLib()
     # figure out group name to get all students
-    result = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
+    result = req.getJSON(
+        req.configs.GROUPS, name="Undergraduate Class of 2024"
+    )
     student_data = []
     counter = 0
-    for member in result[0]['member']:
+    for member in result[0]["member"]:
         if counter > 50:
             break
-        uid = member.split(',')[0][3:]
+        uid = member.split(",")[0][3:]
         data = req.getJSON(req.configs.USERS, uid=uid)
         if data:
-            student_data.append((data[0]['displayname'], data[0]['mail'].lower()))
+            student_data.append(
+                (data[0]["displayname"], data[0]["mail"].lower())
+            )
         counter += 1
 
     html_code = flask.render_template(
@@ -822,3 +902,55 @@ def users():
     )
     response = flask.make_response(html_code)
     return response
+
+
+@app.route("/refresh-database", methods=["POST"])
+def refreshdatabase():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profile-create"))
+
+    # clear database
+    db.session.query(UndergraduatesModel).delete()
+
+    req = req_lib.ReqLib()
+
+    class2023 = req.getJSON(
+        req.configs.GROUPS, name="Undergraduate Class of 2023"
+    )
+    class2024 = req.getJSON(
+        req.configs.GROUPS, name="Undergraduate Class of 2024"
+    )
+    class2025 = req.getJSON(
+        req.configs.GROUPS, name="Undergraduate Class of 2025"
+    )
+
+    # class of 2026 has no members right now
+    # class2026 = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2026")
+
+    def get_uid(member):
+        return member.split(",")[0][3:]
+
+    for member in class2023[0]["member"]:
+        uid = get_uid(member)
+        undergraduate = UndergraduatesModel(uid, 2023)
+        db.session.add(undergraduate)
+
+    for member in class2024[0]["member"]:
+        uid = get_uid(member)
+        undergraduate = UndergraduatesModel(uid, 2024)
+        db.session.add(undergraduate)
+
+    for member in class2025[0]["member"]:
+        uid = get_uid(member)
+        undergraduate = UndergraduatesModel(uid, 2025)
+        db.session.add(undergraduate)
+
+    # for member in class2026[0]['member']:
+    #     uid = get_uid(member)
+    #     undergraduate = UndergraduatesModel(uid, 2026)
+    #     db.session.add(undergraduate)
+
+    db.session.commit()
+    return flask.redirect("/")

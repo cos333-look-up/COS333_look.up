@@ -108,3 +108,25 @@ class CreationRequests(db.Model):
         # for key, value in info_shared.items():
         #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
+
+
+## Model for undergrads
+class UndergraduatesModel(db.Model):
+    __tablename__ = "allundergrads"
+
+    netid = db.Column(db.String, primary_key=True)
+    classyear = db.Column(db.Integer, primary_key=True)
+
+    def __init__(self, netid, classyear):
+        self.netid = netid
+        self.classyear = classyear
+
+
+## Model for banned users
+class BannedUsers(db.Model):
+    __tablename__ = "bannedusers"
+
+    netid = db.Column(db.String, primary_key=True)
+
+    def __init__(self, netid):
+        self.netid = netid
