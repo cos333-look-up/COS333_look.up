@@ -496,6 +496,7 @@ def groupremovemember():
                 user.first_name,
                 user.last_name,
                 user.netid,
+                user.photo
             )
         )
     html_code = flask.render_template(

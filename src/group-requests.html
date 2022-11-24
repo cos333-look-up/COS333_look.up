@@ -15,25 +15,42 @@
 <body class="bg-slate-50" onload="getResults()">
     {% include "header.html" %}
 
-    {% if students|length != 0: %}
-    {% for student in students: %}
-    <div class="browse">
-        <div class="flex flex-col justify-center text-lg text-center mt-5 font-medium text-slate-800">
-            {{student.first_name}} {{student.last_name}}
-        </div>
-        <div>
-            <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
-                action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=1" method="post">
-                <button type="submit" name="Accept" value="Accept">Accept</button>
-            </form>
-            <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
-                action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=0" method="post">
-                <button type="submit" name="Deny" value="Deny">Deny</button>
-            </form>
-        </div>
+    <div class="header-font text-2xl px-7 py-5">
+        <span class="text-slate-700">join</span>
+        <span class="text-amber-400">requests</span>
     </div>
-    {% endfor %}
-    {% endif %}
+
+    <div class="browse mx-4">
+        {% if students|length != 0: %}
+        {% for student in students: %}
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <div class="info-box">
+                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{student.photo}}">
+                <br>
+
+                <div class="text-base">
+                    {{student.first_name}} {{student.last_name}}
+                </div>
+
+                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <form action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=1"
+                        method="post">
+                        <button class="text-sm" type="submit" name="Accept" value="Accept">Accept</button>
+                    </form>
+                </div>
+
+                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <form action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=0"
+                        method="post">
+                        <button class="text-sm" type="submit" name="Deny" value="Deny">Deny</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
 </body>
 
 {% include "navigation-menu.html" %}
