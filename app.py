@@ -926,6 +926,11 @@ def banuser():
 @app.route("/banuserpost", methods=["POST"])
 def banuserpost():
     banned_netid = flask.request.form["netid"]
+    user = db.session.get(UsersModel, banned_netid)
+    if user is None:
+        return flask.redirect(
+            flask.url_for("adminnetiderror"), code=307
+        )
     ban = BannedUsers(banned_netid)
     db.session.add(ban)
     db.session.commit()
@@ -983,6 +988,7 @@ def bannedusers():
             BannedUsers.netid,
             UsersModel.first_name,
             UsersModel.last_name,
+            UsersModel.photo,
         )
         .filter(BannedUsers.netid == UsersModel.netid)
         .order_by(UsersModel.first_name)
