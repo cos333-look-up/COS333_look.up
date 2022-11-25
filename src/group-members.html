@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Look.Up: Members of {{name}}</title>
     <link rel="stylesheet" href='/static_files/output.css' />
+    <link rel="icon" href="/static_files/icon.png">
     <!-- import fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -17,7 +18,7 @@
 
     <div class="header-font text-2xl px-7 py-5">
         <span class="text-slate-700">{{name}}</span>
-      </div>
+    </div>
 
     {% if clubmember.is_moderator %}
 
@@ -35,12 +36,12 @@
     <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/group-remove-member?clubid={{clubid}}" class="text-sm">Remove Members</a>
     </div>
-    
+
     {% endif %}
     <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/group-leave?clubid={{clubid}}" class="text-sm">Leave Group</a>
     </div>
-    
+
     {% if adminmembers|length != 0: %}
     <div class="text-lg px-7">
         Admin

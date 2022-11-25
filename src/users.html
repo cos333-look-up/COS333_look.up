@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Look.Up</title>
   <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="icon" href="/static_files/icon.png">
   <!-- import fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -13,15 +14,15 @@
 </head>
 
 
-    {% include "header.html" %}
+{% include "header.html" %}
 
-    {% for student in student_data: %}
-    <div class="inline text-lg text-center mt-5 font-medium text-slate-800">
-      {{ student[0] }}
-      <br>
-      {{ student[1] }}
-    </div>
-    {% endfor %}
+{% for student in student_data: %}
+<div class="inline text-lg text-center mt-5 font-medium text-slate-800">
+  {{ student[0] }}
+  <br>
+  {{ student[1] }}
+</div>
+{% endfor %}
 
 
 </body>
