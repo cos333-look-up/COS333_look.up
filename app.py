@@ -61,12 +61,21 @@ def checkAdmin(netid):
     return user
 
 
+def checkBanned(netid):
+    ban = db.session.get(BannedUsers, netid)
+    if ban is not None:
+        html_code = flask.render_template("banned.html")
+        response = flask.make_response(html_code)
+        return response
+
+
 ## Index Route
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
 def index():
     # Setup data model
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     html_code = flask.render_template("index.html", user=user)
     response = flask.make_response(html_code)
@@ -77,6 +86,7 @@ def index():
 @app.route("/profile-create", methods=["GET"])
 def profilecreation():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = db.session.get(UsersModel, netid)
     if user is not None:
         return flask.redirect("/")
@@ -88,6 +98,7 @@ def profilecreation():
 @app.route("/profile-update", methods=["GET"])
 def profileupdate():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     # Only needs to render the update form
     html_code = flask.render_template("profile-update.html", user=user)
@@ -169,6 +180,7 @@ def profileput():
 @app.route("/group-create-request", methods=["GET"])
 def groupcreation():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     # Only needs to render the creation form
     return flask.render_template("group-create-request.html", user=user)
@@ -227,6 +239,7 @@ def groups():
 @app.route("/group-results", methods=["GET"])
 def groupresults():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     group_member = (
         db.session.query(ClubMembersModel.clubid, ClubsModel.name)
@@ -265,6 +278,7 @@ def groupresults():
 @app.route("/groups-search", methods=["GET"])
 def groupssearch():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     html_code = flask.render_template("groups-search.html", user=user)
     response = flask.make_response(html_code)
@@ -274,6 +288,7 @@ def groupssearch():
 @app.route("/group-search-results", methods=["GET"])
 def groupsearchresults():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     group_member = (
         db.session.query(ClubsModel.clubid, ClubsModel.name)
@@ -296,6 +311,7 @@ def groupsearchresults():
 @app.route("/group-members", methods=["GET"])
 def groupmembers():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
@@ -342,6 +358,7 @@ def groupmembers():
 @app.route("/group-requests", methods=["GET"])
 def grouprequests():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
@@ -376,6 +393,7 @@ def grouprequests():
 @app.route("/group-join-request", methods=["GET"])
 def groupjoinrequest():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
@@ -429,6 +447,7 @@ def groupjoinfulfill():
 @app.route("/group-leave", methods=["GET"])
 def groupleave():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
@@ -458,6 +477,7 @@ def groupleavepost():
 @app.route("/group-remove-member", methods=["GET"])
 def groupremovemember():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
@@ -511,6 +531,7 @@ def removemember():
 @app.route("/group-invite-request", methods=["GET"])
 def groupinviterequest():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     member = db.session.get(ClubMembersModel, (netid, clubid))
@@ -555,6 +576,7 @@ def groupinvitepost():
 @app.route("/user-info", methods=["GET"])
 def userinfo():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     member_netid = flask.request.args.get("netid")
 
@@ -612,6 +634,7 @@ def userinfo():
 @app.route("/my-invites", methods=["GET"])
 def myinvites():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     invited_clubs = (
         db.session.query(InviteRequests.clubid)
@@ -646,6 +669,7 @@ def invitefulfill():
 @app.route("/pending-invites", methods=["GET"])
 def pendinginvites():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
@@ -819,6 +843,7 @@ def unbanuserpost():
 @app.route("/users", methods=["GET"])
 def users():
     netid = auth.authenticate()
+    checkBanned(netid)
     user = checkUser(netid)
 
     req = req_lib.ReqLib()
