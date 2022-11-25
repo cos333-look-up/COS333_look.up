@@ -2,6 +2,7 @@ from sys import prefix
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import flask_wtf
 import os
 import auth
 import cloudinary
@@ -29,6 +30,8 @@ app.config[
 ] = "postgresql+psycopg2://stwiezab:eN4T8unVzyIE49TzhKCbf1m5lKkGhjWU@peanut.db.elephantsql.com/stwiezab"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+flask_wtf.csrf.CSRFProtect(app)
 
 from models import (
     ClubMembersModel,
@@ -496,7 +499,7 @@ def groupremovemember():
                 user.first_name,
                 user.last_name,
                 user.netid,
-                user.photo
+                user.photo,
             )
         )
     html_code = flask.render_template(
