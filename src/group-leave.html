@@ -29,7 +29,10 @@
                 </div>
 
                 <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
-                    <a href="/group-members?clubid={{club.clubid}}" class="text-sm">Leave</a>
+                    <form action="/groupleavepost?clubid={{club.clubid}}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        <button class="text-sm" name="leave" type="submit">Leave</button>
+                    </form>
                 </div>
 
             </div>
