@@ -31,6 +31,9 @@
         <a href="/ban-user">Ban a User</a>
     </div>
     <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+        <a href="/admin-upgrade">Upgrade User to Admin</a>
+    </div>
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <form action="/refresh-database" method="post">
             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
             <button type="submit">Refresh Database Content</button>

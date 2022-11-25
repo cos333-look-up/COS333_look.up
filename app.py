@@ -630,11 +630,15 @@ def groupinviterequest():
 
 @app.route("/groupinvitepost", methods=["POST"])
 def groupinvitepost():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
     clubid = flask.request.args.get("clubid")
     invited_netid = flask.request.form["netid"]
     invited_user = db.session.get(UsersModel, invited_netid)
     if invited_user is None:
-        return flask.redirect("/group-invite-request?clubid=" + clubid)
+        return flask.redirect(
+            flask.url_for("invitenetiderror", clubid=clubid), code=307
+        )
 
     # check if an invite has already been sent
     request_exists = (
@@ -649,9 +653,23 @@ def groupinvitepost():
         request = InviteRequests(invited_netid, clubid)
         db.session.add(request)
         db.session.commit()
+        return flask.redirect("/group-members?clubid=" + clubid)
 
-    # No matter what, redirect to index for loading the user's new page
-    return flask.redirect("/group-members?clubid=" + clubid)
+    return flask.redirect(
+        flask.url_for("invitenetiderror", clubid=clubid), code=307
+    )
+
+
+@app.route("/invite-netid-error", methods=["POST"])
+def invitenetiderror():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    clubid = flask.request.args.get("clubid")
+    html_code = flask.render_template(
+        "invite-netid-error.html", user=user, clubid=clubid
+    )
+    response = flask.make_response(html_code)
+    return response
 
 
 @app.route("/user-info", methods=["GET"])
@@ -912,6 +930,44 @@ def banuserpost():
     db.session.add(ban)
     db.session.commit()
     return flask.redirect("/ban-user")
+
+
+@app.route("/admin-upgrade", methods=["GET"])
+def adminupgrade():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.redirect(flask.url_for("profilecreation"))
+    if not user.is_admin:
+        return flask.redirect("/")
+    html_code = flask.render_template("admin-upgrade.html", user=user)
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/adminupgradepost", methods=["POST"])
+def adminupgradepost():
+    upgraded_netid = flask.request.form["netid"]
+    user = db.session.get(UsersModel, upgraded_netid)
+    if user is None:
+        return flask.redirect(
+            flask.url_for("adminnetiderror"), code=307
+        )
+    user.is_admin = True
+    db.session.add(user)
+    db.session.commit()
+    return flask.redirect("/admin-upgrade")
+
+
+@app.route("/admin-netid-error", methods=["POST"])
+def adminnetiderror():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    html_code = flask.render_template(
+        "admin-netid-error.html", user=user
+    )
+    response = flask.make_response(html_code)
+    return response
 
 
 @app.route("/banned-users", methods=["GET"])

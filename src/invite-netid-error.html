@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look.Up: Invite Netid Error</title>
+    <link rel="stylesheet" href='/static_files/output.css' />
+    <link rel="icon" href="/static_files/icon.png">
+    <!-- import fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    </style>
+</head>
+
+<body class="bg-slate-50">
+    {% include "header.html" %}
+
+    <div class="header-font text-2xl px-7 py-5">
+        <span class="text-slate-700">netid</span>
+        <span class="text-amber-400">error</span>
+    </div>
+
+    <div class="flex flex-col items-center justify-center">
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <span>The Netid You Have Entered Does Not Exist or is Already in This Club</span>
+        </div>
+    </div>
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+        <a href="/group-invite-request?clubid={{clubid}}" class="text-sm">Return</a>
+    </div>
+</body>
+
+{% include "navigation-menu.html" %}
+
+<script src="/static_files/index.js"></script>
+
+</html>
