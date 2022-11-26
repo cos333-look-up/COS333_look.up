@@ -41,7 +41,6 @@ from models import (
     InviteRequests,
     CreationRequests,
     UndergraduatesModel,
-    BannedUsers,
 )
 
 
@@ -116,6 +115,7 @@ def profilepost():
             "/Additional%20Files/default_user_icon"
         )["url"]
     is_admin = False
+    is_banned = False
     new_user = UsersModel(
         netid,
         first_name,
@@ -124,6 +124,7 @@ def profilepost():
         instagram,
         snapchat,
         is_admin,
+        is_banned,
         photo,
     )
     # Input the user into the DB
@@ -931,8 +932,8 @@ def banuserpost():
         return flask.redirect(
             flask.url_for("adminnetiderror"), code=307
         )
-    ban = BannedUsers(banned_netid)
-    db.session.add(ban)
+    user.is_banned = True
+    db.session.add(user)
     db.session.commit()
     return flask.redirect("/ban-user")
 
@@ -983,19 +984,14 @@ def bannedusers():
         return flask.redirect(flask.url_for("profilecreation"))
     if not user.is_admin:
         return flask.redirect("/")
-    banned_members = (
-        db.session.query(
-            BannedUsers.netid,
-            UsersModel.first_name,
-            UsersModel.last_name,
-            UsersModel.photo,
-        )
-        .filter(BannedUsers.netid == UsersModel.netid)
+    banned_users = (
+        db.session.query(UsersModel)
+        .filter(UsersModel.is_banned == True)
         .order_by(UsersModel.first_name)
         .all()
     )
     html_code = flask.render_template(
-        "banned-users.html", user=user, banned_members=banned_members
+        "banned-users.html", user=user, banned_users=banned_users
     )
     response = flask.make_response(html_code)
     return response
@@ -1003,12 +999,12 @@ def bannedusers():
 
 @app.route("/unbanuserpost", methods=["POST"])
 def unbanuserpost():
-    unbanned_netid = flask.request.form["netid"]
-    banned_user = db.session.get(BannedUsers, unbanned_netid)
-    ## ADD BACK IN A PROFILE HERE SOMEHOW
-    db.session.delete(banned_user)
+    unbanned_netid = flask.request.args.get("netid")
+    banned_user = db.session.get(UsersModel, unbanned_netid)
+    banned_user.is_banned = False
+    db.session.add(banned_user)
     db.session.commit()
-    return flask.redirect("/unban-user")
+    return flask.redirect("/banned-users")
 
 
 @app.route("/users", methods=["GET"])

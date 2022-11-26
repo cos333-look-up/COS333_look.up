@@ -11,6 +11,7 @@ class UsersModel(db.Model):
     instagram = db.Column(db.String)
     snapchat = db.Column(db.String)
     is_admin = db.Column(db.Boolean)
+    is_banned = db.Column(db.Boolean)
     photo = db.Column(db.String)
 
     def __init__(
@@ -22,6 +23,7 @@ class UsersModel(db.Model):
         instagram,
         snapchat,
         is_admin,
+        is_banned,
         photo,
     ):
         self.netid = netid
@@ -31,6 +33,7 @@ class UsersModel(db.Model):
         self.instagram = instagram
         self.snapchat = snapchat
         self.is_admin = is_admin
+        self.is_banned = is_banned
         self.photo = photo
 
 
@@ -120,13 +123,3 @@ class UndergraduatesModel(db.Model):
     def __init__(self, netid, classyear):
         self.netid = netid
         self.classyear = classyear
-
-
-## Model for banned users
-class BannedUsers(db.Model):
-    __tablename__ = "bannedusers"
-
-    netid = db.Column(db.String, primary_key=True)
-
-    def __init__(self, netid):
-        self.netid = netid
