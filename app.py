@@ -631,8 +631,6 @@ def groupinviterequest():
 
 @app.route("/groupinvitepost", methods=["POST"])
 def groupinvitepost():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
     clubid = flask.request.args.get("clubid")
     invited_netid = flask.request.form["netid"]
     invited_user = db.session.get(UsersModel, invited_netid)
@@ -641,24 +639,33 @@ def groupinvitepost():
             flask.url_for("invitenetiderror", clubid=clubid), code=307
         )
 
+    invited_member = db.session.get(
+        ClubMembersModel, (invited_netid, clubid)
+    )
+    if invited_member is not None:
+        return flask.redirect(
+            flask.url_for("invitenetiderror", clubid=clubid), code=307
+        )
+
+    join_exists = db.session.get(JoinRequests, (invited_netid, clubid))
+    if join_exists is not None:
+        return flask.redirect(
+            flask.url_for("invitenetiderror", clubid=clubid), code=307
+        )
+
     # check if an invite has already been sent
-    request_exists = (
-        db.session.query(InviteRequests.netid)
-        .filter(InviteRequests.netid == invited_netid)
-        .filter(InviteRequests.clubid == clubid)
-        .first()
+    request_exists = db.session.get(
+        InviteRequests, (invited_netid, clubid)
     )
+    if request_exists is not None:
+        return flask.redirect(
+            flask.url_for("invitenetiderror", clubid=clubid), code=307
+        )
 
-    # if an invite hasn't been sent yet, add to database
-    if request_exists is None:
-        request = InviteRequests(invited_netid, clubid)
-        db.session.add(request)
-        db.session.commit()
-        return flask.redirect("/group-members?clubid=" + clubid)
-
-    return flask.redirect(
-        flask.url_for("invitenetiderror", clubid=clubid), code=307
-    )
+    request = InviteRequests(invited_netid, clubid)
+    db.session.add(request)
+    db.session.commit()
+    return flask.redirect("/group-members?clubid=" + clubid)
 
 
 @app.route("/invite-netid-error", methods=["POST"])
