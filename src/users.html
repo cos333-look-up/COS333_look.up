@@ -11,18 +11,38 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
   </style>
 </head>
-
+<body class="bg-slate-50">
 
     {% include "header.html" %}
 
-    {% for student in student_data: %}
-    <div class="inline text-lg text-center mt-5 font-medium text-slate-800">
-      {{ student[0] }}
-      <br>
-      {{ student[1] }}
+    <center>
+      <form type="submit">
+        <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="search" name="search"
+            placeholder="Search">
+        <input type="submit">
+      </form>
+    </center>
+
+    {% for individual_user in users %}
+    <div>
+      {{ individual_user.first_name }}
+      {{ individual_user.last_name }}
+
+      {% if "collface" in individual_user.photo: %}
+        <!-- Default profile picture -->
+        <img src="../assets/profile.png">
+      {% else: %}
+        <img src="{{ individual_user.photo }}">
+      {% endif %}
+
+
+      {{ individual_user.netid }}
     </div>
+
     {% endfor %}
 
+
+    <div id="results"></div>
 
 </body>
 

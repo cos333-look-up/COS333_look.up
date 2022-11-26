@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 import os
 import auth
 import cloudinary
+import more_itertools as mit
 
 from api import req_lib
 
@@ -830,22 +831,52 @@ def users():
     if user is None:
         return flask.redirect(flask.url_for("profile-create"))
 
-    req = req_lib.ReqLib()
-    # figure out group name to get all students
-    result = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
-    student_data = []
-    counter = 0
-    for member in result[0]['member']:
-        if counter > 50:
-            break
-        uid = member.split(',')[0][3:]
-        data = req.getJSON(req.configs.USERS, uid=uid)
-        if data:
-            student_data.append((data[0]['displayname'], data[0]['mail'].lower()))
-        counter += 1
+    search_string = flask.request.args.get('search')
+
+    # get all users and their information
+    users = (
+        db.session.query(UsersModel)
+        .order_by(UsersModel.netid)
+        .all()
+    )
+
+    # if the search string is not empty, find users whose names or netids
+    # contain the desired search string
+    if search_string:
+        users = (
+            db.session.query(UsersModel)
+            .filter(
+                (UsersModel.netid.contains(search_string)) |
+                (UsersModel.first_name.contains(search_string)) |
+                (UsersModel.last_name.contains(search_string))
+                )
+            .order_by(UsersModel.netid)
+            .all()
+        )
+
+    users_pages = list(mit.chunked(users, 50))
+    print(users_pages)
+
+    # front end: list of page numbers that slides; only five ever visible
+    # each contain links to other page
+
+    # back end: take 
+    # req = req_lib.ReqLib()
+    # # figure out group name to get all students
+    # result = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
+    # student_data = []
+    # counter = 0
+    # for member in result[0]['member']:
+    #     if counter > 50:
+    #         break
+    #     uid = member.split(',')[0][3:]
+    #     data = req.getJSON(req.configs.USERS, uid=uid)
+    #     if data:
+    #         student_data.append((data[0]['displayname'], data[0]['mail'].lower()))
+    #     counter += 1
 
     html_code = flask.render_template(
-        "users.html", user=user, student_data=student_data
+        "users.html", user=user, users=users
     )
     response = flask.make_response(html_code)
     return response
