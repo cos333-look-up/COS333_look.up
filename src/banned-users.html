@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Look.Up: Member Removal for {{club.name}}</title>
+    <title>Look.Up: Banned Users</title>
     <link rel="stylesheet" href='/static_files/output.css' />
     <link rel="icon" href="/static_files/icon.png">
     <!-- import fonts -->
@@ -13,38 +13,38 @@
     </style>
 </head>
 
-<body class="bg-slate-50 reveal">
+<body class="bg-slate-50">
     {% include "header.html" %}
 
     <div class="header-font text-2xl px-7 py-5">
-        <span class="text-slate-700">remove</span>
-        <span class="text-amber-400">members</span>
+        <span class="text-slate-700">banned</span>
+        <span class="text-amber-400">users</span>
     </div>
 
+
     <div class="browse mx-4">
-        {% for member in members: %}
-        {% if not member[0] %}
+        {% for user in banned_users: %}
         <div class="text-lg text-center mt-5 font-medium text-slate-800">
             <div class="info-box">
-                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member[4]}}">
+                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{user.photo}}">
                 <br>
 
                 <div class="text-base">
-                    {{member[1]}} {{member[2]}}
+                    {{user.first_name}} {{user.last_name}}
                 </div>
 
                 <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
-                    <form action="/removemember?clubid={{club.clubid}}&netid={{member[3]}}" method="post">
+                    <form action="/unbanuserpost?netid={{user.netid}}" method="post">
                         <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                        <button class="text-sm" type="submit" name="Remove" value="Remove">Remove</button>
+                        <button class="text-sm" type="submit" name="Unban" value="Unban">Unban</button>
                     </form>
                 </div>
 
             </div>
         </div>
-        {% endif %}
         {% endfor %}
     </div>
+
 </body>
 
 {% include "navigation-menu.html" %}

@@ -11,6 +11,7 @@ class UsersModel(db.Model):
     instagram = db.Column(db.String)
     snapchat = db.Column(db.String)
     is_admin = db.Column(db.Boolean)
+    is_banned = db.Column(db.Boolean)
     photo = db.Column(db.String)
 
     def __init__(
@@ -22,6 +23,7 @@ class UsersModel(db.Model):
         instagram,
         snapchat,
         is_admin,
+        is_banned,
         photo,
     ):
         self.netid = netid
@@ -31,6 +33,7 @@ class UsersModel(db.Model):
         self.instagram = instagram
         self.snapchat = snapchat
         self.is_admin = is_admin
+        self.is_banned = is_banned
         self.photo = photo
 
 
@@ -109,12 +112,14 @@ class CreationRequests(db.Model):
         #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
 
-## Models for all undergraduates
+
+## Model for undergrads
 class UndergraduatesModel(db.Model):
     __tablename__ = "allundergrads"
 
     netid = db.Column(db.String, primary_key=True)
-    classyear = db.Column(db.Integer)
+    classyear = db.Column(db.Integer, primary_key=True)
+
     def __init__(self, netid, classyear):
         self.netid = netid
         self.classyear = classyear

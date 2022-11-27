@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Look.Up: {{name}} Pending Invites</title>
   <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="icon" href="/static_files/icon.png">
   <!-- import fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -14,11 +15,27 @@
 
 <body class="bg-slate-50 reveal">
   {% include "header.html" %}
-  {% for invite in invites: %}
-  <div class="text-lg text-center mt-5 font-medium text-slate-800">
-    <div>{{invite.first_name}} {{invite.last_name}} has a pending invite</div>
+
+  <div class="header-font text-2xl px-7 py-5">
+    <span class="text-slate-700">pending</span>
+    <span class="text-amber-400">invites</span>
   </div>
-  {% endfor %}
+
+  <div class="browse mx-4">
+    {% for invite in invites: %}
+    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+      <div class="info-box">
+        <img class="dot cursor-pointer !h-20 !w-20 border" src="{{invite.photo}}">
+        <br>
+
+        <div class="text-base">
+          {{invite.first_name}} {{invite.last_name}}
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </body>
 
 {% include "navigation-menu.html" %}

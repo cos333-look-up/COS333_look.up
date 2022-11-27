@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Look.Up: Admin Console</title>
     <link rel="stylesheet" href='/static_files/output.css' />
+    <link rel="icon" href="/static_files/icon.png">
     <!-- import fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -14,17 +15,30 @@
 
 <body class="bg-slate-50">
     {% include "header.html" %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+
+    <div class="header-font text-2xl px-7 py-5">
+        <span class="text-slate-700">admin</span>
+        <span class="text-amber-400">console</span>
+    </div>
+
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/group-creation-requests">Group Creation Requests</a>
     </div>
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/group-removal">Remove a Group</a>
     </div>
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <a href="/ban-user">Ban a User</a>
     </div>
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+        <a href="/banned-users">View Banned Users</a>
+    </div>
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+        <a href="/admin-upgrade">Upgrade User to Admin</a>
+    </div>
+    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
         <form action="/refresh-database" method="post">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
             <button type="submit">Refresh Database Content</button>
         </form>
     </div>

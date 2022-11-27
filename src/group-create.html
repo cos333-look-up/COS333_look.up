@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Look.Up: Group Creation</title>
   <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="icon" href="/static_files/icon.png">
   <!-- import fonts -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -14,6 +15,7 @@
 
 <body class="bg-slate-50">
   <form id="FormId" action="/grouppost" method="post">
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <div id="name-form" class="flex h-screen justify-center items-center">
       <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
         <div class="text-2xl text-center header-font">
