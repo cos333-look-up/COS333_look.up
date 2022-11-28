@@ -55,6 +55,7 @@
           </a>
           {% endfor %}
 
+        <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
         {% else: %}
           {% for page in range(max_pages): %}
               {% if (page >= page_number - 2) and (page <= page_number + 2): %}
