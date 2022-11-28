@@ -948,6 +948,10 @@ def banuserpost():
         return flask.redirect(
             flask.url_for("adminnetiderror"), code=307
         )
+    if user.is_admin:
+        return flask.redirect(
+            flask.url_for("adminnetiderror"), code=307
+        )
     user.is_banned = True
     db.session.add(user)
     db.session.commit()
