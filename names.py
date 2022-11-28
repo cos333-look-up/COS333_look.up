@@ -25,11 +25,10 @@ with engine.connect() as connection:
     uid=netid,
     )
     if names:
-      full_name = names[0]['displayname'].split(' ')
-      first_name, last_name = get_first_last(full_name)
-      print(first_name, last_name)
+      email = names[0]['mail'].lower()
+      print(email)
       connection.execute(sqlalchemy.update(users_table)
-        .values(first_name=first_name, last_name=last_name)
+        .values(email=email)
         .where(users_table.c.netid == netid))
 
-  print('All names updated!')
+  print('All emails updated!')

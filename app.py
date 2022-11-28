@@ -1023,25 +1023,11 @@ def users():
     if user is None:
         return flask.redirect(flask.url_for("profilecreation"))
 
-    req = req_lib.ReqLib()
-    # figure out group name to get all students
-    result = req.getJSON(
-        req.configs.GROUPS, name="Undergraduate Class of 2024"
-    )
-    student_data = []
-    counter = 0
-    for member in result[0]["member"]:
-        if counter > 50:
-            break
-        uid = member.split(",")[0][3:]
-        data = req.getJSON(req.configs.USERS, uid=uid)
-        if data:
-            student_data.append(
-                (data[0]["displayname"], data[0]["mail"].lower())
-            )
-        counter += 1
-
+    # get the string that user searched and current page number
     search_string = flask.request.args.get('search')
+    page_number = flask.request.args.get('page')
+    if not page_number:
+        page_number = 0
 
     # get all users and their information
     users = (
@@ -1053,40 +1039,28 @@ def users():
     # if the search string is not empty, find users whose names or netids
     # contain the desired search string
     if search_string:
+        lowercase = search_string.lower()
         users = (
             db.session.query(UsersModel)
             .filter(
-                (UsersModel.netid.contains(search_string)) |
-                (UsersModel.first_name.contains(search_string)) |
-                (UsersModel.last_name.contains(search_string))
+                (UsersModel.netid.ilike("%" + lowercase + "%")) |
+                (UsersModel.display_name.ilike("%" + lowercase + "%"))
                 )
             .order_by(UsersModel.netid)
             .all()
         )
 
+    # split users up into pages of 50. Later on, allow user to select
+    # number of results per page.
     users_pages = list(mit.chunked(users, 50))
-    print(users_pages)
-
-    # front end: list of page numbers that slides; only five ever visible
-    # each contain links to other page
-
-    # back end: take
-    # req = req_lib.ReqLib()
-    # # figure out group name to get all students
-    # result = req.getJSON(req.configs.GROUPS, name="Undergraduate Class of 2024")
-    # student_data = []
-    # counter = 0
-    # for member in result[0]['member']:
-    #     if counter > 50:
-    #         break
-    #     uid = member.split(',')[0][3:]
-    #     data = req.getJSON(req.configs.USERS, uid=uid)
-    #     if data:
-    #         student_data.append((data[0]['displayname'], data[0]['mail'].lower()))
-    #     counter += 1
 
     html_code = flask.render_template(
-        "users.html", user=user, users=users
+        "users.html",
+        user=user,
+        users_pages=users_pages,
+        max_pages=len(users_pages),
+        page_number=int(page_number),
+        search_string=search_string
     )
     response = flask.make_response(html_code)
     return response

@@ -13,39 +13,56 @@
   </style>
 </head>
 <body class="bg-slate-50">
+  {% include "header.html" %}
 
-    {% include "header.html" %}
+  <center>
+    <form type="submit">
+      <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="search" name="search"
+          placeholder="Search">
+      <input type="submit">
+    </form>
 
-    <center>
-      <form type="submit">
-        <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="search" name="search"
-            placeholder="Search">
-        <input type="submit">
-      </form>
-    </center>
-
-    {% for individual_user in users %}
-    <div>
-      {{ individual_user.first_name }}
-      {{ individual_user.last_name }}
-
-      {% if "collface" in individual_user.photo: %}
-        <!-- Default profile picture -->
-        <img src="../assets/profile.png">
-      {% else: %}
-        <img src="{{ individual_user.photo }}">
-      {% endif %}
-
-    {% include "header.html" %}
-
-    {% for student in student_data: %}
-    <div class="inline text-lg text-center mt-5 font-medium text-slate-800">
-    {{ student[0] }}
-    <br>
-    {{ student[1] }}
-    </div>
+    {% for person in users_pages[page_number]: %}
+      <div>{{ person.display_name }}</div>
+      <div>{{ person.email }} </div><br>
+      <br>
     {% endfor %}
 
+    <span>
+      {% if max_pages <= 5: %}
+        {% for page in range([max_pages, 5] | min): %}
+        <a href="/users?search={{search_string}}&page={{page}}">
+          {{ page + 1 }}
+        </a>
+        {% endfor %}
+
+      {% else: %}
+        {% if (page_number) | abs <= 1: %}
+          {% for page in range(5): %}
+            <a href="/users?search={{search_string}}&page={{page}}">
+              {{ page + 1 }}
+            </a>
+          {% endfor %}
+
+        {% elif (max_pages - page_number - 1) | abs <= 1: %}
+          {% for page in range(max_pages - 5, max_pages): %}
+          <a href="/users?search={{search_string}}&page={{page}}">
+            {{ page + 1 }}
+          </a>
+          {% endfor %}
+
+        {% else: %}
+          {% for page in range(max_pages): %}
+              {% if (page >= page_number - 2) and (page <= page_number + 2): %}
+              <a href="/users?search={{search_string}}&page={{page}}">
+                {{ page + 1 }}
+              </a>
+              {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    </span>
+  </center>
 </body>
 
 {% include "navigation-menu.html" %}
