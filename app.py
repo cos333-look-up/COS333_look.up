@@ -1025,6 +1025,8 @@ def users():
 
     # get the string that user searched and current page number
     search_string = flask.request.args.get('search')
+    if not search_string:
+        search_string = ""
     page_number = flask.request.args.get('page')
     if not page_number:
         page_number = 0

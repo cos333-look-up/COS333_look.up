@@ -29,6 +29,7 @@
     {% endfor %}
 
     <span>
+      <!-- if you have 5 pages of results or less, show all page numbers -->
       {% if max_pages <= 5: %}
         {% for page in range([max_pages, 5] | min): %}
         <a href="/users?search={{search_string}}&page={{page}}">
@@ -36,7 +37,9 @@
         </a>
         {% endfor %}
 
+      <!-- otherwise -->
       {% else: %}
+        <!-- for low page numbers, show pages 1-5 -->
         {% if (page_number) | abs <= 1: %}
           {% for page in range(5): %}
             <a href="/users?search={{search_string}}&page={{page}}">
@@ -44,6 +47,7 @@
             </a>
           {% endfor %}
 
+        <!-- for high page numbers, show pages max_pages - 4 through max_pages -->
         {% elif (max_pages - page_number - 1) | abs <= 1: %}
           {% for page in range(max_pages - 5, max_pages): %}
           <a href="/users?search={{search_string}}&page={{page}}">
