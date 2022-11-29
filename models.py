@@ -7,10 +7,13 @@ class UsersModel(db.Model):
     netid = db.Column(db.String, primary_key=True)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
+    display_name = db.Column(db.String)
     phone = db.Column(db.String)
     instagram = db.Column(db.String)
     snapchat = db.Column(db.String)
+    email = db.Column(db.String)
     is_admin = db.Column(db.Boolean)
+    is_banned = db.Column(db.Boolean)
     photo = db.Column(db.String)
 
     def __init__(
@@ -18,19 +21,25 @@ class UsersModel(db.Model):
         netid,
         first_name,
         last_name,
+        display_name,
         phone,
         instagram,
         snapchat,
+        email,
         is_admin,
+        is_banned,
         photo,
     ):
         self.netid = netid
         self.first_name = first_name
         self.last_name = last_name
+        self.display_name = display_name
         self.phone = phone
         self.instagram = instagram
         self.snapchat = snapchat
+        self.email = email
         self.is_admin = is_admin
+        self.is_banned = is_banned
         self.photo = photo
 
 
@@ -108,3 +117,15 @@ class CreationRequests(db.Model):
         # for key, value in info_shared.items():
         #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
+
+
+## Model for undergrads
+class UndergraduatesModel(db.Model):
+    __tablename__ = "allundergrads"
+
+    netid = db.Column(db.String, primary_key=True)
+    classyear = db.Column(db.Integer, primary_key=True)
+
+    def __init__(self, netid, classyear):
+        self.netid = netid
+        self.classyear = classyear

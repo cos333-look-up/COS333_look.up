@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Look.Up: Group Removal</title>
+    <title>Look.Up: Member Removal for {{club.name}}</title>
     <link rel="stylesheet" href='/static_files/output.css' />
+    <link rel="icon" href="/static_files/icon.png">
     <!-- import fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -14,19 +15,36 @@
 
 <body class="bg-slate-50 reveal">
     {% include "header.html" %}
-    {% for member in members: %}
-    {% if not member[0] %}
-    <div class="flex flex-col justify-center text-lg text-center mt-5 font-medium text-slate-800">
-        {{member[1]}} {{member[2]}}
+
+    <div class="header-font text-2xl px-7 py-5">
+        <span class="text-slate-700">remove</span>
+        <span class="text-amber-400">members</span>
     </div>
-    <div class="flex flex-col justify-center text-lg text-center mt-5 font-medium text-slate-800">
-        <form class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10 text-center"
-            action="/removemember?clubid={{clubid}}&netid={{member[3]}}" method="post">
-            <button type="submit" name="Remove" value="Remove">Remove</button>
-        </form>
+
+    <div class="browse mx-4">
+        {% for member in members: %}
+        {% if not member[0] %}
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <div class="info-box">
+                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member[4]}}">
+                <br>
+
+                <div class="text-base">
+                    {{member[1]}} {{member[2]}}
+                </div>
+
+                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <form action="/removemember?clubid={{club.clubid}}&netid={{member[3]}}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        <button class="text-sm" type="submit" name="Remove" value="Remove">Remove</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
     </div>
-    {% endif %}
-    {% endfor %}
 </body>
 
 {% include "navigation-menu.html" %}

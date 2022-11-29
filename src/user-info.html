@@ -7,9 +7,10 @@
     {% if requested_user == user %}
     <title>Look.Up: Profile Information</title>
     {% else %}
-    <title>Look.Up: {{requested_user.first_name}} {{requested_user.last_name}} Information</title>
+    <title>Look.Up: {{requested_user.display_name}} Information</title>
     {% endif %}
     <link rel="stylesheet" href='/static_files/output.css' />
+    <link rel="icon" href="/static_files/icon.png">
     <!-- import fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
@@ -25,7 +26,7 @@
         </div>
 
         <div class="mt-5 text-lg font-medium text-slate-800">
-            {{requested_user.first_name}} {{requested_user.last_name}}
+            {{requested_user.display_name}}
         </div>
         {% if club.info_shared[0] == "1" or requested_user == user %}
         <div class="mt-2 font-light text-slate-800">

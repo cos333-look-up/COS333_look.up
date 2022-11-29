@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Look.Up</title>
+  <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="icon" href="/static_files/icon.png">
+  <!-- import fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+  </style>
+</head>
+<body class="bg-slate-50">
+  {% include "header.html" %}
+
+  <center>
+    <form type="submit">
+      <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="search" name="search"
+          placeholder="Search">
+      <input type="submit">
+    </form>
+
+    {% for person in users_pages[page_number]: %}
+      <div>{{ person.display_name }}</div>
+      <div>{{ person.email }} </div><br>
+      <br>
+    {% endfor %}
+
+    <span>
+      <!-- if you have 5 pages of results or less, show all page numbers -->
+      {% if max_pages <= 5: %}
+        {% for page in range([max_pages, 5] | min): %}
+        <a href="/users?search={{search_string}}&page={{page}}">
+          {{ page + 1 }}
+        </a>
+        {% endfor %}
+
+      <!-- otherwise -->
+      {% else: %}
+        <!-- for low page numbers, show pages 1-5 -->
+        {% if (page_number) | abs <= 1: %}
+          {% for page in range(5): %}
+            <a href="/users?search={{search_string}}&page={{page}}">
+              {{ page + 1 }}
+            </a>
+          {% endfor %}
+
+        <!-- for high page numbers, show pages max_pages - 4 through max_pages -->
+        {% elif (max_pages - page_number - 1) | abs <= 1: %}
+          {% for page in range(max_pages - 5, max_pages): %}
+          <a href="/users?search={{search_string}}&page={{page}}">
+            {{ page + 1 }}
+          </a>
+          {% endfor %}
+
+        <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
+        {% else: %}
+          {% for page in range(max_pages): %}
+              {% if (page >= page_number - 2) and (page <= page_number + 2): %}
+              <a href="/users?search={{search_string}}&page={{page}}">
+                {{ page + 1 }}
+              </a>
+              {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    </span>
+  </center>
+</body>
+
+{% include "navigation-menu.html" %}
+
+<script src="/static_files/index.js"></script>
+
+</html>

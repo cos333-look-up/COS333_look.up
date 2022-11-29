@@ -6,17 +6,27 @@
 <div id="menu" class="hidden bg-white absolute top-0 h-full w-5/6 z-20
 px-8 py-10">
   <div class="flex items-center mb-10">
-    <img class="dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}">
-    <span class="text-2xl font-medium">{{user.first_name}}<br>{{user.last_name}}</span>
+    {% if user.photo: %}
+      <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}">
+    {% else: %}
+      <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="assets/profile.png">
+    {% endif %}
+    <span class="text-2xl font-medium">
+      {% for elem in user.display_name.split(' ') %}
+        {{ elem }}
+        <br>
+      {% endfor %}
+    </span>
   </div>
 
   <div class="mb-10">
     <div class="menu-item" onclick="window.location='/'">Home</div>
+    <div class="menu-item" onclick="window.location='users'">Users</div>
     <div class="menu-item" onclick="window.location='my-invites'">My Invites</div>
     <div class="menu-item" onclick="window.location='profile-update'">Update Profile</div>
     <div class="menu-item" onclick="window.location='groups'">My Groups</div>
     <div class="menu-item" onclick="window.location='groups-search'">Search Groups</div>
-    {% if user.is_admin %}
+    {% if user.is_admin: %}
     <div class="menu-item" onclick="window.location='admin-console'">Admin Console</div>
     {% endif %}
   </div>

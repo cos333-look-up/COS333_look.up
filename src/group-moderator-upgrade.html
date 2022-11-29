@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look.Up: Moderator Upgrade for {{club.name}}</title>
+    <link rel="stylesheet" href='/static_files/output.css' />
+    <link rel="icon" href="/static_files/icon.png">
+    <!-- import fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    </style>
+</head>
+
+<body class="bg-slate-50 reveal">
+    {% include "header.html" %}
+
+    <div class="header-font text-2xl px-7 py-5">
+        <span class="text-slate-700">moderator</span>
+        <span class="text-amber-400">upgrade</span>
+    </div>
+
+    <div class="browse mx-4">
+        {% for member in members: %}
+        {% if not member[0] %}
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+            <div class="info-box">
+                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member[4]}}">
+                <br>
+
+                <div class="text-base">
+                    {{member[1]}} {{member[2]}}
+                </div>
+
+                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <form action="/upgrademember?clubid={{club.clubid}}&netid={{member[3]}}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                        <button class="text-sm" type="submit" name="Upgrade" value="Upgrade">Upgrade</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</body>
+
+{% include "navigation-menu.html" %}
+
+<script src="/static_files/index.js"></script>
+
+</html>
