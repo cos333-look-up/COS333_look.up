@@ -44,11 +44,17 @@ from models import (
     UndergraduatesModel,
 )
 
-
 ## Index Route
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
 def index():
+    html_code = flask.render_template("landing.html")
+    response = flask.make_response(html_code)
+    return response
+
+# landing page
+@app.route("/landing", methods=["GET"])
+def landing():
     # Setup data model
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
@@ -59,14 +65,6 @@ def index():
     html_code = flask.render_template("index.html", user=user)
     response = flask.make_response(html_code)
     return response
-
-# landing page
-@app.route("/landing", methods=["GET"])
-def landing():
-    html_code = flask.render_template("landing.html")
-    response = flask.make_response(html_code)
-    return response
-
 
 ## Profile Creation Route
 @app.route("/profile-create", methods=["GET"])
