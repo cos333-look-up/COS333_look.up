@@ -13,35 +13,36 @@
     </style>
 </head>
 
-<body class="bg-slate-50">
+<body class="bg-offwhite">
     {% include "header.html" %}
 
     <div class="header-font text-2xl px-7 py-5">
-        <span class="text-slate-700">{{name}}</span>
+        <span class="text-slate-700 font-bold">{{name}}</span>
     </div>
 
     {% if clubmember.is_moderator %}
 
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
         <a href="/group-invite-request?clubid={{clubid}}" class="text-sm">Invite</a>
     </div>
 
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
         <a href="/pending-invites?clubid={{clubid}}" class="text-sm">Pending Invites</a>
     </div>
 
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
         <a href="/group-requests?clubid={{clubid}}" class="text-sm">Join Requests</a>
     </div>
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
         <a href="/group-remove-member?clubid={{clubid}}" class="text-sm">Remove Members</a>
     </div>
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
-        <a href="/group-moderator-upgrade?clubid={{clubid}}" class="text-sm">Upgrade Member to Moderator</a>
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
+        <a href="/group-moderator-upgrade?clubid={{clubid}}" class="text-sm">Promote Members</a>
     </div>
 
     {% endif %}
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
         <a href="/group-leave?clubid={{clubid}}" class="text-sm">Leave Group</a>
     </div>
 
@@ -62,7 +63,7 @@
                     {{member.display_name}}
                 </div>
 
-                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
                     <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm">See More</a>
                 </div>
 
@@ -89,7 +90,7 @@
                     {{member.display_name}}
                 </div>
 
-                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
                     <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm">See More</a>
                 </div>
 
