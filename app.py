@@ -695,15 +695,17 @@ def userinfo():
     if user.is_banned:
         return flask.redirect("banned")
     member_netid = flask.request.args.get("netid")
+    is_my_profile = (member_netid == netid)
 
     # if you're looking at your own profile, show all info
-    if member_netid == netid:
+    if is_my_profile:
         requested_user = db.session.get(UsersModel, member_netid)
         html_code = flask.render_template(
             "user-info.html",
             requested_user=requested_user,
             user=user,
             club=ClubsModel(None, None, None, None),
+            is_my_profile=is_my_profile
         )
         response = flask.make_response(html_code)
         return response
@@ -744,6 +746,7 @@ def userinfo():
         requested_user=requested_user,
         user=user,
         club=club,
+        is_my_profile=is_my_profile
     )
     response = flask.make_response(html_code)
     return response
