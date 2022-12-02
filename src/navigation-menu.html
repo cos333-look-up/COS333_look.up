@@ -3,7 +3,7 @@
 </div>
 
 <!-- navigation menu -->
-<div id="menu" class="hidden bg-white absolute top-0 h-full w-5/6 z-20
+<div id="menu" class="bg-offwhite absolute top-0 h-full w-5/6 z-20
 px-8 py-10">
   <div class="flex items-center mb-10">
     {% if user.photo: %}
@@ -21,15 +21,19 @@ px-8 py-10">
 
   <div class="mb-10">
     <div class="menu-item" onclick="window.location='users'">Individual Lookup</div>
-    <div class="menu-item" onclick="window.location='my-invites'">My Invites</div>
+    <div class="menu-item" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
+    <div class="menu-item">My Contacts (not ready)</div>
+    <div class="menu-item">Dark Mode (not ready)</div>
+    <hr class="mt-6 bg-text h-0.25">
+    <div class="mt-6 font-medium text-2xl pb-3">Groups</div>
+    <div class="menu-item" onclick="window.location='group-create-request'">Create a Group</div>
+    <div class="menu-item" onclick="window.location='groups-search'">All Groups</div>
     <div class="menu-item" onclick="window.location='groups'">My Groups</div>
-    <div class="menu-item" onclick="window.location='groups-search'">Search Groups</div>
-    {% if user.is_admin: %}
-    <div class="menu-item" onclick="window.location='admin-console'">Admin Console</div>
-    {% endif %}
-  </div>
+    <div class="menu-item" onclick="window.location='my-invites'">My Invites</div>
 
-  <div class="flex w-fit px-7 py-5 bg-amber-400 rounded-3xl">
-    <span class="font-medium text-xl" onclick="window.location='group-create-request'">Create a Group</span>
+    {% if user.is_admin: %}
+    <hr class="mt-6 bg-text h-0.25">
+    <div class="mt-6 menu-item" onclick="window.location='admin-console'">Admin Console</div>
+    {% endif %}
   </div>
 </div>

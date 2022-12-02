@@ -17,15 +17,15 @@
     </style>
 </head>
 
-<body class="bg-slate-50">
+<body class="bg-offwhite">
     {% include "header.html" %}
 
     <div class="flex flex-col items-center justify-center">
         <div style="background-image: url({{requested_user.photo}}); border-radius: 50%;"
-            class="mt-7 h-64 w-64 bg-cover">
+            class="mt-7 h-72 w-72 bg-cover">
         </div>
 
-        <div class="mt-5 text-lg font-medium text-slate-800">
+        <div class="mt-5 text-2xl font-medium text-slate-800">
             {{requested_user.display_name}}
         </div>
         {% if club.info_shared[0] == "1" or requested_user == user %}
@@ -34,11 +34,11 @@
         </div>
         {% endif %}
         {% if club.info_shared != "00" or requested_user == user %}
-        <div class="info-box !w-fit !mt-5 !pr-24" style="min-width: 50%;">
-            <div class="ml-3 text-lg font-medium text-slate-800">
+        <div class="info-box !mt-5 !pr-24" style="min-width: 80vw;">
+            <div class="ml-3 text-xl font-medium text-slate-800">
                 {{requested_user.first_name}}'s Info
             </div>
-            <div class="mt-3 ml-3">
+            <div class="mt-5 ml-3 text-lg">
                 {% if club.info_shared[0] == "1" or requested_user == user %}
                 <div class="flex items-center">
                     <svg class="w-5" "version=" 1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
@@ -109,8 +109,8 @@
         </div>
         {% endif %}
         {% if is_my_profile: %}
-        <div class="flex justify-center mx-2 my-2 px-3 py-3 bg-amber-400 rounded-3xl">
-            <span class="font-medium text-xl text-center" onclick="window.location='profile-update'">Update Profile</span>        </div>
+        <div class="flex justify-center mx-2 my-2 px-4 py-3 bg-light-pton rounded-xl">
+            <span class="font-medium text-xl text-center text-text" onclick="window.location='profile-update'">Update Profile</span>        </div>
         </div>
         {%endif%}
 

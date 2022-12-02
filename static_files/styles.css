@@ -18,6 +18,10 @@ body {
   color: #3C444D;
 }
 
+input::placeholder {
+  font-weight: 300;
+}
+
 .dot {
   height: 40px;
   width: 40px;
@@ -28,12 +32,11 @@ body {
 
 .info-box {
   background-color: white;
-  border-radius: 20px;
-  border-color: slategray;
   border-width: 0.01em;
   padding: 5% 5%;
-  margin: 0 5%;
+  margin: 0 7%;
   margin-bottom: 5%;
+  box-shadow: 2px 2px 5px #d3d3d3;
 }
 
 .announcement-header {
@@ -60,11 +63,21 @@ body {
   font-size: 1.25rem; /* 20px */
   line-height: 1.75rem; /* 28px */
   padding: 3% 0;
-  font-weight: 500;
 }
 
 .hidden {
   display: none;
+}
+
+/* Make navigation menu slide right */
+div#menu {
+  left: -100%;
+  transition: all 0.3s ease;
+}
+
+div#menu.reveal {
+  left: 0%;
+  transition: all 0.3s ease;
 }
 
 
@@ -98,13 +111,13 @@ body {
 .typewriter::before {
   /* background: teal; */
   background: #FFE092;
-  animation: typewriter 0.5s steps(6) forwards;
+  animation: typewriter 0.75s steps(6) forwards;
 }
 
 .typewriter::after {
   width: 0.04em;
   background: #3C444D;
-  animation: typewriter 0.5s steps(6) forwards,
+  animation: typewriter 0.75s steps(6) forwards,
     blink 0.75s infinite;;
 
 }
