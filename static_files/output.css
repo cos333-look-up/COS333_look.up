@@ -4,7 +4,7 @@
 
 /* @import url('https://fonts.cdnfonts.com/css/helvetica-neue-9'); */
 
-/* ! tailwindcss v3.2.2 | MIT License | https://tailwindcss.com */
+/* ! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com */
 
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
@@ -34,7 +34,6 @@
 2. Prevent adjustments of font size after orientation changes in iOS.
 3. Use a more readable tab size.
 4. Use the user's configured `sans` font-family by default.
-5. Use the user's configured `sans` font-feature-settings by default.
 */
 
 html {
@@ -49,8 +48,6 @@ html {
   /* 3 */
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
-  font-feature-settings: normal;
-  /* 5 */
 }
 
 /*
@@ -470,6 +467,53 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+::-webkit-backdrop{
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
 ::backdrop{
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -579,6 +623,18 @@ video {
   margin-left: 0.75rem;
 }
 
+.ml-1{
+  margin-left: 0.25rem;
+}
+
+.mt-10{
+  margin-top: 2.5rem;
+}
+
+.mt-3{
+  margin-top: 0.75rem;
+}
+
 .mb-10{
   margin-bottom: 2.5rem;
 }
@@ -599,20 +655,12 @@ video {
   margin-top: 1.25rem !important;
 }
 
-.mt-3{
-  margin-top: 0.75rem;
-}
-
 .ml-4{
   margin-left: 1rem;
 }
 
 .mt-4{
   margin-top: 1rem;
-}
-
-.inline{
-  display: inline;
 }
 
 .flex{
@@ -688,6 +736,7 @@ video {
 }
 
 .w-fit{
+  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
 }
@@ -697,6 +746,7 @@ video {
 }
 
 .\!w-fit{
+  width: -webkit-fit-content !important;
   width: -moz-fit-content !important;
   width: fit-content !important;
 }
@@ -721,10 +771,6 @@ video {
   flex-direction: column;
 }
 
-.flex-wrap{
-  flex-wrap: wrap;
-}
-
 .items-center{
   align-items: center;
 }
@@ -743,6 +789,10 @@ video {
 
 .rounded-2xl{
   border-radius: 1rem;
+}
+
+.rounded-xl{
+  border-radius: 0.75rem;
 }
 
 .border{
@@ -769,14 +819,14 @@ video {
   background-color: rgb(252 211 77 / var(--tw-bg-opacity));
 }
 
-.bg-orange-400{
-  --tw-bg-opacity: 1;
-  background-color: rgb(251 146 60 / var(--tw-bg-opacity));
-}
-
 .bg-offwhite{
   --tw-bg-opacity: 1;
   background-color: rgb(255 250 238 / var(--tw-bg-opacity));
+}
+
+.bg-orange-400{
+  --tw-bg-opacity: 1;
+  background-color: rgb(251 146 60 / var(--tw-bg-opacity));
 }
 
 .bg-white{
@@ -792,6 +842,16 @@ video {
 .\!bg-amber-400{
   --tw-bg-opacity: 1 !important;
   background-color: rgb(251 191 36 / var(--tw-bg-opacity)) !important;
+}
+
+.bg-light-pton{
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 224 146 / var(--tw-bg-opacity));
+}
+
+.bg-dark-pton{
+  --tw-bg-opacity: 1;
+  background-color: rgb(244 162 97 / var(--tw-bg-opacity));
 }
 
 .bg-black{
@@ -858,6 +918,16 @@ video {
   padding-right: 0.25rem;
 }
 
+.px-2{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.px-4{
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 .px-8{
   padding-left: 2rem;
   padding-right: 2rem;
@@ -890,6 +960,10 @@ video {
 
 .pt-0{
   padding-top: 0px;
+}
+
+.pb-3{
+  padding-bottom: 0.75rem;
 }
 
 .\!pr-24{
@@ -934,6 +1008,11 @@ video {
   line-height: 1.75rem;
 }
 
+.text-5xl{
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .font-medium{
   font-weight: 500;
 }
@@ -966,6 +1045,20 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+.text-text{
+  --tw-text-opacity: 1;
+  color: rgb(60 68 77 / var(--tw-text-opacity));
+}
+
+.text-black{
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.underline{
+  text-decoration-line: underline;
+}
+
 .opacity-50{
   opacity: 0.5;
 }
@@ -982,6 +1075,7 @@ video {
 
 body {
   font-family: 'Helvetica Neue';
+  color: #3C444D;
 }
 
 .dot {
@@ -1046,4 +1140,144 @@ body {
   /*demo*/
   /* box-shadow: 0 0 0 1px black; */
   margin-bottom: 10px;
+}
+
+/* Animation on landing screen */
+
+.typewriter {
+  position: relative;
+}
+
+.typewriter::before,
+.typewriter::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.typewriter::before {
+  /* background: teal; */
+  background: #FFE092;
+  -webkit-animation: typewriter 0.5s steps(6) forwards;
+          animation: typewriter 0.5s steps(6) forwards;
+}
+
+.typewriter::after {
+  width: 0.04em;
+  background: #3C444D;
+  -webkit-animation: typewriter 0.5s steps(6) forwards,
+    blink 0.75s infinite;
+          animation: typewriter 0.5s steps(6) forwards,
+    blink 0.75s infinite;
+}
+
+@-webkit-keyframes typewriter {
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes typewriter {
+  to {
+    left: 100%;
+  }
+}
+
+@-webkit-keyframes blink {
+  to {
+    background: transparent;
+  }
+}
+
+@keyframes blink {
+  to {
+    background: transparent;
+  }
+}
+
+/* cloud movement on landing page */
+
+#cloud1 {
+  -webkit-animation: MoveLeftRight1 10s linear infinite;
+          animation: MoveLeftRight1 10s linear infinite;
+}
+
+#cloud2 {
+  -webkit-animation: MoveLeftRight2 10s linear infinite;
+          animation: MoveLeftRight2 10s linear infinite;
+}
+
+@-webkit-keyframes MoveLeftRight1 {
+  0% {
+    left: 10%;
+  }
+
+  40% {
+    left: 100%
+  }
+
+  90% {
+    left: 0%
+  }
+
+  100% {
+    left: 10%;
+  }
+}
+
+@keyframes MoveLeftRight1 {
+  0% {
+    left: 10%;
+  }
+
+  40% {
+    left: 100%
+  }
+
+  90% {
+    left: 0%
+  }
+
+  100% {
+    left: 10%;
+  }
+}
+
+@-webkit-keyframes MoveLeftRight2 {
+  0% {
+    left: 50%;
+  }
+
+  40% {
+    left: 100%
+  }
+
+  70% {
+    left: 0%
+  }
+
+  100% {
+    left: 50%;
+  }
+}
+
+@keyframes MoveLeftRight2 {
+  0% {
+    left: 50%;
+  }
+
+  40% {
+    left: 100%
+  }
+
+  70% {
+    left: 0%
+  }
+
+  100% {
+    left: 50%;
+  }
 }

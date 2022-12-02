@@ -5,7 +5,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'offwhite': '#fffaee'
+        'offwhite': '#fffaee',
+        'light-pton': '#FFE092',
+        'dark-pton': '#F4A261',
+        'text': '#3C444D'
       },
     },
 

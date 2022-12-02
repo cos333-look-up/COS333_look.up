@@ -7,6 +7,21 @@ function toggleMenu() {
   menu.classList.toggle("hidden")
 }
 
+function cloudsMove() {
+  let cloud1 = document.getElementById("cloud1")
+  let cloud2 = document.getElementById("cloud2")
+
+  let i = 0;
+  setInterval(function () {
+    let temp1 = parseInt(cloud1.style.left.slice(0, -1))
+    let temp2 = parseInt(cloud2.style.left.slice(0, -1))
+    cloud1.style.left = (temp1 + 1) + "%"
+    cloud2.style.left = (temp2 + 1) + "%"
+    i = i + 1;
+  }, 600);
+
+}
+
 function profileNext(currId, nextId) {
   if (!nextId) {
     window.location = "index"

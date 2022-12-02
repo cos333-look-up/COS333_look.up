@@ -60,6 +60,13 @@ def index():
     response = flask.make_response(html_code)
     return response
 
+# landing page
+@app.route("/landing", methods=["GET"])
+def landing():
+    html_code = flask.render_template("landing.html")
+    response = flask.make_response(html_code)
+    return response
+
 
 ## Profile Creation Route
 @app.route("/profile-create", methods=["GET"])

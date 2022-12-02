@@ -15,6 +15,7 @@
 
 body {
   font-family: 'Helvetica Neue';
+  color: #3C444D;
 }
 
 .dot {
@@ -77,4 +78,64 @@ body {
   /*demo*/
   /* box-shadow: 0 0 0 1px black; */
   margin-bottom: 10px;
+}
+
+/* Animation on landing screen */
+.typewriter {
+  position: relative;
+}
+
+.typewriter::before,
+.typewriter::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;  
+}
+
+.typewriter::before {
+  /* background: teal; */
+  background: #FFE092;
+  animation: typewriter 0.5s steps(6) forwards;
+}
+
+.typewriter::after {
+  width: 0.04em;
+  background: #3C444D;
+  animation: typewriter 0.5s steps(6) forwards,
+    blink 0.75s infinite;;
+
+}
+
+@keyframes typewriter {
+  to { left: 100%; }
+}
+
+@keyframes blink {
+  to { background: transparent; }
+}
+
+/* cloud movement on landing page */
+#cloud1 {
+  animation: MoveLeftRight1 10s linear infinite;
+}
+
+#cloud2 {
+  animation: MoveLeftRight2 10s linear infinite;
+}
+
+@keyframes MoveLeftRight1 {
+  0% { left: 10%; }
+  40% { left: 100% }
+  90% { left: 0% }
+  100% { left: 10%; }
+}
+
+@keyframes MoveLeftRight2 {
+  0% { left: 50%; }
+  40% { left: 100% }
+  70% { left: 0% }
+  100% { left: 50%; }
 }
