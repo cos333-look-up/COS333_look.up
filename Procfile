@@ -1,1 +1,1 @@
-web: python runserver.py 8000
+web: gunicorn app:app
