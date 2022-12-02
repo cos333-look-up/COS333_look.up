@@ -695,15 +695,17 @@ def userinfo():
     if user.is_banned:
         return flask.redirect("banned")
     member_netid = flask.request.args.get("netid")
+    is_my_profile = (member_netid == netid)
 
     # if you're looking at your own profile, show all info
-    if member_netid == netid:
+    if is_my_profile:
         requested_user = db.session.get(UsersModel, member_netid)
         html_code = flask.render_template(
             "user-info.html",
             requested_user=requested_user,
             user=user,
             club=ClubsModel(None, None, None, None),
+            is_my_profile=is_my_profile
         )
         response = flask.make_response(html_code)
         return response
@@ -744,6 +746,7 @@ def userinfo():
         requested_user=requested_user,
         user=user,
         club=club,
+        is_my_profile=is_my_profile
     )
     response = flask.make_response(html_code)
     return response
@@ -1074,9 +1077,12 @@ def users():
             .all()
         )
 
-    # split users up into pages of 50. Later on, allow user to select
-    # number of results per page.
-    users_pages = list(mit.chunked(users, 50))
+    # split users up into pages of 50. Each page is split into lists of 10.
+    # Later on, allow user to select number of results per page.
+    chunked = list(mit.chunked(users, 50))
+    users_pages = []
+    for page in chunked:
+        users_pages.append(list(mit.chunked(page, 10)))
 
     html_code = flask.render_template(
         "users.html",

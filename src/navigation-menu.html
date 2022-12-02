@@ -7,7 +7,7 @@
 px-8 py-10">
   <div class="flex items-center mb-10">
     {% if user.photo: %}
-      <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}">
+      <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}"  onclick="window.location='/user-info?netid={{user.netid}}'">
     {% else: %}
       <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="assets/profile.png">
     {% endif %}
@@ -20,10 +20,8 @@ px-8 py-10">
   </div>
 
   <div class="mb-10">
-    <div class="menu-item" onclick="window.location='/'">Home</div>
-    <div class="menu-item" onclick="window.location='users'">Users</div>
+    <div class="menu-item" onclick="window.location='users'">Individual Lookup</div>
     <div class="menu-item" onclick="window.location='my-invites'">My Invites</div>
-    <div class="menu-item" onclick="window.location='profile-update'">Update Profile</div>
     <div class="menu-item" onclick="window.location='groups'">My Groups</div>
     <div class="menu-item" onclick="window.location='groups-search'">Search Groups</div>
     {% if user.is_admin: %}

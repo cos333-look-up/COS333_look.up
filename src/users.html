@@ -21,11 +21,20 @@
           placeholder="Search">
       <input type="submit">
     </form>
+  </center>
 
-    {% for person in users_pages[page_number]: %}
-      <div>{{ person.display_name }}</div>
-      <div>{{ person.email }} </div><br>
-      <br>
+    {% for row in users_pages[page_number]: %}
+      <span>
+        {% for person in row: %}
+          {% if "cloudinary" in person.photo: %}
+            <img src="{{person.photo}}">
+          {% else: %}
+            <img src="../profile.svg">
+          {% endif %}
+          {{ person.display_name }}
+          {{ person.email }}
+        {% endfor %}
+      </span>
     {% endfor %}
 
     <span>
@@ -67,7 +76,6 @@
         {% endif %}
       {% endif %}
     </span>
-  </center>
 </body>
 
 {% include "navigation-menu.html" %}

@@ -30,7 +30,7 @@
         </div>
         {% if club.info_shared[0] == "1" or requested_user == user %}
         <div class="mt-2 font-light text-slate-800">
-            {{requested_user.netid}}@princeton.edu
+            {{requested_user.email}}
         </div>
         {% endif %}
         {% if club.info_shared != "00" or requested_user == user %}
@@ -105,8 +105,15 @@
                 </div>
                 {% endif %}
             </div>
+
         </div>
         {% endif %}
+        {% if is_my_profile: %}
+        <div class="flex justify-center mx-2 my-2 px-3 py-3 bg-amber-400 rounded-3xl">
+            <span class="font-medium text-xl text-center" onclick="window.location='profile-update'">Update Profile</span>        </div>
+        </div>
+        {%endif%}
+
     </div>
 
     <!-- {% if requested_user == user %}
