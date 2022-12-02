@@ -1074,9 +1074,12 @@ def users():
             .all()
         )
 
-    # split users up into pages of 50. Later on, allow user to select
-    # number of results per page.
-    users_pages = list(mit.chunked(users, 50))
+    # split users up into pages of 50. Each page is split into lists of 10.
+    # Later on, allow user to select number of results per page.
+    chunked = list(mit.chunked(users, 50))
+    users_pages = []
+    for page in chunked:
+        users_pages.append(list(mit.chunked(page, 10)))
 
     html_code = flask.render_template(
         "users.html",
