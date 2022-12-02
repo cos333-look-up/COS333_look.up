@@ -13,34 +13,34 @@
   </style>
 </head>
 
-<body class="bg-slate-50 reveal">
+<body class="bg-offwhite reveal">
   {% include "header.html" %}
 
   <div class="header-font text-2xl px-7 py-5">
-    <span class="text-slate-700">my</span>
-    <span class="text-amber-400">invites</span>
+    <span class="text-slate-700 font-bold">My Invites</span>
   </div>
 
   <div class="browse mx-4">
     {% for invite in invites: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
       <div class="info-box">
-
-        <div class="text-base">
+        <div class="dot"></div>
+            <br>
+        <div class="text-base font-bold">
           {{invite.name}}
         </div>
 
-        <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+        <div class="flex justify-center mx-2 my-2 py-2 bg-orange-400 rounded-3xl">
           <form action="/invitefulfill?clubid={{invite.clubid}}&accept=1" method="post">
             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-            <button class="text-sm" type="submit" name="Accept" value="Accept">Accept</button>
+            <button class="text-sm font-bold" type="submit" name="Accept" value="Accept">Accept</button>
           </form>
         </div>
 
-        <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+        <div class="flex justify-center mx-2 my-2 py-2 bg-orange-400 rounded-3xl">
           <form action="/invitefulfill?clubid={{invite.clubid}}&accept=0" method="post">
             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-            <button class="text-sm" type="submit" name="Deny" value="Deny">Deny</button>
+            <button class="text-sm font-bold" type="submit" name="Deny" value="Deny">Deny</button>
           </form>
         </div>
 

@@ -23,27 +23,27 @@
     {% if clubmember.is_moderator %}
 
     <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-invite-request?clubid={{clubid}}" class="text-sm">Invite</a>
+        <a href="/group-invite-request?clubid={{clubid}}" class="text-sm font-bold">Invite</a>
     </div>
 
     <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/pending-invites?clubid={{clubid}}" class="text-sm">Pending Invites</a>
+        <a href="/pending-invites?clubid={{clubid}}" class="text-sm font-bold">Pending Invites</a>
     </div>
 
 
     <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-requests?clubid={{clubid}}" class="text-sm">Join Requests</a>
+        <a href="/group-requests?clubid={{clubid}}" class="text-sm font-bold">Join Requests</a>
     </div>
     <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-remove-member?clubid={{clubid}}" class="text-sm">Remove Members</a>
+        <a href="/group-remove-member?clubid={{clubid}}" class="text-sm font-bold">Remove Members</a>
     </div>
     <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-moderator-upgrade?clubid={{clubid}}" class="text-sm">Promote Members</a>
+        <a href="/group-moderator-upgrade?clubid={{clubid}}" class="text-sm font-bold">Promote Members</a>
     </div>
 
     {% endif %}
     <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-leave?clubid={{clubid}}" class="text-sm">Leave Group</a>
+        <a href="/group-leave?clubid={{clubid}}" class="text-sm font-bold">Leave Group</a>
     </div>
 
     {% if adminmembers|length != 0: %}
@@ -59,12 +59,12 @@
                 <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member.photo}}">
                 <br>
 
-                <div class="text-base">
+                <div class="text-base font-bold">
                     {{member.display_name}}
                 </div>
 
                 <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
-                    <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm">See More</a>
+                    <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm font-bold">See More</a>
                 </div>
 
             </div>
@@ -86,12 +86,12 @@
                 <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member.photo}}">
                 <br>
 
-                <div class="text-base">
+                <div class="text-base font-bold">
                     {{member.display_name}}
                 </div>
 
                 <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
-                    <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm">See More</a>
+                    <a href="/user-info?netid={{member.netid}}&clubid={{clubid}}" class="text-sm font-bold">See More</a>
                 </div>
 
             </div>
