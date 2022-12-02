@@ -20,11 +20,11 @@
         <span class="text-slate-700 font-bold">My Groups</span>
     </div>
 
-    <center>
+    <!-- <center>
 
         <input class="px-3 mt-5 bg-white rounded-3xl w-1/2 h-10" type="text" id="search" name="search"
             placeholder="Search Groups">
-    </center>
+    </center> -->
 
     <div id="results"></div>
 
@@ -42,7 +42,7 @@
         function getResults() {
             let search = $('#search').val();
             search = encodeURIComponent(search);
-            let url = '/group-results?search=' + search;
+            let url = '/group-results?search=';
             if (request != null)
                 request.abort();
             request = $.ajax(
