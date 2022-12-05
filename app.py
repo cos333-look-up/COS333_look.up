@@ -144,7 +144,7 @@ def profilepost():
     netid = auth.authenticate()
     first_name = flask.request.form["first_name"]
     last_name = flask.request.form["last_name"]
-    display_name = first_name + last_name
+    display_name = first_name + " " + last_name
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
@@ -190,6 +190,7 @@ def profileput():
     user.last_name = flask.request.form["last_name"]
     user.display_name = (
         flask.request.form["first_name"]
+        + " "
         + flask.request.form["last_name"]
     )
     user.phone = flask.request.form["phone"]
