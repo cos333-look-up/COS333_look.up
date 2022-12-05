@@ -44,27 +44,46 @@ from models import (
     UndergraduatesModel,
 )
 
+
+def checkValidUser():
+    netid = auth.authenticate()
+    user = db.session.get(UsersModel, netid)
+    if user is None:
+        return flask.abort(
+            flask.redirect(flask.url_for("profilecreation"))
+        )
+    if user.is_banned:
+        return flask.abort(flask.redirect("banned"))
+    return user
+
+
+def checkValidAdmin():
+    user = checkValidUser()
+    if not user.is_admin:
+        return flask.abort(flask.redirect("/"))
+    return user
+
+
 ## Index Route
 @app.route("/", methods=["GET"])
 @app.route("/index", methods=["GET"])
 def index():
+    if auth.loggedin() is not None:
+        return flask.redirect("landing")
     html_code = flask.render_template("landing.html")
     response = flask.make_response(html_code)
     return response
+
 
 # landing page
 @app.route("/landing", methods=["GET"])
 def landing():
     # Setup data model
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     html_code = flask.render_template("index.html", user=user)
     response = flask.make_response(html_code)
     return response
+
 
 ## Profile Creation Route
 @app.route("/profile-create", methods=["GET"])
@@ -80,12 +99,7 @@ def profilecreation():
 ## Profile Update Route
 @app.route("/profile-update", methods=["GET"])
 def profileupdate():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     # Only needs to render the update form
     html_code = flask.render_template("profile-update.html", user=user)
     response = flask.make_response(html_code)
@@ -101,9 +115,11 @@ def profilepost():
     netid = auth.authenticate()
     first_name = flask.request.form["first_name"]
     last_name = flask.request.form["last_name"]
+    display_name = first_name + last_name
     phone = flask.request.form["phone"]
     instagram = flask.request.form["instagram"]
     snapchat = flask.request.form["snapchat"]
+    email = netid + "@princeton.edu"
     try:
         photo = cloudinary.uploader.upload(
             flask.request.files["photo"], public_id=netid
@@ -118,9 +134,11 @@ def profilepost():
         netid,
         first_name,
         last_name,
+        display_name,
         phone,
         instagram,
         snapchat,
+        email,
         is_admin,
         is_banned,
         photo,
@@ -141,6 +159,10 @@ def profileput():
     user = db.session.get(UsersModel, netid)
     user.first_name = flask.request.form["first_name"]
     user.last_name = flask.request.form["last_name"]
+    user.display_name = (
+        flask.request.form["first_name"]
+        + flask.request.form["last_name"]
+    )
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
@@ -167,12 +189,7 @@ def profileput():
 ## Group Creation Route
 @app.route("/group-create-request", methods=["GET"])
 def groupcreation():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     # Only needs to render the creation form
     return flask.render_template("group-create-request.html", user=user)
 
@@ -208,15 +225,10 @@ def grouprequestpost():
 
 @app.route("/groups", methods=["GET"])
 def groups():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     group_member = (
         db.session.query(ClubMembersModel.clubid, ClubsModel.name)
-        .filter(ClubMembersModel.netid == netid)
+        .filter(ClubMembersModel.netid == user.netid)
         .filter(ClubsModel.clubid == ClubMembersModel.clubid)
         .order_by(ClubsModel.name)
         .all()
@@ -233,15 +245,10 @@ def groups():
 
 @app.route("/group-results", methods=["GET"])
 def groupresults():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     group_member = (
         db.session.query(ClubMembersModel.clubid, ClubsModel.name)
-        .filter(ClubMembersModel.netid == netid)
+        .filter(ClubMembersModel.netid == user.netid)
         .filter(ClubsModel.clubid == ClubMembersModel.clubid)
         .order_by(ClubsModel.name)
         .all()
@@ -253,7 +260,7 @@ def groupresults():
         name = club.name
         if search.lower() in name.lower():
             clubmember = db.session.get(
-                ClubMembersModel, (netid, club.clubid)
+                ClubMembersModel, (user.netid, club.clubid)
             )
             if clubmember.is_moderator:
                 adminclubs.append(
@@ -275,12 +282,7 @@ def groupresults():
 
 @app.route("/groups-search", methods=["GET"])
 def groupssearch():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     html_code = flask.render_template("groups-search.html", user=user)
     response = flask.make_response(html_code)
     return response
@@ -288,12 +290,7 @@ def groupssearch():
 
 @app.route("/group-search-results", methods=["GET"])
 def groupsearchresults():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     group_member = (
         db.session.query(ClubsModel.clubid, ClubsModel.name)
         .order_by(ClubsModel.name)
@@ -314,18 +311,13 @@ def groupsearchresults():
 
 @app.route("/group-members", methods=["GET"])
 def groupmembers():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
     name = club.name
-    clubmember = db.session.get(ClubMembersModel, (netid, clubid))
+    clubmember = db.session.get(ClubMembersModel, (user.netid, clubid))
     if clubmember is None:
         return flask.redirect(
             "/group-join-request?clubid=" + str(clubid)
@@ -366,18 +358,13 @@ def groupmembers():
 
 @app.route("/group-requests", methods=["GET"])
 def grouprequests():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
     name = club.name
-    clubmember = db.session.get(ClubMembersModel, (netid, clubid))
+    clubmember = db.session.get(ClubMembersModel, (user.netid, clubid))
     if clubmember is None:
         return flask.redirect("groups")
     if clubmember.is_moderator is False:
@@ -406,17 +393,12 @@ def grouprequests():
 
 @app.route("/group-join-request", methods=["GET"])
 def groupjoinrequest():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
+    member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member is not None:
         return flask.redirect("/group-members?clubid=" + clubid)
     html_code = flask.render_template(
@@ -463,17 +445,12 @@ def groupjoinfulfill():
 
 @app.route("/group-leave", methods=["GET"])
 def groupleave():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
+    member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member is None:
         return flask.redirect("/groups")
     html_code = flask.render_template(
@@ -496,19 +473,14 @@ def groupleavepost():
 
 @app.route("/group-remove-member", methods=["GET"])
 def groupremovemember():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
     if not club:
         return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
+    member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member.is_moderator is False:
         return flask.redirect("groups")
     members_helper = (
@@ -558,18 +530,13 @@ def removemember():
 
 @app.route("/group-moderator-upgrade", methods=["GET"])
 def groupmoderatorupgrade():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
 
-    member = db.session.get(ClubMembersModel, (netid, clubid))
+    member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member.is_moderator is False:
         return flask.redirect("groups")
     members_helper = (
@@ -620,17 +587,12 @@ def upgrademember():
 
 @app.route("/group-invite-request", methods=["GET"])
 def groupinviterequest():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
+    member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member.is_moderator is False:
         return flask.redirect("groups")
     html_code = flask.render_template(
@@ -693,14 +655,9 @@ def invitenetiderror():
 
 @app.route("/user-info", methods=["GET"])
 def userinfo():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     member_netid = flask.request.args.get("netid")
-    is_my_profile = (member_netid == netid)
+    is_my_profile = member_netid == user.netid
 
     # if you're looking at your own profile, show all info
     if is_my_profile:
@@ -710,7 +667,7 @@ def userinfo():
             requested_user=requested_user,
             user=user,
             club=ClubsModel(None, None, None, None),
-            is_my_profile=is_my_profile
+            is_my_profile=is_my_profile,
         )
         response = flask.make_response(html_code)
         return response
@@ -721,7 +678,7 @@ def userinfo():
     )
 
     user_clubs = db.session.query(ClubMembersModel.clubid).filter(
-        ClubMembersModel.netid == netid
+        ClubMembersModel.netid == user.netid
     )
     shared_clubs = set(member_clubs).intersection(set(user_clubs))
 
@@ -738,7 +695,7 @@ def userinfo():
     club = db.session.get(ClubsModel, clubid)
     if club is None:
         return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
+    member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member is None:
         return flask.redirect("/")
     member = db.session.get(ClubMembersModel, (member_netid, clubid))
@@ -751,7 +708,7 @@ def userinfo():
         requested_user=requested_user,
         user=user,
         club=club,
-        is_my_profile=is_my_profile
+        is_my_profile=is_my_profile,
     )
     response = flask.make_response(html_code)
     return response
@@ -759,15 +716,10 @@ def userinfo():
 
 @app.route("/my-invites", methods=["GET"])
 def myinvites():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     invited_clubs = (
         db.session.query(InviteRequests.clubid)
-        .filter(InviteRequests.netid == netid)
+        .filter(InviteRequests.netid == user.netid)
         .all()
     )
     invites = []
@@ -797,12 +749,7 @@ def invitefulfill():
 
 @app.route("/pending-invites", methods=["GET"])
 def pendinginvites():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = db.session.get(ClubsModel, clubid)
     if club is None:
@@ -825,12 +772,7 @@ def pendinginvites():
 
 @app.route("/admin-console", methods=["GET"])
 def adminconsole():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if not user.is_admin:
-        return flask.redirect("/")
+    user = checkValidAdmin()
     html_code = flask.render_template("admin-console.html", user=user)
     response = flask.make_response(html_code)
     return response
@@ -838,12 +780,7 @@ def adminconsole():
 
 @app.route("/group-creation-requests", methods=["GET"])
 def groupcreationrequests():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if not user.is_admin:
-        return flask.redirect("/")
+    user = checkValidAdmin()
     requests = (
         db.session.query(CreationRequests)
         .order_by(CreationRequests.name)
@@ -890,12 +827,7 @@ def groupfulfill():
 
 @app.route("/group-removal", methods=["GET"])
 def groupremoval():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if not user.is_admin:
-        return flask.redirect("/")
+    user = checkValidAdmin()
     groups = (
         db.session.query(ClubsModel.clubid, ClubsModel.name)
         .order_by(ClubsModel.name)
@@ -937,12 +869,7 @@ def removegroup():
 
 @app.route("/ban-user", methods=["GET"])
 def banuser():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if not user.is_admin:
-        return flask.redirect("/")
+    user = checkValidAdmin()
     html_code = flask.render_template("ban-user.html", user=user)
     response = flask.make_response(html_code)
     return response
@@ -968,12 +895,7 @@ def banuserpost():
 
 @app.route("/admin-upgrade", methods=["GET"])
 def adminupgrade():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if not user.is_admin:
-        return flask.redirect("/")
+    user = checkValidAdmin()
     html_code = flask.render_template("admin-upgrade.html", user=user)
     response = flask.make_response(html_code)
     return response
@@ -1017,12 +939,7 @@ def banned():
 
 @app.route("/banned-users", methods=["GET"])
 def bannedusers():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if not user.is_admin:
-        return flask.redirect("/")
+    user = checkValidAdmin()
     banned_users = (
         db.session.query(UsersModel)
         .filter(UsersModel.is_banned == True)
@@ -1048,12 +965,7 @@ def unbanuserpost():
 
 @app.route("/users", methods=["GET"])
 def users():
-    netid = auth.authenticate()
-    user = db.session.get(UsersModel, netid)
-    if user is None:
-        return flask.redirect(flask.url_for("profilecreation"))
-    if user.is_banned:
-        return flask.redirect("banned")
+    user = checkValidUser()
 
     # get the string that user searched and current page number
     search_string = flask.request.args.get("search")
