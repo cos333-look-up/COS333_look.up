@@ -48,7 +48,7 @@ from models import (
 def checkValidUser():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
-    if user is None:
+    if not user:
         return flask.abort(
             flask.redirect(flask.url_for("profilecreation"))
         )
@@ -62,6 +62,33 @@ def checkValidAdmin():
     if not user.is_admin:
         return flask.abort(flask.redirect("/"))
     return user
+
+
+def checkValidClub(clubid):
+    club = db.session.get(ClubsModel, clubid)
+    if not club:
+        return flask.abort(flask.redirect("/"))
+    return club
+
+
+def checkValidMember(user, club):
+    clubmember = db.session.get(
+        ClubMembersModel, (user.netid, club.clubid)
+    )
+    if not clubmember:
+        return flask.abort(
+            flask.redirect(
+                "/group-join-request?clubid=" + str(club.clubid)
+            )
+        )
+    return clubmember
+
+
+def checkValidModerator(user, club):
+    clubmember = checkValidMember(user, club)
+    if not clubmember.is_moderator:
+        return flask.abort(flask.redirect("/groups"))
+    return clubmember
 
 
 ## Index Route
@@ -313,15 +340,8 @@ def groupsearchresults():
 def groupmembers():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
-    name = club.name
-    clubmember = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if clubmember is None:
-        return flask.redirect(
-            "/group-join-request?clubid=" + str(clubid)
-        )
+    club = checkValidClub(clubid)
+    clubmember = checkValidMember(user, club)
     group_member = (
         db.session.query(ClubMembersModel.netid, UsersModel.netid)
         .filter(ClubMembersModel.clubid == clubid)
@@ -350,7 +370,7 @@ def groupmembers():
         nonadminmembers=nonadminmembers,
         clubid=clubid,
         clubmember=clubmember,
-        name=name,
+        name=club.name,
     )
     response = flask.make_response(html_code)
     return response
@@ -360,15 +380,8 @@ def groupmembers():
 def grouprequests():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
-    name = club.name
-    clubmember = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if clubmember is None:
-        return flask.redirect("groups")
-    if clubmember.is_moderator is False:
-        return flask.redirect("groups")
+    club = checkValidClub(clubid)
+    clubmember = checkValidModerator(user, club)
     requests = (
         db.session.query(JoinRequests.netid, UsersModel.netid)
         .filter(JoinRequests.clubid == clubid)
@@ -385,7 +398,7 @@ def grouprequests():
         students=students,
         clubid=clubid,
         clubmember=clubmember,
-        name=name,
+        name=club.name,
     )
     response = flask.make_response(html_code)
     return response
@@ -395,9 +408,7 @@ def grouprequests():
 def groupjoinrequest():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
+    club = checkValidClub(clubid)
     member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member is not None:
         return flask.redirect("/group-members?clubid=" + clubid)
@@ -424,15 +435,9 @@ def groupjoinpost():
 
 @app.route("/groupjoinfulfill", methods=["POST"])
 def groupjoinfulfill():
-    netid = auth.authenticate()
     clubid = flask.request.args.get("clubid")
     join_netid = flask.request.args.get("join_netid")
     accept = flask.request.args.get("accept")
-    clubmember = db.session.get(ClubMembersModel, (netid, clubid))
-    if clubmember is None:
-        return flask.redirect("groups")
-    if clubmember.is_moderator is False:
-        return flask.redirect("groups")
     join_request = db.session.get(JoinRequests, (join_netid, clubid))
     db.session.delete(join_request)
     db.session.commit()
@@ -447,12 +452,8 @@ def groupjoinfulfill():
 def groupleave():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if member is None:
-        return flask.redirect("/groups")
+    club = checkValidClub(clubid)
+    member = checkValidMember(user, club)
     html_code = flask.render_template(
         "group-leave.html", user=user, club=club
     )
@@ -475,14 +476,8 @@ def groupleavepost():
 def groupremovemember():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
-    if not club:
-        return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if member.is_moderator is False:
-        return flask.redirect("groups")
+    club = checkValidClub(clubid)
+    member = checkValidModerator(user, club)
     members_helper = (
         db.session.query(ClubMembersModel)
         .filter(ClubMembersModel.clubid == clubid)
@@ -514,11 +509,7 @@ def groupremovemember():
 
 @app.route("/removemember", methods=["POST"])
 def removemember():
-    netid = auth.authenticate()
     clubid = flask.request.args.get("clubid")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
-    if member.is_moderator is False:
-        return flask.redirect("groups")
     member_netid = flask.request.args.get("netid")
     deleted_member = db.session.get(
         ClubMembersModel, (member_netid, clubid)
@@ -532,13 +523,9 @@ def removemember():
 def groupmoderatorupgrade():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
+    club = checkValidClub(clubid)
 
-    member = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if member.is_moderator is False:
-        return flask.redirect("groups")
+    member = checkValidModerator(user, club)
     members_helper = (
         db.session.query(ClubMembersModel)
         .filter(ClubMembersModel.clubid == clubid)
@@ -570,11 +557,7 @@ def groupmoderatorupgrade():
 
 @app.route("/upgrademember", methods=["POST"])
 def upgrademember():
-    netid = auth.authenticate()
     clubid = flask.request.args.get("clubid")
-    member = db.session.get(ClubMembersModel, (netid, clubid))
-    if member.is_moderator is False:
-        return flask.redirect("groups")
     member_netid = flask.request.args.get("netid")
     upgraded_member = db.session.get(
         ClubMembersModel, (member_netid, clubid)
@@ -589,12 +572,8 @@ def upgrademember():
 def groupinviterequest():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if member.is_moderator is False:
-        return flask.redirect("groups")
+    club = checkValidClub(clubid)
+    member = checkValidModerator(user, club)
     html_code = flask.render_template(
         "group-invite-request.html", user=user, club=club
     )
@@ -692,9 +671,7 @@ def userinfo():
     # else:
 
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
+    club = checkValidClub(clubid)
     member = db.session.get(ClubMembersModel, (user.netid, clubid))
     if member is None:
         return flask.redirect("/")
@@ -751,10 +728,7 @@ def invitefulfill():
 def pendinginvites():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
-    club = db.session.get(ClubsModel, clubid)
-    if club is None:
-        return flask.redirect("/")
-    name = club.name
+    club = checkValidClub(clubid)
     invited_members = (
         db.session.query(InviteRequests)
         .filter(InviteRequests.clubid == clubid)
@@ -764,7 +738,10 @@ def pendinginvites():
     for invite in invited_members:
         invites.append(db.session.get(UsersModel, invite.netid))
     html_code = flask.render_template(
-        "pending-invites.html", user=user, invites=invites, name=name
+        "pending-invites.html",
+        user=user,
+        invites=invites,
+        name=club.name,
     )
     response = flask.make_response(html_code)
     return response
