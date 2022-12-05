@@ -87,7 +87,9 @@ def checkValidMember(user, club):
 def checkValidModerator(user, club):
     clubmember = checkValidMember(user, club)
     if not clubmember.is_moderator:
-        return flask.abort(flask.redirect("/groups"))
+        return flask.abort(
+            flask.redirect("/group-members?clubid=" + str(club.clubid))
+        )
     return clubmember
 
 
