@@ -95,7 +95,6 @@ def checkValidModerator(user, club):
 
 ## Index Route
 @app.route("/", methods=["GET"])
-@app.route("/index", methods=["GET"])
 def index():
     if auth.loggedin() is not None:
         return flask.redirect("landing")
@@ -106,12 +105,27 @@ def index():
 
 # landing page
 @app.route("/landing", methods=["GET"])
+@app.route("/index", methods=["GET"])
 def landing():
     # Setup data model
     user = checkValidUser()
     html_code = flask.render_template("index.html", user=user)
     response = flask.make_response(html_code)
     return response
+
+
+@app.route("/about", methods=["GET"])
+def about():
+    # Setup data model
+    user = checkValidUser()
+    html_code = flask.render_template("about.html", user=user)
+    response = flask.make_response(html_code)
+    return response
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    auth.logoutapp()
 
 
 ## Profile Creation Route
