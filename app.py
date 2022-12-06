@@ -218,6 +218,12 @@ def profileput():
         user.photo = cloudinary.api.resource(
             "/Additional%20Files/default_user_icon"
         )["url"]
+    '''
+    if flask.request.files["photo"] == "delete":
+        user.photo = cloudinary.api.resource(
+            "/Additional%20Files/default_user_icon"
+        )["url"]
+    '''
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
