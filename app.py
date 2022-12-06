@@ -709,7 +709,7 @@ def userinfo():
 def myinvites():
     user = checkValidUser()
     invites = (
-        db.session.query(ClubsModel)
+        db.session.query(ClubsModel, InviteRequests.clubid)
         .filter(InviteRequests.netid == user.netid)
         .all()
     )
