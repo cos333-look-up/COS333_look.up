@@ -49,9 +49,7 @@ def checkValidUser():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if not user:
-        return flask.abort(
-            flask.redirect(flask.url_for("profilecreation"))
-        )
+        return flask.abort(flask.redirect("profilecreation"))
     if user.is_banned:
         return flask.abort(flask.redirect("banned"))
     return user
@@ -60,14 +58,14 @@ def checkValidUser():
 def checkValidAdmin():
     user = checkValidUser()
     if not user.is_admin:
-        return flask.abort(flask.redirect("/"))
+        return flask.abort(flask.redirect("/index"))
     return user
 
 
 def checkValidClub(clubid):
     club = db.session.get(ClubsModel, clubid)
     if not club:
-        return flask.abort(flask.redirect("/"))
+        return flask.abort(flask.redirect("/index"))
     return club
 
 
@@ -97,7 +95,7 @@ def checkValidModerator(user, club):
 @app.route("/", methods=["GET"])
 def index():
     if auth.loggedin() is not None:
-        return flask.redirect("landing")
+        return flask.redirect("/index")
     html_code = flask.render_template("landing.html")
     response = flask.make_response(html_code)
     return response
@@ -134,7 +132,7 @@ def profilecreation():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if user is not None:
-        return flask.redirect("/")
+        return flask.redirect("/index")
     # Only needs to render the form
     return flask.render_template("profile-create.html")
 
@@ -190,7 +188,7 @@ def profilepost():
     db.session.add(new_user)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect("/")
+    return flask.redirect("/index")
 
 
 ## Profile Posting Route (update profile)
@@ -227,7 +225,7 @@ def profileput():
     db.session.add(user)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect("/")
+    return flask.redirect("/index")
 
 
 ## Group Creation Route
@@ -264,7 +262,7 @@ def grouprequestpost():
     db.session.add(new_club_request)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect("/")
+    return flask.redirect("/index")
 
 
 @app.route("/groups", methods=["GET"])
@@ -422,12 +420,12 @@ def groupjoinpost():
     clubid = flask.request.args.get("clubid")
     active_request = db.session.get(JoinRequests, (netid, clubid))
     if active_request is not None:
-        return flask.redirect("/")
+        return flask.redirect("/index")
     request = JoinRequests(netid, clubid)
     db.session.add(request)
     db.session.commit()
     # Redirect to index for loading the user's new page
-    return flask.redirect("/")
+    return flask.redirect("/index")
 
 
 @app.route("/groupjoinfulfill", methods=["POST"])
@@ -875,7 +873,7 @@ def banned():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if not user.is_banned:
-        return flask.redirect("/")
+        return flask.redirect("/index")
     html_code = flask.render_template("banned.html")
     response = flask.make_response(html_code)
     return response
@@ -1001,4 +999,4 @@ def refreshdatabase():
     #     db.session.add(undergraduate)
 
     db.session.commit()
-    return flask.redirect("/")
+    return flask.redirect("/index")
