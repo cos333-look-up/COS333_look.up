@@ -791,17 +791,24 @@ def removegroup():
             .filter(ClubMembersModel.clubid == clubid)
             .first()
         )
-        req = (
+        joinreq = (
             db.session.query(JoinRequests)
             .filter(JoinRequests.clubid == clubid)
             .first()
         )
-        if member is None and req is None:
+        invitereq = (
+            db.session.query(InviteRequests)
+            .filter(InviteRequests.clubid == clubid)
+            .first()
+        )
+        if member is None and joinreq is None and invitereq is None:
             break
         if member is not None:
             db.session.delete(member)
-        if req is not None:
-            db.session.delete(req)
+        if joinreq is not None:
+            db.session.delete(joinreq)
+        if invitereq is not None:
+            db.session.delete(invitereq)
         db.session.commit()
     club = db.session.get(ClubsModel, clubid)
     db.session.delete(club)
