@@ -7,23 +7,22 @@
 px-8 py-10">
   <div class="flex items-center mb-10">
     {% if user.photo: %}
-      <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}"  onclick="window.location='/user-info?netid={{user.netid}}'">
+    <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="{{user.photo}}"
+      onclick="window.location='/user-info?netid={{user.netid}}'">
     {% else: %}
-      <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="assets/profile.png">
+    <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="assets/profile.png">
     {% endif %}
     <span class="text-2xl font-medium">
       {% for elem in user.display_name.split(' ') %}
-        {{ elem }}
-        <br>
+      {{ elem }}
+      <br>
       {% endfor %}
     </span>
   </div>
 
-  <div class="mb-10">
+  <div class="mb-10 absolute">
     <div class="menu-item" onclick="window.location='users'">Individual Lookup</div>
     <div class="menu-item" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
-    <div class="menu-item">My Contacts (not ready)</div>
-    <div class="menu-item">Dark Mode (not ready)</div>
     <hr class="mt-6 bg-text h-0.25">
     <div class="mt-6 font-medium text-2xl pb-3">Groups</div>
     <div class="menu-item" onclick="window.location='group-create-request'">Create a Group</div>
