@@ -28,18 +28,16 @@
         <div class="mt-5 text-2xl font-medium text-slate-800">
             {{requested_user.display_name}}
         </div>
-        {% if club.info_shared[0] == "1" or requested_user == user %}
         <div class="mt-2 font-light text-slate-800">
             {{requested_user.email}}
         </div>
-        {% endif %}
-        {% if club.info_shared != "00" or requested_user == user %}
+        {% if info_shared != "00" or requested_user == user %}
         <div class="info-box !mt-5 !pr-24" style="min-width: 80vw;">
             <div class="ml-3 text-xl font-medium text-slate-800">
                 {{requested_user.first_name}}'s Info
             </div>
             <div class="mt-5 ml-3 text-lg">
-                {% if club.info_shared[0] == "1" or requested_user == user %}
+                {% if info_shared[1] == "1" or requested_user == user %}
                 <div class="flex items-center">
                     <svg class="w-5" "version=" 1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 122.27"
@@ -52,7 +50,7 @@
                     <span class="ml-4">{{requested_user.phone}}</span>
                 </div>
                 {% endif %}
-                {% if club.info_shared[1] == "1" or requested_user == user %}
+                {% if info_shared[0] == "1" or requested_user == user %}
                 <div class="mt-4 flex items-center">
                     <svg class="w-5 h-5" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="132.004"
                         height="132" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -110,9 +108,11 @@
         {% endif %}
         {% if is_my_profile: %}
         <div class="flex justify-center mx-2 my-2 px-4 py-3 bg-light-pton rounded-xl">
-            <span class="font-medium text-xl text-center text-text" onclick="window.location='profile-update'">Update Profile</span>        </div>
+            <span class="font-medium text-xl text-center text-text" onclick="window.location='profile-update'">Update
+                Profile</span>
         </div>
-        {%endif%}
+    </div>
+    {%endif%}
 
     </div>
 

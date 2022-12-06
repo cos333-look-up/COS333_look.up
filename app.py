@@ -643,12 +643,11 @@ def userinfo():
 
     # if you're looking at your own profile, show all info
     if is_my_profile:
-        requested_user = db.session.get(UsersModel, member_netid)
         html_code = flask.render_template(
             "user-info.html",
-            requested_user=requested_user,
+            requested_user=user,
             user=user,
-            club=ClubsModel(None, None, None, None),
+            info_shared="11",
             is_my_profile=is_my_profile,
         )
         response = flask.make_response(html_code)
@@ -663,31 +662,29 @@ def userinfo():
         ClubMembersModel.netid == user.netid
     )
     shared_clubs = set(member_clubs).intersection(set(user_clubs))
-
-    # if looking at someone you're in clubs with, show union of all available information
-    # query database for all clubids for current user and clubids for desired user
-    # check union of clubids
-    # query all share-info booleans
-    # show information based on the OR of all these share-info booleans
-
-    # if looking at someone's profile, show name, netid, email
-    # else:
-
-    clubid = flask.request.args.get("clubid")
-    club = checkValidClub(clubid)
-    member = db.session.get(ClubMembersModel, (user.netid, clubid))
-    if member is None:
-        return flask.redirect("/")
-    member = db.session.get(ClubMembersModel, (member_netid, clubid))
-    if member is None:
-        return flask.redirect("/")
+    phone_shared = False
+    socials_shared = False
+    info_shared = "00"
+    for clubid in shared_clubs:
+        club = db.session.get(ClubsModel, clubid)
+        if club.info_shared[1] == "1":
+            phone_shared = True
+        if club.info_shared[0] == "1":
+            socials_shared = True
+        if phone_shared and socials_shared:
+            info_shared = "11"
+            break
+    if phone_shared and not socials_shared:
+        info_shared = "01"
+    if socials_shared and not phone_shared:
+        info_shared = "10"
 
     requested_user = db.session.get(UsersModel, member_netid)
     html_code = flask.render_template(
         "user-info.html",
         requested_user=requested_user,
         user=user,
-        club=club,
+        info_shared=info_shared,
         is_my_profile=is_my_profile,
     )
     response = flask.make_response(html_code)
