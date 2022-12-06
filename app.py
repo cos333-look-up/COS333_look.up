@@ -18,13 +18,10 @@ cloudinary.config(
 import cloudinary.uploader
 import cloudinary.api
 
-os.environ["APP_SECRET_KEY"] = "secret_key_test"
 app = flask.Flask(
     __name__, template_folder="src", static_folder="static_files"
 )
-with open("secret_key") as f:
-    env_vars = dict(line.strip().split("=", 1) for line in f)
-app.secret_key = env_vars["APP_SECRET_KEY"]
+app.secret_key = os.environ["APP_SECRET_KEY"]
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
