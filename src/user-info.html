@@ -38,6 +38,7 @@
             </div>
             <div class="mt-5 ml-3 text-lg">
                 {% if info_shared[1] == "1" or requested_user == user %}
+                {% if requested_user.phone is not None %}
                 <div class="flex items-center">
                     <svg class="w-5" "version=" 1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 122.27"
@@ -50,7 +51,9 @@
                     <span class="ml-4">{{requested_user.phone}}</span>
                 </div>
                 {% endif %}
+                {% endif %}
                 {% if info_shared[0] == "1" or requested_user == user %}
+                {% if requested_user.instagram is not None %}
                 <div class="mt-4 flex items-center">
                     <svg class="w-5 h-5" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="132.004"
                         height="132" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -86,6 +89,8 @@
                     </svg>
                     <span class="ml-4">@{{requested_user.instagram}}</span>
                 </div>
+                {% endif %}
+                {% if requested_user.snapchat is not None %}
                 <div class="mt-4 flex items-center">
                     <svg class="w-5 h-5" width="514.631px" height="514.631px" viewBox="147.353 39.286 514.631 514.631"
                         version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
@@ -101,6 +106,7 @@
                     </svg>
                     <span class="ml-4">@{{requested_user.snapchat}}</span>
                 </div>
+                {% endif %}
                 {% endif %}
             </div>
 
