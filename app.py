@@ -708,14 +708,11 @@ def userinfo():
 @app.route("/my-invites", methods=["GET"])
 def myinvites():
     user = checkValidUser()
-    invited_clubs = (
-        db.session.query(InviteRequests.clubid)
+    invites = (
+        db.session.query(ClubsModel)
         .filter(InviteRequests.netid == user.netid)
         .all()
     )
-    invites = []
-    for clubid in invited_clubs:
-        invites.append(db.session.get(ClubsModel, clubid))
     html_code = flask.render_template(
         "my-invites.html", user=user, invites=invites
     )
