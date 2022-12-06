@@ -709,8 +709,9 @@ def userinfo():
 def myinvites():
     user = checkValidUser()
     invites = (
-        db.session.query(ClubsModel, InviteRequests.clubid)
+        db.session.query(ClubsModel)
         .filter(InviteRequests.netid == user.netid)
+        .filter(ClubsModel.clubid == InviteRequests.clubid)
         .all()
     )
     html_code = flask.render_template(
