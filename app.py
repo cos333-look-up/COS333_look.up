@@ -330,17 +330,13 @@ def groupssearch():
 @app.route("/group-search-results", methods=["GET"])
 def groupsearchresults():
     user = checkValidUser()
-    group_member = (
-        db.session.query(ClubsModel.clubid, ClubsModel.name)
+    search = flask.request.args.get("search").lower()
+    clubs = (
+        db.session.query(ClubsModel)
+        .filter(ClubsModel.name.ilike("%" + search + "%"))
         .order_by(ClubsModel.name)
         .all()
     )
-    search = flask.request.args.get("search")
-    clubs = []
-    for club in group_member:
-        name = club.name
-        if search.lower() in name.lower():
-            clubs.append(db.session.get(ClubsModel, club.clubid))
     html_code = flask.render_template(
         "group-search-results.html", user=user, clubs=clubs
     )
