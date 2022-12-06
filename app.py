@@ -487,25 +487,13 @@ def groupremovemember():
     clubid = flask.request.args.get("clubid")
     club = checkValidClub(clubid)
     member = checkValidModerator(user, club)
-    members_helper = (
-        db.session.query(ClubMembersModel)
+    members = (
+        db.session.query(ClubMembersModel.is_moderator, UsersModel)
         .filter(ClubMembersModel.clubid == clubid)
         .filter(UsersModel.netid == ClubMembersModel.netid)
         .order_by(UsersModel.first_name)
         .all()
     )
-    members = []
-    for member in members_helper:
-        user = db.session.get(UsersModel, member.netid)
-        members.append(
-            (
-                member.is_moderator,
-                user.first_name,
-                user.last_name,
-                user.netid,
-                user.photo,
-            )
-        )
     html_code = flask.render_template(
         "group-remove-member.html",
         user=user,
@@ -533,7 +521,6 @@ def groupmoderatorupgrade():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = checkValidClub(clubid)
-
     member = checkValidModerator(user, club)
     members = (
         db.session.query(ClubMembersModel.is_moderator, UsersModel)
