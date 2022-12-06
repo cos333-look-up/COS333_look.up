@@ -19,7 +19,7 @@
     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <div class="flex flex-col items-center justify-center">
       <input style="background-image: url({{user.photo}}); border-radius: 50%;" class="mt-7 h-72 w-72 bg-cover"
-        id="photo" name="photo">
+        id="photo" name="photo" type="file" accept="image/*">
 
       <span class="mt-5 text-2xl font-medium text-slate-800">
           First Name
