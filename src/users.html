@@ -12,70 +12,67 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
   </style>
 </head>
+
 <body class="bg-slate-50">
   {% include "header.html" %}
 
   <center>
     <form type="submit">
-      <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="search" name="search"
-          placeholder="Search">
+      <input class="mt-5 bg-gray-200 rounded-3xl w-1/4 h-10" type="text" id="search" name="search" placeholder="Search">
       <input type="submit">
     </form>
   </center>
 
-    {% for row in users_pages[page_number]: %}
-      <span>
-        {% for person in row: %}
-          {% if "cloudinary" in person.photo: %}
-            <img src="{{person.photo}}">
-          {% else: %}
-            <img src="../profile.svg">
-          {% endif %}
-          {{ person.display_name }}
-          {{ person.email }}
-        {% endfor %}
-      </span>
+  {% for row in users_pages[page_number]: %}
+  <span>
+    {% for person in row: %}
+    {% if "cloudinary" in person.photo: %}
+    <img src="{{person.photo}}">
+    {% else: %}
+    <img src="http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg">
+    {% endif %}
+    {{ person.display_name }}
+    {{ person.email }}
     {% endfor %}
+  </span>
+  {% endfor %}
 
-    <span>
-      <!-- if you have 5 pages of results or less, show all page numbers -->
-      {% if max_pages <= 5: %}
-        {% for page in range([max_pages, 5] | min): %}
-        <a href="/users?search={{search_string}}&page={{page}}">
-          {{ page + 1 }}
-        </a>
-        {% endfor %}
+  <span>
+    <!-- if you have 5 pages of results or less, show all page numbers -->
+    {% if max_pages <= 5: %} {% for page in range([max_pages, 5] | min): %} <a
+      href="/users?search={{search_string}}&page={{page}}">
+      {{ page + 1 }}
+      </a>
+      {% endfor %}
 
       <!-- otherwise -->
       {% else: %}
-        <!-- for low page numbers, show pages 1-5 -->
-        {% if (page_number) | abs <= 1: %}
-          {% for page in range(5): %}
-            <a href="/users?search={{search_string}}&page={{page}}">
-              {{ page + 1 }}
-            </a>
-          {% endfor %}
+      <!-- for low page numbers, show pages 1-5 -->
+      {% if (page_number) | abs <= 1: %} {% for page in range(5): %} <a
+        href="/users?search={{search_string}}&page={{page}}">
+        {{ page + 1 }}
+        </a>
+        {% endfor %}
 
         <!-- for high page numbers, show pages max_pages - 4 through max_pages -->
-        {% elif (max_pages - page_number - 1) | abs <= 1: %}
-          {% for page in range(max_pages - 5, max_pages): %}
-          <a href="/users?search={{search_string}}&page={{page}}">
-            {{ page + 1 }}
+        {% elif (max_pages - page_number - 1) | abs <= 1: %} {% for page in range(max_pages - 5, max_pages): %} <a
+          href="/users?search={{search_string}}&page={{page}}">
+          {{ page + 1 }}
           </a>
           {% endfor %}
 
-        <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
-        {% else: %}
+          <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
+          {% else: %}
           {% for page in range(max_pages): %}
-              {% if (page >= page_number - 2) and (page <= page_number + 2): %}
-              <a href="/users?search={{search_string}}&page={{page}}">
-                {{ page + 1 }}
-              </a>
-              {% endif %}
-          {% endfor %}
-        {% endif %}
-      {% endif %}
-    </span>
+          {% if (page >= page_number - 2) and (page <= page_number + 2): %} <a
+            href="/users?search={{search_string}}&page={{page}}">
+            {{ page + 1 }}
+            </a>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+  </span>
 </body>
 
 {% include "navigation-menu.html" %}
