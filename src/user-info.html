@@ -32,6 +32,7 @@
             {{requested_user.email}}
         </div>
         {% if info_shared != "00" or requested_user == user %}
+        {% if requested_user.phone or requested_user.instagram or requested_user.snapchat %}
         <div class="info-box !mt-5 !pr-24" style="min-width: 80vw;">
             <div class="ml-3 text-xl font-medium text-slate-800">
                 {{requested_user.first_name}}'s Info
@@ -112,24 +113,14 @@
 
         </div>
         {% endif %}
+        {% endif %}
         {% if is_my_profile: %}
         <div class="flex justify-center mx-2 my-2 px-4 py-3 bg-light-pton rounded-xl">
             <span class="font-medium text-xl text-center text-text" onclick="window.location='profile-update'">Update
                 Profile</span>
         </div>
+        {% endif %}
     </div>
-    {%endif%}
-
-    </div>
-
-    <!-- {% if requested_user == user %}
-    <center>
-        <div class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl w-1/4 h-10">
-            <div class="font-medium text-lg" onclick="window.location='profile-update'">Edit Profile</div>
-        </div>
-    </center>
-    {% endif %}
- -->
 
 </body>
 
