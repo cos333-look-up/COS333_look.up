@@ -290,30 +290,25 @@ def groups():
 @app.route("/group-results", methods=["GET"])
 def groupresults():
     user = checkValidUser()
-    group_member = (
-        db.session.query(ClubMembersModel.clubid, ClubsModel.name)
+    search = flask.request.args.get("search")
+    adminclubs = (
+        db.session.query(ClubsModel)
         .filter(ClubMembersModel.netid == user.netid)
         .filter(ClubsModel.clubid == ClubMembersModel.clubid)
+        .filter(ClubMembersModel.is_moderator == True)
+        .filter(search.lower in ClubsModel.name.lower())
         .order_by(ClubsModel.name)
         .all()
     )
-    search = flask.request.args.get("search")
-    adminclubs = []
-    nonadminclubs = []
-    for club in group_member:
-        name = club.name
-        if search.lower() in name.lower():
-            clubmember = db.session.get(
-                ClubMembersModel, (user.netid, club.clubid)
-            )
-            if clubmember.is_moderator:
-                adminclubs.append(
-                    db.session.get(ClubsModel, club.clubid)
-                )
-            else:
-                nonadminclubs.append(
-                    db.session.get(ClubsModel, club.clubid)
-                )
+    nonadminclubs = (
+        db.session.query(ClubsModel)
+        .filter(ClubMembersModel.netid == user.netid)
+        .filter(ClubsModel.clubid == ClubMembersModel.clubid)
+        .filter(ClubMembersModel.is_moderator == False)
+        .filter(search.lower in ClubsModel.name.lower())
+        .order_by(ClubsModel.name)
+        .all()
+    )
     html_code = flask.render_template(
         "group-results.html",
         user=user,
