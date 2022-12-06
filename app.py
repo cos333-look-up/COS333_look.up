@@ -421,6 +421,9 @@ def groupjoinpost():
     active_request = db.session.get(JoinRequests, (netid, clubid))
     if active_request is not None:
         return flask.redirect("/index")
+    request_exists = db.session.get(InviteRequests, (netid, clubid))
+    if request_exists is not None:
+        return flask.redirect("/index")
     request = JoinRequests(netid, clubid)
     db.session.add(request)
     db.session.commit()
