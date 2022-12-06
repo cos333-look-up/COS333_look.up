@@ -420,7 +420,7 @@ def groupjoinpost():
         return flask.redirect("/index")
     request_exists = db.session.get(InviteRequests, (netid, clubid))
     if request_exists is not None:
-        return flask.redirect("/index")
+        return flask.redirect("/my-invites")
     request = JoinRequests(netid, clubid)
     db.session.add(request)
     db.session.commit()
@@ -556,30 +556,19 @@ def groupinvitepost():
     clubid = flask.request.args.get("clubid")
     invited_netid = flask.request.form["netid"]
     invited_user = db.session.get(UsersModel, invited_netid)
-    if invited_user is None:
-        return flask.redirect(
-            flask.url_for("invitenetiderror", clubid=clubid), code=307
-        )
-
     invited_member = db.session.get(
         ClubMembersModel, (invited_netid, clubid)
     )
-    if invited_member is not None:
-        return flask.redirect(
-            flask.url_for("invitenetiderror", clubid=clubid), code=307
-        )
-
     join_exists = db.session.get(JoinRequests, (invited_netid, clubid))
-    if join_exists is not None:
-        return flask.redirect(
-            flask.url_for("invitenetiderror", clubid=clubid), code=307
-        )
-
-    # check if an invite has already been sent
     request_exists = db.session.get(
         InviteRequests, (invited_netid, clubid)
     )
-    if request_exists is not None:
+    if (
+        invited_user is None
+        or invited_member is not None
+        or join_exists is not None
+        or request_exists is not None
+    ):
         return flask.redirect(
             flask.url_for("invitenetiderror", clubid=clubid), code=307
         )
@@ -694,14 +683,12 @@ def pendinginvites():
     user = checkValidUser()
     clubid = flask.request.args.get("clubid")
     club = checkValidClub(clubid)
-    invited_members = (
-        db.session.query(InviteRequests)
+    invites = (
+        db.session.query(UsersModel)
+        .filter(UsersModel.netid == InviteRequests.netid)
         .filter(InviteRequests.clubid == clubid)
         .all()
     )
-    invites = []
-    for invite in invited_members:
-        invites.append(db.session.get(UsersModel, invite.netid))
     html_code = flask.render_template(
         "pending-invites.html",
         user=user,
