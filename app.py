@@ -270,16 +270,13 @@ def grouprequestpost():
 @app.route("/groups", methods=["GET"])
 def groups():
     user = checkValidUser()
-    group_member = (
-        db.session.query(ClubMembersModel.clubid, ClubsModel.name)
+    clubs = (
+        db.session.query(ClubsModel)
         .filter(ClubMembersModel.netid == user.netid)
         .filter(ClubsModel.clubid == ClubMembersModel.clubid)
         .order_by(ClubsModel.name)
         .all()
     )
-    clubs = []
-    for club in group_member:
-        clubs.append(db.session.get(ClubsModel, club.clubid))
     html_code = flask.render_template(
         "groups.html", user=user, clubs=clubs
     )
