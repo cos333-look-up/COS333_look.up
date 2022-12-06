@@ -359,27 +359,22 @@ def groupmembers():
     clubid = flask.request.args.get("clubid")
     club = checkValidClub(clubid)
     clubmember = checkValidMember(user, club)
-    group_member = (
-        db.session.query(ClubMembersModel.netid, UsersModel.netid)
+    adminmembers = (
+        db.session.query(UsersModel)
         .filter(ClubMembersModel.clubid == clubid)
         .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(ClubMembersModel.is_moderator == True)
         .order_by(UsersModel.first_name)
         .all()
     )
-    adminmembers = []
-    nonadminmembers = []
-    for member in group_member:
-        current = db.session.get(
-            ClubMembersModel, (member.netid, clubid)
-        )
-        if current.is_moderator:
-            adminmembers.append(
-                db.session.get(UsersModel, member.netid)
-            )
-        else:
-            nonadminmembers.append(
-                db.session.get(UsersModel, member.netid)
-            )
+    nonadminmembers = (
+        db.session.query(UsersModel)
+        .filter(ClubMembersModel.clubid == clubid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(ClubMembersModel.is_moderator == False)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
     html_code = flask.render_template(
         "group-members.html",
         user=user,
@@ -399,16 +394,13 @@ def grouprequests():
     clubid = flask.request.args.get("clubid")
     club = checkValidClub(clubid)
     clubmember = checkValidModerator(user, club)
-    requests = (
-        db.session.query(JoinRequests.netid, UsersModel.netid)
+    students = (
+        db.session.query(UsersModel)
         .filter(JoinRequests.clubid == clubid)
         .filter(UsersModel.netid == JoinRequests.netid)
         .order_by(UsersModel.first_name)
         .all()
     )
-    students = []
-    for student in requests:
-        students.append(db.session.get(UsersModel, student.netid))
     html_code = flask.render_template(
         "group-requests.html",
         user=user,
