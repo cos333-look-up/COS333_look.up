@@ -19,7 +19,7 @@
     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <div class="flex flex-col items-center justify-center">
       <input style="background-image: url({{user.photo}}); border-radius: 50%;" class="mt-7 h-72 w-72 bg-cover"
-        type="file" accept="image/*" id="photo" name="photo" value="{{user.photo}}">
+        id="photo" name="photo" value="{{user.photo}}">
 
       <span class="mt-5 text-2xl font-medium text-slate-800">
           First Name
@@ -54,8 +54,8 @@
                   </svg>
 
                   <span class="ml-4">Phone</span>
-                  <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="phone" name="phone"
-                    value="{{user.phone}}">
+                  <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="phone" name="phone" value="{{user.phone}}"
+                     type="tel" title="Invalid Phone Number!" class="k-textbox" pattern="[(][0-9]{3}[)] [0-9]{3}-[0-9]{4}" required />
               </div>
               
               <div class="mt-4 flex items-center">
@@ -127,5 +127,6 @@
 {% include "navigation-menu.html" %}
 
 <script src="/static_files/index.js"></script>
+<script src="/static_files/requirements.js"></script>
 
 </html>

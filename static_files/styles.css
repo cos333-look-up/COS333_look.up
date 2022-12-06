@@ -152,3 +152,10 @@ div#menu.reveal {
   70% { left: 0% }
   100% { left: 50%; }
 }
+
+input:valid {
+  color: green;
+}
+input:invalid {
+  color: red;
+}
