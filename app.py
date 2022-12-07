@@ -10,6 +10,8 @@ import more_itertools as mit
 
 from api import req_lib
 
+os.environ["APP_SECRET_KEY"] = "asdfads"
+
 cloudinary.config(
     cloud_name="dqv7e2cyi",
     api_key="244334546783172",
