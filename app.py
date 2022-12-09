@@ -842,7 +842,7 @@ def banuserpost():
     user.is_banned = True
     db.session.add(user)
     db.session.commit()
-    return flask.redirect("/ban-user")
+    return flask.redirect("/admin-console")
 
 
 @app.route("/admin-upgrade", methods=["GET"])
@@ -864,7 +864,7 @@ def adminupgradepost():
     user.is_admin = True
     db.session.add(user)
     db.session.commit()
-    return flask.redirect("/admin-upgrade")
+    return flask.redirect("/admin-console")
 
 
 @app.route("/admin-netid-error", methods=["POST"])
@@ -1015,20 +1015,20 @@ def refreshdatabase():
     db.session.commit()
     return flask.redirect("/index")
 
+
 ## Profile Update Route
 @app.route("/my-contacts", methods=["GET"])
 def mycontacts():
     user = checkValidUser()
 
-    clubids = (db.session.query
-        (ClubMembersModel.clubid)
-        .filter(ClubMembersModel.netid == user.netid)
+    clubids = db.session.query(ClubMembersModel.clubid).filter(
+        ClubMembersModel.netid == user.netid
     )
 
-    club_contacts = (db.session.query
-    (ClubMembersModel.netid)
-    .filter(ClubMembersModel.clubid.in_(clubids))
-    .filter(ClubMembersModel.netid != user.netid)
+    club_contacts = (
+        db.session.query(ClubMembersModel.netid)
+        .filter(ClubMembersModel.clubid.in_(clubids))
+        .filter(ClubMembersModel.netid != user.netid)
     )
 
     contact_netids = [contact[0] for contact in club_contacts]
