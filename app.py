@@ -10,6 +10,8 @@ import more_itertools as mit
 
 from api import req_lib
 
+os.environ["APP_SECRET_KEY"] = "asdfadfs"
+
 cloudinary.config(
     cloud_name="dqv7e2cyi",
     api_key="244334546783172",
@@ -1000,3 +1002,25 @@ def refreshdatabase():
 
     db.session.commit()
     return flask.redirect("/index")
+
+## Profile Update Route
+@app.route("/my-contacts", methods=["GET"])
+def mycontacts():
+    user = checkValidUser()
+
+    clubids = (db.session.query
+        (ClubMembersModel.clubid)
+        .filter(ClubMembersModel.netid == user.netid)
+    )
+
+    club_contacts = (db.session.query
+    (ClubMembersModel.netid)
+    .filter(ClubMembersModel.clubid.in_(clubids))
+    .filter(ClubMembersModel.netid != user.netid)
+    )
+
+    contact_netids = [contact[0] for contact in club_contacts]
+
+    html_code = flask.render_template("my-contacts.html", user=user)
+    response = flask.make_response(html_code)
+    return response
