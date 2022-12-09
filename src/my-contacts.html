@@ -19,6 +19,26 @@
     <div class="header-font text-2xl px-7 py-5">
         <span class="text-slate-700 font-bold">My Contacts</span>
     </div>
+    <center>
+    <div>
+      <table>
+        {% for contact in contacts: %}
+          <tr >
+            <img
+              onclick="window.location='/user-info?netid={{contact.netid}}'"
+              class="object-cover dot border cursor-pointer"
+              src="{{ contact.photo }}"
+              >
+            <span
+            onclick="window.location='/user-info?netid={{contact.netid}}'">
+              {{ contact.display_name }}
+            </span>
+          </tr>
+          <br>
+        {% endfor %}
+      </table>
+    </div>
+    </center>
 
 
 </body>
