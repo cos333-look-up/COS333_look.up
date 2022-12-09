@@ -10,7 +10,7 @@ import more_itertools as mit
 
 from api import req_lib
 
-# os.environ["APP_SECRET_KEY"] = "asdfadfs"
+os.environ["APP_SECRET_KEY"] = "asdfadfs"
 
 cloudinary.config(
     cloud_name="dqv7e2cyi",
@@ -1031,8 +1031,18 @@ def mycontacts():
         .filter(ClubMembersModel.netid != user.netid)
     )
 
-    contact_netids = [contact[0] for contact in club_contacts]
+    contacts = {
+        db.session.get(UsersModel, contact[0])
+        for contact in contact_netids
+    }
+    contacts = sorted(contacts, key=lambda key: key.display_name)
+    print(contacts)
+    # table with picture, name; link to user profile page
+    # option to sort by first name, last name
+    # headings with alphabet
 
-    html_code = flask.render_template("my-contacts.html", user=user)
+    html_code = flask.render_template(
+        "my-contacts.html", user=user, contacts=contacts
+    )
     response = flask.make_response(html_code)
     return response
