@@ -10,7 +10,7 @@ import more_itertools as mit
 
 from api import req_lib
 
-os.environ["APP_SECRET_KEY"] = "asdfadfs"
+# os.environ["APP_SECRET_KEY"] = "asdfadfs"
 
 cloudinary.config(
     cloud_name="dqv7e2cyi",
@@ -220,12 +220,12 @@ def profileput():
         user.photo = cloudinary.api.resource(
             "/Additional%20Files/default_user_icon"
         )["url"]
-    '''
+    """
     if flask.request.files["photo"] == "delete":
         user.photo = cloudinary.api.resource(
             "/Additional%20Files/default_user_icon"
         )["url"]
-    '''
+    """
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
@@ -355,6 +355,7 @@ def groupmembers():
         .filter(ClubMembersModel.clubid == clubid)
         .filter(UsersModel.netid == ClubMembersModel.netid)
         .filter(ClubMembersModel.is_moderator == True)
+        .filter(UsersModel.is_banned == False)
         .order_by(UsersModel.first_name)
         .all()
     )
@@ -363,6 +364,7 @@ def groupmembers():
         .filter(ClubMembersModel.clubid == clubid)
         .filter(UsersModel.netid == ClubMembersModel.netid)
         .filter(ClubMembersModel.is_moderator == False)
+        .filter(UsersModel.is_banned == False)
         .order_by(UsersModel.first_name)
         .all()
     )
@@ -389,6 +391,7 @@ def grouprequests():
         db.session.query(UsersModel)
         .filter(JoinRequests.clubid == clubid)
         .filter(UsersModel.netid == JoinRequests.netid)
+        .filter(UsersModel.is_banned == False)
         .order_by(UsersModel.first_name)
         .all()
     )
@@ -485,6 +488,7 @@ def groupremovemember():
         db.session.query(ClubMembersModel.is_moderator, UsersModel)
         .filter(ClubMembersModel.clubid == clubid)
         .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(UsersModel.is_banned == False)
         .order_by(UsersModel.first_name)
         .all()
     )
@@ -520,6 +524,7 @@ def groupmoderatorupgrade():
         db.session.query(ClubMembersModel.is_moderator, UsersModel)
         .filter(ClubMembersModel.clubid == clubid)
         .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(UsersModel.is_banned == False)
         .order_by(UsersModel.first_name)
         .all()
     )
@@ -644,6 +649,8 @@ def userinfo():
         info_shared = "10"
 
     requested_user = db.session.get(UsersModel, member_netid)
+    if requested_user.is_banned:
+        return flask.redirect("/index")
     html_code = flask.render_template(
         "user-info.html",
         requested_user=requested_user,
@@ -695,6 +702,7 @@ def pendinginvites():
         db.session.query(UsersModel)
         .filter(UsersModel.netid == InviteRequests.netid)
         .filter(InviteRequests.clubid == clubid)
+        .filter(UsersModel.is_banned == False)
         .all()
     )
     html_code = flask.render_template(
@@ -921,7 +929,10 @@ def users():
 
     # get all users and their information
     users = (
-        db.session.query(UsersModel).order_by(UsersModel.netid).all()
+        db.session.query(UsersModel)
+        .filter(UsersModel.is_banned == False)
+        .order_by(UsersModel.netid)
+        .all()
     )
 
     # if the search string is not empty, find users whose names or netids
@@ -934,6 +945,7 @@ def users():
                 (UsersModel.netid.ilike("%" + lowercase + "%"))
                 | (UsersModel.display_name.ilike("%" + lowercase + "%"))
             )
+            .filter(UsersModel.is_banned == False)
             .order_by(UsersModel.netid)
             .all()
         )

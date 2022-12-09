@@ -21,9 +21,15 @@
     {% include "header.html" %}
 
     <div class="flex flex-col items-center justify-center">
+        {% if "cloudinary" in requested_user.photo: %}
         <div style="background-image: url({{requested_user.photo}}); border-radius: 50%;"
             class="mt-7 h-72 w-72 bg-cover">
         </div>
+        {% else: %}
+        <div style="background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg); border-radius: 50%;"
+            class="mt-7 h-72 w-72 bg-cover">
+        </div>
+        {% endif %}
 
         <div class="mt-5 text-2xl font-medium text-slate-800">
             {{requested_user.display_name}}

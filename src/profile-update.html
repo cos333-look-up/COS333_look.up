@@ -25,13 +25,13 @@
         First Name
       </span>
       <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="first_name" name="first_name"
-        value="{{user.first_name}}" style="text-align:center;">
+        value="{{user.first_name}}" style="text-align:center;" maxlength="15">
 
       <span class="mt-5 text-2xl font-medium text-slate-800">
         Last Name
       </span>
       <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="last_name" name="last_name"
-        value="{{user.last_name}}" style="text-align:center;">
+        value="{{user.last_name}}" style="text-align:center;" maxlength="15">
 
       <div class="mt-2 font-light text-slate-800">
         {{user.email}}
@@ -54,7 +54,7 @@
             </svg>
 
             <input class="px-5 mx-2 bg-gray-200 rounded-3xl w-72 h-10" type="text" id="phone" name="phone"
-              value="{{user.phone}}" />
+              value="{{user.phone}}" maxlength="15" />
           </div>
 
           <div class="mt-4 flex items-center">
@@ -89,7 +89,7 @@
             </svg>
 
             <input class="px-5 mx-2 bg-gray-200 rounded-3xl w-72 h-10" type="text" id="instagram" name="instagram"
-              value="{{user.instagram}}">
+              value="{{user.instagram}}" maxlength="25">
           </div>
 
           <div class="mt-4 flex items-center">
@@ -106,7 +106,7 @@
             </svg>
 
             <input class="px-5 mx-2 bg-gray-200 rounded-3xl w-72 h-10" type="text" id="snapchat" name="snapchat"
-              value="{{user.snapchat}}">
+              value="{{user.snapchat}}" maxlength="25">
           </div>
         </div>
       </div>
