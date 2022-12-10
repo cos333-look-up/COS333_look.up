@@ -1334,9 +1334,9 @@ div#menu.reveal {
   }
 }
 
-input:valid {
+/* input:valid {
   color: green;
-}
+} */
 
 input:invalid {
   color: red;
