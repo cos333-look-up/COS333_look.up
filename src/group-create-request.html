@@ -85,6 +85,25 @@
 
         <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="share_phone" name="share_phone">
 
+        <div onclick="profileNext('share-phone-form', 'public-form')"
+          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
+          <div class="font-medium text-lg">Next</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="public-form" class="hidden flex h-screen justify-center items-center">
+      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="public">
+        <div class="text-2xl text-center header-font">
+          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
+        </div>
+
+        <div class="text-lg text-center mt-5 font-medium text-slate-800">
+          <span>Would you like your club to be public?</span>
+        </div>
+
+        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="public" name="public">
+
         <div onclick="document.getElementById('FormId').submit();"
           class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
           <div class="font-medium text-lg">Submit</div>

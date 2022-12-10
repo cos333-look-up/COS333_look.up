@@ -1,7 +1,9 @@
 {% if clubs|length != 0: %}
 {% for club in clubs: %}
+{% if club.public: %}
 <div class="text-lg text-center mt-5 font-medium text-slate-800">
     <a href="/group-members?clubid={{club.clubid}}">{{club.name}}</a>
 </div>
+{% endif %}
 {% endfor %}
 {% endif %}

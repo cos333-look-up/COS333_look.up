@@ -51,13 +51,15 @@ class ClubsModel(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
+    public = db.Column(db.Boolean)
     # info_shared = db.Column(db.LargeBinary)
 
-    def __init__(self, clubid, name, description, info_shared):
+    def __init__(self, clubid, name, description, info_shared, public):
         self.clubid = clubid
         self.name = name
         self.description = description
         self.info_shared = info_shared
+        self.public = public
 
 
 ## Model for club member requests in database
@@ -107,9 +109,9 @@ class CreationRequests(db.Model):
     netid = db.Column(db.String)
     description = db.Column(db.String)
     info_shared = db.Column(db.String)
-    # info_shared = db.Column(db.LargeBinary)
+    public = db.Column(db.Boolean)
 
-    def __init__(self, reqid, name, netid, description, info_shared):
+    def __init__(self, reqid, name, netid, description, info_shared, public):
         self.reqid = reqid
         self.name = name
         self.netid = netid
@@ -117,6 +119,7 @@ class CreationRequests(db.Model):
         # for key, value in info_shared.items():
         #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
+        self.public = public
 
 
 ## Model for undergrads

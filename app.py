@@ -247,6 +247,8 @@ def grouprequestpost():
     name = flask.request.form["name"]
     description = flask.request.form["description"]
     attributes = ["share_socials", "share_phone"]
+    public = (flask.request.form.get("public") == "on")
+    print(public)
     info_shared = ""
     for attribute in attributes:
         if flask.request.form.get(attribute) is None:
@@ -262,7 +264,7 @@ def grouprequestpost():
     if recent_request is not None:
         reqid = recent_request.reqid + 1
     new_club_request = CreationRequests(
-        reqid, name, netid, description, info_shared
+        reqid, name, netid, description, info_shared, public
     )
     db.session.add(new_club_request)
     db.session.commit()
@@ -368,6 +370,7 @@ def groupmembers():
         .order_by(UsersModel.first_name)
         .all()
     )
+
     html_code = flask.render_template(
         "group-members.html",
         user=user,
@@ -376,10 +379,54 @@ def groupmembers():
         clubid=clubid,
         clubmember=clubmember,
         name=club.name,
+        is_public=club.public
     )
     response = flask.make_response(html_code)
     return response
 
+@app.route("/toggle-visibility", methods=["GET", "POST"])
+def togglevisibility():
+    user = checkValidUser()
+    clubid = flask.request.args.get("clubid")
+    club = checkValidClub(clubid)
+    clubmember = checkValidMember(user, club)
+    adminmembers = (
+        db.session.query(UsersModel)
+        .filter(ClubMembersModel.clubid == clubid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(ClubMembersModel.is_moderator == True)
+        .filter(UsersModel.is_banned == False)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+    nonadminmembers = (
+        db.session.query(UsersModel)
+        .filter(ClubMembersModel.clubid == clubid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(ClubMembersModel.is_moderator == False)
+        .filter(UsersModel.is_banned == False)
+        .order_by(UsersModel.first_name)
+        .all()
+    )
+
+    new_permissions = db.session.get(ClubsModel, clubid)
+    new_permissions.public = not club.public
+
+    # Input the user into the DB
+    db.session.add(new_permissions)
+    db.session.commit()
+    html_code = flask.render_template(
+        "group-members.html",
+        user=user,
+        adminmembers=adminmembers,
+        nonadminmembers=nonadminmembers,
+        clubid=clubid,
+        clubmember=clubmember,
+        name=club.name,
+        is_public=club.public
+    )
+    response = flask.make_response(html_code)
+    return response
 
 @app.route("/group-requests", methods=["GET"])
 def grouprequests():
@@ -759,7 +806,8 @@ def groupfulfill():
     name = created_club.name
     description = created_club.description
     info_shared = created_club.info_shared
-    new_club = ClubsModel(clubid, name, description, info_shared)
+    public = created_club.public
+    new_club = ClubsModel(clubid, name, description, info_shared, public)
     new_club_member = ClubMembersModel(clubid, creator_netid, True)
     db.session.add(new_club)
     db.session.add(new_club_member)
@@ -1025,7 +1073,7 @@ def mycontacts():
         ClubMembersModel.netid == user.netid
     )
 
-    club_contacts = (
+    contact_netids = (
         db.session.query(ClubMembersModel.netid)
         .filter(ClubMembersModel.clubid.in_(clubids))
         .filter(ClubMembersModel.netid != user.netid)
