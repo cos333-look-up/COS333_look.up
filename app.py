@@ -295,14 +295,9 @@ def grouprequestpost():
     netid = auth.authenticate()
     name = flask.request.form["name"]
     attributes = ["share_socials", "share_phone"]
+    share_phone = flask.request.form.get("share_phone") == "on"
+    share_socials = flask.request.form.get("share_socials") == "on"
     public = flask.request.form.get("public") == "on"
-    print(public)
-    info_shared = ""
-    for attribute in attributes:
-        if flask.request.form.get(attribute) is None:
-            info_shared += "0"
-        else:
-            info_shared += "1"
     recent_request = (
         db.session.query(CreationRequests)
         .order_by(CreationRequests.reqid.desc())
@@ -312,7 +307,7 @@ def grouprequestpost():
     if recent_request is not None:
         reqid = recent_request.reqid + 1
     new_club_request = CreationRequests(
-        reqid, name, netid, info_shared, public
+        reqid, name, netid, public, share_phone, share_socials
     )
     db.session.add(new_club_request)
     db.session.commit()
@@ -713,7 +708,8 @@ def userinfo():
             "user-info.html",
             requested_user=user,
             user=user,
-            info_shared="11",
+            share_phone=True,
+            share_socials=True,
             is_my_profile=is_my_profile,
         )
         response = flask.make_response(html_code)
@@ -728,22 +724,16 @@ def userinfo():
         ClubMembersModel.netid == user.netid
     )
     shared_clubs = set(member_clubs).intersection(set(user_clubs))
-    phone_shared = False
-    socials_shared = False
-    info_shared = "00"
+    share_phone = False
+    share_socials = False
     for clubid in shared_clubs:
         club = db.session.get(ClubsModel, clubid)
-        if club.info_shared[1] == "1":
-            phone_shared = True
-        if club.info_shared[0] == "1":
-            socials_shared = True
-        if phone_shared and socials_shared:
-            info_shared = "11"
+        if club.share_phone:
+            share_phone = True
+        if club.share_socials:
+            share_socials = True
+        if share_phone and share_socials:
             break
-    if phone_shared and not socials_shared:
-        info_shared = "01"
-    if socials_shared and not phone_shared:
-        info_shared = "10"
 
     requested_user = db.session.get(UsersModel, member_netid)
     if requested_user.is_banned:
@@ -752,7 +742,8 @@ def userinfo():
         "user-info.html",
         requested_user=requested_user,
         user=user,
-        info_shared=info_shared,
+        share_phone=share_phone,
+        share_socials=share_socials,
         is_my_profile=is_my_profile,
     )
     response = flask.make_response(html_code)
@@ -854,9 +845,12 @@ def groupfulfill():
     if recent_club is not None:
         clubid = recent_club.clubid + 1
     name = created_club.name
-    info_shared = created_club.info_shared
+    share_phone = created_club.share_phone
+    share_socials = created_club.share_socials
     public = created_club.public
-    new_club = ClubsModel(clubid, name, info_shared, public)
+    new_club = ClubsModel(
+        clubid, name, public, share_phone, share_socials
+    )
     new_club_member = ClubMembersModel(clubid, creator_netid, True)
     db.session.add(new_club)
     db.session.add(new_club_member)

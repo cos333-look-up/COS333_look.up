@@ -37,14 +37,14 @@
         <div class="mt-2 font-light text-slate-800">
             {{requested_user.email}}
         </div>
-        {% if info_shared != "00" or requested_user == user %}
+        {% if share_socials or share_phone or requested_user == user %}
         {% if requested_user.phone or requested_user.instagram or requested_user.snapchat %}
         <div class="info-box !mt-5 !pr-24" style="min-width: 80vw;">
             <div class="ml-3 text-xl font-medium text-slate-800">
                 {{requested_user.first_name}}'s Info
             </div>
             <div class="mt-5 ml-3 text-lg">
-                {% if info_shared[1] == "1" or requested_user == user %}
+                {% if share_phone or requested_user == user %}
                 {% if requested_user.phone %}
                 <div class="flex items-center">
                     <svg class="w-5" "version=" 1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,7 @@
                 </div>
                 {% endif %}
                 {% endif %}
-                {% if info_shared[0] == "1" or requested_user == user %}
+                {% if share_socials or requested_user == user %}
                 {% if requested_user.instagram %}
                 <div class="mt-4 flex items-center">
                     <svg class="w-5 h-5" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="132.004"

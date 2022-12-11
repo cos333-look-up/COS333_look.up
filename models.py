@@ -52,15 +52,18 @@ class ClubsModel(db.Model):
 
     clubid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    info_shared = db.Column(db.String)
     public = db.Column(db.Boolean)
-    # info_shared = db.Column(db.LargeBinary)
+    share_phone = db.Column(db.Boolean)
+    share_socials = db.Column(db.Boolean)
 
-    def __init__(self, clubid, name, info_shared, public):
+    def __init__(
+        self, clubid, name, public, share_phone, share_socials
+    ):
         self.clubid = clubid
         self.name = name
-        self.info_shared = info_shared
         self.public = public
+        self.share_phone = share_phone
+        self.share_socials = share_socials
 
 
 ## Model for club member requests in database
@@ -108,15 +111,19 @@ class CreationRequests(db.Model):
     reqid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     netid = db.Column(db.String)
-    info_shared = db.Column(db.String)
     public = db.Column(db.Boolean)
+    share_phone = db.Column(db.Boolean)
+    share_socials = db.Column(db.Boolean)
 
-    def __init__(self, reqid, name, netid, info_shared, public):
+    def __init__(
+        self, reqid, name, netid, public, share_phone, share_socials
+    ):
         self.reqid = reqid
         self.name = name
         self.netid = netid
-        self.info_shared = info_shared
         self.public = public
+        self.share_phone = share_phone
+        self.share_socials = share_socials
 
 
 ## Model for undergrads
