@@ -48,14 +48,14 @@ def checkValidUser():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
     if not user:
-        return flask.abort(flask.redirect("profilecreation"))
+        return flask.abort(flask.redirect("/profile-create"))
     if user.first_time:
         user.first_time = False
         db.session.add(user)
         db.session.commit()
-        return flask.abort(flask.redirect("profilecreation"))
+        return flask.abort(flask.redirect("/profile-create"))
     if user.is_banned:
-        return flask.abort(flask.redirect("banned"))
+        return flask.abort(flask.redirect("/banned"))
     return user
 
 
