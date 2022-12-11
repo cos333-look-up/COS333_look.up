@@ -18,9 +18,39 @@
   <form id="FormId" action="/profileupdatepost" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <div class="flex flex-col items-center justify-center">
-      <input style="background-image: url({{user.photo}}); border-radius: 50%;" class="mt-7 h-72 w-72 bg-cover"
-        id="photo" name="photo" type="file" accept="image/*">
-
+      <div
+      style="background-image:url({{user.photo}});border-radius: 50%;"
+      class="mt-7 h-72 w-72 bg-cover"
+      id="preview"></div>
+      <label class="cursor-pointer flex justify-center mx-2 my-2 px-4 py-3 bg-light-pton rounded-xl">
+        <input
+          id="photo"
+          name="photo"
+          type="file"
+          accept="image/*"
+          onchange="loadFile(event)"
+          hidden
+          >
+          Upload Photo
+      </label>
+      <label class="cursor-pointer flex justify-center mx-2 my-2 px-4 py-3 bg-orange-400 rounded-xl">
+          Remove Photo
+      </label>
+        <script>
+          const frame = document.getElementById('preview');
+          const file = document.getElementById('photo');
+          const reader = new FileReader();
+          reader.addEventListener("load", function () {
+            frame.style.backgroundImage = `url(${ reader.result })`;
+          }, false);
+          file.addEventListener('change',function() {
+            const image = this.files[0];
+            if(image) reader.readAsDataURL(image);
+          }, false)
+        </script>
+      <!-- <div class="flex justify-center mx-2 my-2 px-4 py-3 bg-light-pton rounded-xl">
+        <button for="photo">Choose File</button>
+      </div> -->
       <span class="mt-5 text-2xl font-medium text-slate-800">
         First Name
       </span>

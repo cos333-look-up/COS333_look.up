@@ -213,6 +213,16 @@ def profileput():
     user.phone = flask.request.form["phone"]
     user.instagram = flask.request.form["instagram"]
     user.snapchat = flask.request.form["snapchat"]
+    photo = flask.request.files["photo"]
+    if photo:
+        print("photo present")
+    else:
+        print('no photo')
+
+    # cases
+    # upload photo
+    # did not upload photo
+
     try:
         photo = cloudinary.api.resource(netid)
         cloudinary.uploader.destroy(photo)
