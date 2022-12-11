@@ -294,7 +294,6 @@ def groupcreation():
 def grouprequestpost():
     netid = auth.authenticate()
     name = flask.request.form["name"]
-    description = flask.request.form["description"]
     attributes = ["share_socials", "share_phone"]
     public = flask.request.form.get("public") == "on"
     print(public)
@@ -313,7 +312,7 @@ def grouprequestpost():
     if recent_request is not None:
         reqid = recent_request.reqid + 1
     new_club_request = CreationRequests(
-        reqid, name, netid, description, info_shared, public
+        reqid, name, netid, info_shared, public
     )
     db.session.add(new_club_request)
     db.session.commit()
@@ -855,12 +854,9 @@ def groupfulfill():
     if recent_club is not None:
         clubid = recent_club.clubid + 1
     name = created_club.name
-    description = created_club.description
     info_shared = created_club.info_shared
     public = created_club.public
-    new_club = ClubsModel(
-        clubid, name, description, info_shared, public
-    )
+    new_club = ClubsModel(clubid, name, info_shared, public)
     new_club_member = ClubMembersModel(clubid, creator_netid, True)
     db.session.add(new_club)
     db.session.add(new_club_member)
