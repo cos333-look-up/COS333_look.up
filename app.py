@@ -1012,12 +1012,13 @@ def users():
         users_pages.append(list(mit.chunked(page, 10)))
 
     html_code = flask.render_template(
-        "users.html",
+        "index.html",
         user=user,
+
         users_pages=users_pages,
         max_pages=len(users_pages),
         page_number=int(page_number),
-        search_string=search_string,
+        search_string=search_string
     )
     response = flask.make_response(html_code)
     return response
