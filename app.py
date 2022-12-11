@@ -446,6 +446,7 @@ def togglevisibility():
     new_permissions = db.session.get(ClubsModel, clubid)
     new_permissions.public = not club.public
 
+
     # Input the user into the DB
     db.session.add(new_permissions)
     db.session.commit()
