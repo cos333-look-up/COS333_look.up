@@ -13,7 +13,7 @@
   </style>
 </head>
 
-<body class="bg-offwhite">
+<body class="bg-offwhite mb-5">
   {% include "header.html" %}
   <form id="FormId" action="/profileupdatepost" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center mx-2 my-2 px-4 py-3 bg-light-pton rounded-xl">
+      <div class="flex justify-center mx-2 my-3 px-4 py-3 bg-light-pton rounded-xl">
         <button class="text-sm" type="submit" name="Submit" value="Submit">Submit</button>
       </div>
     </div>
