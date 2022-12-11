@@ -43,6 +43,7 @@ from models import (
     UndergraduatesModel,
 )
 
+test = True
 
 def checkValidUser():
     netid = auth.authenticate()
@@ -51,9 +52,8 @@ def checkValidUser():
         return flask.abort(flask.redirect("/profile-create"))
     if user.first_time:
         user.first_time = False
-        db.session.add(user)
         db.session.commit()
-        return flask.abort(flask.redirect("/profile-create"))
+        return flask.abort(flask.redirect("/profile-update"))
     if user.is_banned:
         return flask.abort(flask.redirect("/banned"))
     return user
