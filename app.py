@@ -249,33 +249,23 @@ def profileput():
     user.snapchat = flask.request.form["snapchat"]
     photo = flask.request.files["photo"]
     if photo:
-        print("photo present")
-    else:
-        print('no photo')
+        user.photo = cloudinary.uploader.upload(photo, public_id=netid)["url"]
 
-    # cases
-    # upload photo
-    # did not upload photo
+    ### DEPRECATED CODE: photo removal ###
+    # photo = cloudinary.api.resource(netid)
+    # cloudinary.uploader.destroy(photo)
 
-    try:
-        photo = cloudinary.api.resource(netid)
-        cloudinary.uploader.destroy(photo)
-    except:
-        pass
-    try:
-        user.photo = cloudinary.uploader.upload(
-            flask.request.files["photo"], public_id=netid
-        )["url"]
-    except:
-        user.photo = cloudinary.api.resource(
-            "/Additional%20Files/default_user_icon"
-        )["url"]
-    """
-    if flask.request.files["photo"] == "delete":
-        user.photo = cloudinary.api.resource(
-            "/Additional%20Files/default_user_icon"
-        )["url"]
-    """
+    ### DEPRECATED CODE: replace photo with default ###
+    # user.photo = cloudinary.api.resource(
+    #     "/Additional%20Files/default_user_icon"
+    # )["url"]
+    # """
+    # if flask.request.files["photo"] == "delete":
+    #     user.photo = cloudinary.api.resource(
+    #         "/Additional%20Files/default_user_icon"
+    #     )["url"]
+    # """
+
     # Input the user into the DB
     db.session.add(user)
     db.session.commit()
