@@ -651,6 +651,11 @@ video {
   margin-bottom: 0.75rem;
 }
 
+.mx-7 {
+  margin-left: 1.75rem;
+  margin-right: 1.75rem;
+}
+
 .mt-5 {
   margin-top: 1.25rem;
 }
@@ -735,6 +740,10 @@ video {
   margin-right: 1.5rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .flex {
   display: flex;
 }
@@ -781,6 +790,22 @@ video {
 
 .h-5 {
   height: 1.25rem;
+}
+
+.h-20 {
+  height: 5rem;
+}
+
+.h-2\/3 {
+  height: 66.666667%;
+}
+
+.h-3\/5 {
+  height: 60%;
+}
+
+.h-1\/2 {
+  height: 50%;
 }
 
 .w-1\/2 {
@@ -835,6 +860,30 @@ video {
   width: 2.5rem;
 }
 
+.w-20 {
+  width: 5rem;
+}
+
+.w-2\/3 {
+  width: 66.666667%;
+}
+
+.w-max {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.w-fit {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -867,6 +916,12 @@ video {
   overflow-y: scroll;
 }
 
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .rounded-3xl {
   border-radius: 1.5rem;
 }
@@ -877,6 +932,10 @@ video {
 
 .border {
   border-width: 1px;
+}
+
+.border-2 {
+  border-width: 2px;
 }
 
 .border-b-2 {
@@ -948,8 +1007,20 @@ video {
   background-color: rgb(60 68 77 / var(--tw-bg-opacity));
 }
 
+.bg-\[url\(\{\{indiv\.photo\}\}\)\] {
+  background-image: url({{indiv.photo}});
+}
+
+.bg-\[url\(\'\{\{indiv\.photo\}\}\'\)\] {
+  background-image: url('{{indiv.photo}}');
+}
+
 .bg-cover {
   background-size: cover;
+}
+
+.bg-contain {
+  background-size: contain;
 }
 
 .object-cover {
