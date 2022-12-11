@@ -248,7 +248,9 @@ def profileput():
     user.snapchat = flask.request.form["snapchat"]
     photo = flask.request.files["photo"]
     if photo:
-        user.photo = cloudinary.uploader.upload(photo, public_id=netid)["url"]
+        user.photo = cloudinary.uploader.upload(photo, public_id=netid)[
+            "url"
+        ]
 
     ### DEPRECATED CODE: photo removal ###
     # photo = cloudinary.api.resource(netid)
@@ -445,7 +447,6 @@ def togglevisibility():
 
     new_permissions = db.session.get(ClubsModel, clubid)
     new_permissions.public = not club.public
-
 
     # Input the user into the DB
     db.session.add(new_permissions)
@@ -789,6 +790,7 @@ def pendinginvites():
         user=user,
         invites=invites,
         name=club.name,
+        clubid=clubid,
     )
     response = flask.make_response(html_code)
     return response
