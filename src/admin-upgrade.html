@@ -21,6 +21,10 @@
         <span class="text-amber-400">upgrade</span>
     </div>
 
+    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
+        <a href="/admin-console" class="text-sm font-bold">Back</a>
+    </div>
+
     <form action="/adminupgradepost" method="post">
         <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
         <div class="flex flex-col items-center justify-center">
