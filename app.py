@@ -111,9 +111,43 @@ def index():
 def landing():
     # Setup data model
     user = checkValidUser()
-    html_code = flask.render_template("index.html", user=user)
-    response = flask.make_response(html_code)
-    return response
+    search_string = flask.request.args.get("search")
+
+    if search_string == None:
+        html_code = flask.render_template(
+            "index.html",
+            user=user,
+            no_search=True
+        )
+        response = flask.make_response(html_code)
+        return response
+    else:
+        lowercase = search_string.lower()
+        users = (
+            db.session.query(UsersModel)
+            .filter(
+                (UsersModel.netid.ilike("%" + lowercase + "%"))
+                | (UsersModel.display_name.ilike("%" + lowercase + "%"))
+            )
+            .filter(UsersModel.is_banned == False)
+            .order_by(UsersModel.netid)
+            .all()
+        )
+
+        results_length = len(users)
+        if results_length > 10:
+            users = users[:10]
+
+        html_code = flask.render_template(
+            "index.html",
+            user=user,
+            search_string=search_string,
+            users=users,
+            results_length=results_length,
+            no_search=False
+        )
+        response = flask.make_response(html_code)
+        return response
 
 
 @app.route("/about", methods=["GET"])
@@ -1022,7 +1056,7 @@ def users():
         users_pages.append(list(mit.chunked(page, 10)))
 
     html_code = flask.render_template(
-        "index.html",
+        "users.html",
         user=user,
 
         users_pages=users_pages,

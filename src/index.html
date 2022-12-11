@@ -16,34 +16,44 @@
     <span class="text-text">Find your friends!</span>
   </div>
 
-  <form class="px-7 flex items-center mb-5" action="/users?search=" method="get">
-    <input class="border px-3 py-2 w-full border-text" type="text" placeholder="Search a person">
+  <form class="px-7 flex items-center mb-5">
+    <input class="border px-3 py-2 w-full border-text" id="search" name="search" type="text" placeholder="Search a person">
     <button type="submit" class="ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
-      <span class="text-white">Submit</span>
+      <input type="submit">
     </button>
   </form>
 
+  {% if no_search: %}
+  <div class="flex items-center justify-center info-box" style="min-height: 35vh">
+    <span class="text-center w-3/4">No results yet. Make a search!</span>
+  </div>
+
+  {% else: %}
   <div class="overflow-x-scroll relative" style="min-height: 40vh; display: -webkit-box">
+    {% for indiv in users: %}
     <div class="info-box !ml-7 !mr-0" style="height: 35vh; width: 45vw">
-
+      {{indiv.display_name}}
+      <img src="{{indiv.photo}}">
+      <br>
+      <a href="/user-info?netid={{indiv.netid}}" class="text-sm font-bold">See More</a>
     </div>
-
-    <div class="info-box !ml-7 !mr-0" style="height: 35vh; width: 45vw">
-
-    </div>
-
-    <div class="info-box !ml-7 !mr-0" style="height: 35vh; width: 45vw">
-
-    </div>
-
+    {% endfor %}
     <div class="w-7">
 
     </div>
   </div>
+  {% if results_length == 1: %}
+    <span>Showing 1 result.</span>
+  {% elif results_length < 10: %}
+    <span>Showing all {{results_length}} results.</span>
+  {% else: %}
+    <span>Displaying 10 of {{results_length}} results. Click <u><a href="/users?search={{search_string}}">here</a></u> to see all.</span>
+  {% endif %}
+  {% endif %}
 
-  <div class="flex items-center justify-center info-box" style="min-height: 35vh">
-    <span class="text-center w-3/4">No results yet. Make a search!</span>
-  </div>
+
+
+
 
   <div class="info-box">
     <div class="text-xl mb-3">
