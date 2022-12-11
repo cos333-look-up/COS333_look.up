@@ -45,6 +45,7 @@ from models import (
 
 test = True
 
+
 def checkValidUser():
     netid = auth.authenticate()
     user = db.session.get(UsersModel, netid)
@@ -115,9 +116,7 @@ def landing():
 
     if search_string == None:
         html_code = flask.render_template(
-            "index.html",
-            user=user,
-            no_search=True
+            "index.html", user=user, no_search=True
         )
         response = flask.make_response(html_code)
         return response
@@ -144,7 +143,7 @@ def landing():
             search_string=search_string,
             users=users,
             results_length=results_length,
-            no_search=False
+            no_search=False,
         )
         response = flask.make_response(html_code)
         return response
@@ -221,7 +220,7 @@ def profilepost():
         is_admin,
         is_banned,
         photo,
-        False
+        False,
     )
     # Input the user into the DB
     db.session.add(new_user)
@@ -285,9 +284,8 @@ def groupcreation():
 def grouprequestpost():
     netid = auth.authenticate()
     name = flask.request.form["name"]
-    description = flask.request.form["description"]
     attributes = ["share_socials", "share_phone"]
-    public = (flask.request.form.get("public") == "on")
+    public = flask.request.form.get("public") == "on"
     print(public)
     info_shared = ""
     for attribute in attributes:
@@ -304,7 +302,7 @@ def grouprequestpost():
     if recent_request is not None:
         reqid = recent_request.reqid + 1
     new_club_request = CreationRequests(
-        reqid, name, netid, description, info_shared, public
+        reqid, name, netid, info_shared, public
     )
     db.session.add(new_club_request)
     db.session.commit()
@@ -419,10 +417,11 @@ def groupmembers():
         clubid=clubid,
         clubmember=clubmember,
         name=club.name,
-        is_public=club.public
+        is_public=club.public,
     )
     response = flask.make_response(html_code)
     return response
+
 
 @app.route("/toggle-visibility", methods=["GET", "POST"])
 def togglevisibility():
@@ -463,10 +462,11 @@ def togglevisibility():
         clubid=clubid,
         clubmember=clubmember,
         name=club.name,
-        is_public=club.public
+        is_public=club.public,
     )
     response = flask.make_response(html_code)
     return response
+
 
 @app.route("/group-requests", methods=["GET"])
 def grouprequests():
@@ -844,10 +844,9 @@ def groupfulfill():
     if recent_club is not None:
         clubid = recent_club.clubid + 1
     name = created_club.name
-    description = created_club.description
     info_shared = created_club.info_shared
     public = created_club.public
-    new_club = ClubsModel(clubid, name, description, info_shared, public)
+    new_club = ClubsModel(clubid, name, info_shared, public)
     new_club_member = ClubMembersModel(clubid, creator_netid, True)
     db.session.add(new_club)
     db.session.add(new_club_member)
@@ -1048,11 +1047,10 @@ def users():
     html_code = flask.render_template(
         "users.html",
         user=user,
-
         users_pages=users_pages,
         max_pages=len(users_pages),
         page_number=int(page_number),
-        search_string=search_string
+        search_string=search_string,
     )
     response = flask.make_response(html_code)
     return response
@@ -1114,21 +1112,15 @@ def mycontacts():
         ClubMembersModel.netid == user.netid
     )
 
-    contact_netids = (
-        db.session.query(ClubMembersModel.netid)
-        .filter(ClubMembersModel.clubid.in_(clubids))
+    contacts = (
+        db.session.query(UsersModel)
         .filter(ClubMembersModel.netid != user.netid)
+        .filter(UsersModel.netid == ClubMembersModel.netid)
+        .filter(ClubMembersModel.clubid.in_(clubids))
+        .filter(UsersModel.is_banned == False)
+        .order_by(UsersModel.first_name)
+        .all()
     )
-
-    contacts = {
-        db.session.get(UsersModel, contact[0])
-        for contact in contact_netids
-    }
-    contacts = sorted(contacts, key=lambda key: key.display_name)
-    print(contacts)
-    # table with picture, name; link to user profile page
-    # option to sort by first name, last name
-    # headings with alphabet
 
     html_code = flask.render_template(
         "my-contacts.html", user=user, contacts=contacts

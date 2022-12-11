@@ -30,7 +30,7 @@ class UsersModel(db.Model):
         is_admin,
         is_banned,
         photo,
-        first_time
+        first_time,
     ):
         self.netid = netid
         self.first_name = first_name
@@ -52,15 +52,13 @@ class ClubsModel(db.Model):
 
     clubid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    description = db.Column(db.String)
     info_shared = db.Column(db.String)
     public = db.Column(db.Boolean)
     # info_shared = db.Column(db.LargeBinary)
 
-    def __init__(self, clubid, name, description, info_shared, public):
+    def __init__(self, clubid, name, info_shared, public):
         self.clubid = clubid
         self.name = name
-        self.description = description
         self.info_shared = info_shared
         self.public = public
 
@@ -110,17 +108,13 @@ class CreationRequests(db.Model):
     reqid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     netid = db.Column(db.String)
-    description = db.Column(db.String)
     info_shared = db.Column(db.String)
     public = db.Column(db.Boolean)
 
-    def __init__(self, reqid, name, netid, description, info_shared, public):
+    def __init__(self, reqid, name, netid, info_shared, public):
         self.reqid = reqid
         self.name = name
         self.netid = netid
-        self.description = description
-        # for key, value in info_shared.items():
-        #    exec(f'self.{key} = {value}')
         self.info_shared = info_shared
         self.public = public
 
