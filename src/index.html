@@ -24,12 +24,12 @@
   </form>
 
   {% if no_search: %}
-  <div class="flex items-center justify-center info-box" style="min-height: 35vh">
+  <div class="flex items-center justify-center info-box" style="min-height: 40vh">
     <span class="text-center w-3/4">No results yet. Make a search!</span>
   </div>
 
   {% else: %}
-  <div class="overflow-x-scroll relative" style="min-height: 40vh; display: -webkit-box">
+  <div class="overflow-x-scroll relative" style="min-height: 40vh; display: -webkit-box; z-index: -1;">
     {% for indiv in users: %}
     <div class="info-box !ml-7 !mr-0" style="height: 35vh; width: 45vw">
       {{indiv.display_name}}
