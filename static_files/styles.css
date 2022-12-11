@@ -179,3 +179,17 @@ div#menu.reveal {
 input:invalid {
   color: red;
 }
+
+.picture-box {
+  position: absolute;
+  top: 0;
+  margin-left: 50%;
+  height: 35vw;
+  width: 50vw;
+  background-color: white;
+  border-width: 0.01em;
+  padding: 5% 5%;
+  margin: 0 7%;
+  margin-bottom: 5%;
+  box-shadow: 2px 2px 5px #d3d3d3;
+}
