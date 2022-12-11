@@ -186,7 +186,8 @@ def profilepost():
         email,
         is_admin,
         is_banned,
-        photo
+        photo,
+        False
     )
     # Input the user into the DB
     db.session.add(new_user)

@@ -15,6 +15,7 @@ class UsersModel(db.Model):
     is_admin = db.Column(db.Boolean)
     is_banned = db.Column(db.Boolean)
     photo = db.Column(db.String)
+    first_time = db.Column(db.Boolean)
 
     def __init__(
         self,
@@ -29,6 +30,7 @@ class UsersModel(db.Model):
         is_admin,
         is_banned,
         photo,
+        first_time
     ):
         self.netid = netid
         self.first_name = first_name
@@ -41,6 +43,7 @@ class UsersModel(db.Model):
         self.is_admin = is_admin
         self.is_banned = is_banned
         self.photo = photo
+        self.first_time = first_time
 
 
 ## Models for clubs in the database
