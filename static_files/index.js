@@ -31,15 +31,10 @@ function cloudsMove() {
 
 }
 
-// function profileNext(currId, nextId) {
-//   if (!nextId) {
-//     window.location = "index"
-//     return
-//   }
-//   let currForm = document.getElementById(currId)
-//   let nextForm = document.getElementById(nextId)
-//   console.log(currForm, nextForm)
-//   currForm.classList.toggle("hidden")
-//   nextForm.classList.toggle("hidden")
-//   return
-// }
+function chevron() {
+  let chevron = document.getElementById("chevron")
+  let dropdown = document.getElementById("dropdown")
+  chevron.classList.toggle("rotated")
+  dropdown.classList.toggle("hidden")
+  return
+}

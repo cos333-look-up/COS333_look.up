@@ -193,3 +193,13 @@ input:invalid {
   margin-bottom: 5%;
   box-shadow: 2px 2px 5px #d3d3d3;
 }
+
+.chevron {
+  transform: rotateX(180deg);
+  transition: all 0.5s ease;
+}
+
+.chevron.rotated {
+  transform: rotateX(0deg) !important;
+  transition: all 0.5s ease;
+}
