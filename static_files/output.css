@@ -1753,3 +1753,13 @@ input:invalid {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.mobile-pointer {
+  cursor: pointer;
+
+  font-size: 1.25rem;
+  /* 20px */
+  line-height: 1.75rem;
+  /* 28px */
+  padding: 3% 0;
+}
