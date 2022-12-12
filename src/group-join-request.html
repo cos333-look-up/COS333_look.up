@@ -15,30 +15,34 @@
 
 <body class="bg-slate-50">
     {% include "header.html" %}
+    {% include "dashboard.html" %}
 
-    <div class="header-font text-2xl px-7 py-5">
-        <span class="text-slate-700">join</span>
-        <span class="text-amber-400">request</span>
-    </div>
+    <div class="sm:ml-72 sm:px-14 sm:pt-4">
 
-    <center>
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-            <div class="info-box">
-
-                <div class="text-base">
-                    {{club.name}}
-                </div>
-
-                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
-                    <form action="/groupjoinpost?clubid={{club.clubid}}" method="post">
-                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                        <button class="text-sm" name="join" type="submit">Join {{club.name}}</button>
-                    </form>
-                </div>
-
-            </div>
+        <div class="header-font text-2xl px-7 py-5">
+            <span class="text-slate-700">join</span>
+            <span class="text-amber-400">request</span>
         </div>
-    </center>
+
+        <center>
+            <div class="text-lg text-center mt-5 font-medium text-slate-800">
+                <div class="info-box">
+
+                    <div class="text-base">
+                        {{club.name}}
+                    </div>
+
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                        <form action="/groupjoinpost?clubid={{club.clubid}}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <button class="text-sm" name="join" type="submit">Join {{club.name}}</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </center>
+    </div>
 </body>
 
 {% include "navigation-menu.html" %}
