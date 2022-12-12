@@ -1030,7 +1030,9 @@ def users():
                 | (UsersModel.display_name.ilike("%" + lowercase + "%"))
                 | (
                     (
-                        UsersModel.first_name + UsersModel.last_name
+                        UsersModel.first_name
+                        + " "
+                        + UsersModel.last_name
                     ).ilike("%" + lowercase + "%")
                 )
             )
