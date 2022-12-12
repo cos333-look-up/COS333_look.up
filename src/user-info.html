@@ -21,16 +21,18 @@
     {% include "header.html" %}
     {% include "dashboard.html" %}
 
-    <div class="flex flex-col items-center justify-center">
-        {% if requested_user.photo: %}
-        <div style="background-image: url({{requested_user.photo}}); border-radius: 50%;"
-            class="mt-7 h-72 w-72 bg-cover">
-        </div>
-        {% else: %}
-        <div style="background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg); border-radius: 50%;"
-            class="mt-7 h-72 w-72 bg-cover">
-        </div>
-        {% endif %}
+    <div class="sm:ml-72 sm:px-14 sm:pt-4">
+
+        <div class="flex flex-col items-center justify-center">
+            {% if requested_user.photo: %}
+            <div style="background-image: url({{requested_user.photo}}); border-radius: 50%;"
+                class="mt-7 h-72 w-72 bg-cover">
+            </div>
+            {% else: %}
+            <div style="background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg); border-radius: 50%;"
+                class="mt-7 h-72 w-72 bg-cover">
+            </div>
+            {% endif %}
 
             <div class="mt-5 text-2xl font-medium text-slate-800">
                 {{requested_user.display_name}}
@@ -83,8 +85,8 @@
                                     fy="578.088" />
                                 <radialGradient id="d" cx="147.694" cy="473.455" r="65" xlink:href="#b"
                                     gradientUnits="userSpaceOnUse"
-                                    gradientTransform="matrix(.17394 .86872 -3.5818 .71718 1648.348 -458.493)" fx="147.694"
-                                    fy="473.455" />
+                                    gradientTransform="matrix(.17394 .86872 -3.5818 .71718 1648.348 -458.493)"
+                                    fx="147.694" fy="473.455" />
                             </defs>
                             <path fill="url(#c)"
                                 d="M65.03 0C37.888 0 29.95.028 28.407.156c-5.57.463-9.036 1.34-12.812 3.22-2.91 1.445-5.205 3.12-7.47 5.468C4 13.126 1.5 18.394.595 24.656c-.44 3.04-.568 3.66-.594 19.188-.01 5.176 0 11.988 0 21.125 0 27.12.03 35.05.16 36.59.45 5.42 1.3 8.83 3.1 12.56 3.44 7.14 10.01 12.5 17.75 14.5 2.68.69 5.64 1.07 9.44 1.25 1.61.07 18.02.12 34.44.12 16.42 0 32.84-.02 34.41-.1 4.4-.207 6.955-.55 9.78-1.28 7.79-2.01 14.24-7.29 17.75-14.53 1.765-3.64 2.66-7.18 3.065-12.317.088-1.12.125-18.977.125-36.81 0-17.836-.04-35.66-.128-36.78-.41-5.22-1.305-8.73-3.127-12.44-1.495-3.037-3.155-5.305-5.565-7.624C116.9 4 111.64 1.5 105.372.596 102.335.157 101.73.027 86.19 0H65.03z"
@@ -100,10 +102,10 @@
                     {% endif %}
                     {% if requested_user.snapchat %}
                     <div class="mt-4 flex items-center">
-                        <svg class="w-5 h-5" width="514.631px" height="514.631px" viewBox="147.353 39.286 514.631 514.631"
-                            version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                            style="enable-background:new 147.553 39.286 514.231 514.631;" xml:space="preserve">
+                        <svg class="w-5 h-5" width="514.631px" height="514.631px"
+                            viewBox="147.353 39.286 514.631 514.631" version="1.1" id="Layer_1"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                            y="0px" style="enable-background:new 147.553 39.286 514.231 514.631;" xml:space="preserve">
                             <path style="fill:#FFFC00;"
                                 d="M147.553,423.021v0.023c0.308,11.424,0.403,22.914,2.33,34.268	c2.042,12.012,4.961,23.725,10.53,34.627c7.529,14.756,17.869,27.217,30.921,37.396c9.371,7.309,19.608,13.111,30.94,16.771	c16.524,5.33,33.571,7.373,50.867,7.473c10.791,0.068,21.575,0.338,32.37,0.293c78.395-0.33,156.792,0.566,235.189-0.484	c10.403-0.141,20.636-1.41,30.846-3.277c19.569-3.582,36.864-11.932,51.661-25.133c17.245-15.381,28.88-34.205,34.132-56.924	c3.437-14.85,4.297-29.916,4.444-45.035v-3.016c0-1.17-0.445-256.892-0.486-260.272c-0.115-9.285-0.799-18.5-2.54-27.636	c-2.117-11.133-5.108-21.981-10.439-32.053c-5.629-10.641-12.68-20.209-21.401-28.57c-13.359-12.81-28.775-21.869-46.722-26.661	c-16.21-4.327-32.747-5.285-49.405-5.27c-0.027-0.004-0.09-0.173-0.094-0.255H278.56c-0.005,0.086-0.008,0.172-0.014,0.255	c-9.454,0.173-18.922,0.102-28.328,1.268c-10.304,1.281-20.509,3.21-30.262,6.812c-15.362,5.682-28.709,14.532-40.11,26.347	c-12.917,13.386-22.022,28.867-26.853,46.894c-4.31,16.084-5.248,32.488-5.271,49.008" />
                             <path style="fill:#FFFFFF;"
@@ -123,12 +125,13 @@
             {% endif %}
             {% if is_my_profile: %}
             <div class="flex justify-center mx-2 my-3 px-4 py-3 bg-light-pton rounded-xl cursor-pointer">
-                <span class="font-medium text-xl text-center text-text" onclick="window.location='profile-update'">Update
+                <span class="font-medium text-xl text-center text-text"
+                    onclick="window.location='profile-update'">Update
                     Profile</span>
             </div>
             {% endif %}
         </div>
-    </div>>
+    </div>
 </body>
 
 {% include "navigation-menu.html" %}
