@@ -90,7 +90,7 @@ with engine.connect() as connection:
                 email = email.lower()
 
                 # query to get user by email
-                stmt = "SELECT netid FROM users WHERE users.email=" + email
+                stmt = "SELECT netid FROM users WHERE users.email='" + email + "'"
                 result = connection.execute(sqlalchemy.text(stmt))
                 netid = result[0]
                 print(netid)
