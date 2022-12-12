@@ -75,7 +75,7 @@ with engine.connect() as connection:
 
             for student in students:
                 key = int(student.get_attribute('key'))
-                
+
                 key = key%16
                 if key == 0:
                     key = 16
@@ -88,25 +88,37 @@ with engine.connect() as connection:
                     str(key) + ']/div[2]/div[2]/a'
                 email = student.find_element("xpath", netid_path_string).text
                 email = email.lower()
-                email = email.removesuffix("@princeton.edu")
+
+                # query to get user by email
+                stmt = "SELECT netid FROM users WHERE users.email=" + email
+                result = connection.execute(sqlalchemy.text(stmt))
+                netid = result[0]
+                print(netid)
+
                 # print(netid)
                 # print(picture)
 
                 # download picture and then upload to cloudinary
-                open('test.txt', 'wb').close()
-                img_data = requests.get(picture).content
-                with open('temp.jpg', 'wb') as handler:
-                    handler.write(img_data)
 
-                cloudinary_photo = cloudinary.uploader.upload(
-                    'temp.jpg', public_id=netid
-                )["url"]
+                # GOOD CODE
+                # open('test.txt', 'wb').close()
+                # img_data = requests.get(picture).content
+                # with open('temp.jpg', 'wb') as handler:
+                #     handler.write(img_data)
+
+                # cloudinary_photo = cloudinary.uploader.upload(
+                #     'temp.jpg', public_id=netid
+                # )["url"]
+                # GOOD CODE
 
                 # print(cloudinary_photo)
-                update = sqlalchemy.update(users_table).where(
-                    users_table.c.netid == netid).values({"photo": cloudinary_photo})
-                connection.execute(update)
+
+                # GOOD CODE
+                # update = sqlalchemy.update(users_table).where(
+                #     users_table.c.email == email).values({"photo": cloudinary_photo})
+                # connection.execute(update)
                 # print("Made it here!")
+                # GOOD CODE
 
             next = driver.find_element("xpath", '//*[@id="app"]/div/div/div[2]/div[3]/div/div/div[1]/div/div[2]/button[3]')
             next.click()
