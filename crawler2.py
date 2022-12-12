@@ -92,8 +92,8 @@ with engine.connect() as connection:
                 # query to get user by email
                 stmt = "SELECT netid FROM users WHERE users.email='" + email + "'"
                 result = connection.execute(sqlalchemy.text(stmt))
-                netid = result[0]
-                print(netid)
+                for i in result:
+                    print(i)
 
                 # print(netid)
                 # print(picture)
