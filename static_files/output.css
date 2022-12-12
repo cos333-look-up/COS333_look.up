@@ -947,6 +947,10 @@ video {
   justify-content: space-between;
 }
 
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
 .overflow-x-scroll {
   overflow-x: scroll;
 }
@@ -1054,6 +1058,11 @@ video {
 .bg-text {
   --tw-bg-opacity: 1;
   background-color: rgb(60 68 77 / var(--tw-bg-opacity));
+}
+
+.bg-orange-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 186 116 / var(--tw-bg-opacity));
 }
 
 .bg-cover {
