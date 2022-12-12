@@ -39,10 +39,10 @@
                         {{user.display_name}}
                     </div>
 
-                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
                         <form action="/unbanuserpost?netid={{user.netid}}" method="post">
                             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                            <button class="text-sm" type="submit" name="Unban" value="Unban">Unban</button>
+                            <button class="text-sm font-bold" type="submit" name="Unban" value="Unban">Unban</button>
                         </form>
                     </div>
 
