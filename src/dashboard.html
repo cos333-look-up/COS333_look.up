@@ -1,6 +1,6 @@
 <!-- dashboard (desktop) menu -->
 <div class="bg-dark-brown max-sm:hidden fixed top-0 left-0 h-screen w-72 z-20
-px-10 py-14 overflow-y-scroll text-white" style="">
+px-10 py-14 overflow-y-auto text-white" style="">
   <div class="header-font font-bold text-xl">
     <span>Dashboard</span>
   </div>
@@ -26,7 +26,7 @@ px-10 py-14 overflow-y-scroll text-white" style="">
 
   <div class="mt-7 flex items-center">
     {% if user.photo: %}
-    <div class="dot mr-5 bg-cover cursor-pointer" onclick="window.location='/user-info?netid={{user.netid}}'" 
+    <div class="dot mr-5 bg-cover cursor-pointer" onclick="window.location='/user-info?netid={{user.netid}}'"
       style="background-image: url({{user.photo}}); height: 5vw !important; width: 5vw !important;"></div>
     {% else: %}
     <img class="object-cover dot cursor-pointer !h-16 !w-16 border mr-5" src="assets/profile.png">
