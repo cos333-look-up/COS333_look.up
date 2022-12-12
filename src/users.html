@@ -34,7 +34,7 @@
     {% for person in row: %}
     <div class="text-lg text-center mt-5 font-medium text-slate-800">
       <div class="info-box">
-        {% if "cloudinary" in person.photo: %}
+        {% if person.photo: %}
         <img class="dot cursor-pointer !h-20 !w-20 border" src="{{person.photo}}">
         {% else: %}
         <img class="dot cursor-pointer !h-20 !w-20 border"

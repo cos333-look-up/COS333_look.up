@@ -32,7 +32,7 @@
     <div class="overflow-x-scroll relative" style="min-height: 43vh; display: -webkit-box;">
       {% for indiv in users: %}
       <div class="flex flex-col justify-center items-center info-box !ml-7 !mr-0" style="min-height: 38vh; width: 25vh">
-        {% if "cloudinary" in indiv.photo: %}
+        {% if indiv.photo: %}
           <div class="mt-2 w-5/6 bg-cover border-2" style="background-image: url({{indiv.photo}}); height: 20vh"></div>
         {% else: %}
           <div class="mt-2 w-5/6 h-3/5 bg-cover border-2" style="height: 20vh; background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg)"></div>

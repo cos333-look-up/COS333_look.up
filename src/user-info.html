@@ -21,7 +21,7 @@
     {% include "header.html" %}
 
     <div class="flex flex-col items-center justify-center">
-        {% if "cloudinary" in requested_user.photo: %}
+        {% if requested_user.photo: %}
         <div style="background-image: url({{requested_user.photo}}); border-radius: 50%;"
             class="mt-7 h-72 w-72 bg-cover">
         </div>
