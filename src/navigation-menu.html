@@ -5,7 +5,7 @@
 <!-- Test -->
 <!-- navigation menu -->
 <div id="menu" class="bg-offwhite fixed top-0 h-full w-5/6 z-20
-px-8 py-10">
+px-8 py-10 overflow-y-scroll">
   <div class="flex items-center mb-10">
     {% if user.photo: %}
     <div class="dot !h-16 !w-16 border mr-5 bg-cover" style="background-image: url({{user.photo}});"
@@ -22,7 +22,7 @@ px-8 py-10">
   </div>
 
   <div class="mb-10 absolute">
-    <div class="menu-item" onclick="window.location='users'">Individual Lookup</div>
+    <!-- <div class="menu-item" onclick="window.location='users'">Individual Lookup</div> -->
     <div class="menu-item" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
     <div class="menu-item" onclick="window.location='/my-contacts'">My Contacts</div>
     <hr class="mt-6 bg-text h-0.25">
