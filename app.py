@@ -127,6 +127,13 @@ def landing():
             .filter(
                 (UsersModel.netid.ilike("%" + lowercase + "%"))
                 | (UsersModel.display_name.ilike("%" + lowercase + "%"))
+                | (
+                    (
+                        UsersModel.first_name
+                        + " "
+                        + UsersModel.last_name
+                    ).ilike("%" + lowercase + "%")
+                )
             )
             .filter(UsersModel.is_banned == False)
             .order_by(UsersModel.netid)
@@ -1023,6 +1030,7 @@ def users():
     # contain the desired search string
     if search_string:
         lowercase = search_string.lower()
+        print(lowercase)
         users = (
             db.session.query(UsersModel)
             .filter(
