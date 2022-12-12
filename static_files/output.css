@@ -745,6 +745,10 @@ video {
   margin-left: 1rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .block {
   display: block;
 }
@@ -817,6 +821,10 @@ video {
   height: 6rem !important;
 }
 
+.\!h-28 {
+  height: 7rem !important;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -879,6 +887,10 @@ video {
 
 .\!w-24 {
   width: 6rem !important;
+}
+
+.\!w-28 {
+  width: 7rem !important;
 }
 
 .transform {

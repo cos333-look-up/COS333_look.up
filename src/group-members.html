@@ -76,8 +76,8 @@
         {% for member in adminmembers: %}
         <div class="text-lg text-center mt-5 font-medium">
           <div class="info-box flex flex-col justify-center items-center" style="height: 30vh;">
-            <div class="mt-2 !h-24 !w-24 dot border cursor-pointer bg-cover" 
-              style="background-image: url({{member.photo}})"></div>
+            <div class="mt-1 dot border cursor-pointer bg-cover" 
+              style="background-image: url({{member.photo}}); height: 15vh !important; width: 15vh !important;"></div>
 
             <div class="mt-2 text-sm font-medium">
                 {{member.display_name}}
