@@ -22,21 +22,22 @@ px-8 py-10 overflow-y-scroll">
   </div>
 
   <div class="mb-10 absolute">
-    <div class="cursor-pointer" onclick="window.location='/'">Home</div>
-    <div class="mt-7 header-font opacity-50 text-xs">personal</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='/my-contacts'">My Contacts</div>
-
-    <div class="mt-7 header-font opacity-50 text-xs">groups</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='group-create-request'">Create a Group</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='groups-search'">All Groups</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='groups'">My Groups</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='my-invites'">My Invites</div>
+    <!-- <div class="menu-item" onclick="window.location='users'">Individual Lookup</div> -->
+    <div class="menu-item" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
+    <div class="menu-item" onclick="window.location='/my-contacts'">My Contacts</div>
+    <hr class="mt-6 bg-text h-0.25">
+    <div class="mt-6 font-medium text-2xl pb-3">Groups</div>
+    <div class="menu-item" onclick="window.location='group-create-request'">Create a Group</div>
+    <div class="menu-item" onclick="window.location='groups-search'">All Groups</div>
+    <div class="menu-item" onclick="window.location='groups'">My Groups</div>
+    <div class="menu-item" onclick="window.location='my-invites'">My Invites</div>
 
     {% if user.is_admin: %}
-    <div class="cursor-pointer mt-7" onclick="window.location='admin-console'">Admin Console</div>
+    <hr class="mt-6 bg-text h-0.25">
+    <div class="mt-6 menu-item" onclick="window.location='admin-console'">Admin Console</div>
     {% endif %}
 
-    <div class="cursor-pointer mt-7 menu-item" onclick="window.location='logout'">Logout</div>
+    <hr class="mt-6 bg-text h-0.25">
+    <div class="mt-6 menu-item" onclick="window.location='logout'">Logout</div>
   </div>
 </div>
