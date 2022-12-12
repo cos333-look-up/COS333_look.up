@@ -92,6 +92,15 @@
       </div>
     </div>
   </form>
+  <script>
+    var input = document.getElementById("name");
+    input.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        profileNext('name-form', 'share-socials-form')
+      }
+    });
+  </script>
 </body>
 
 <script src="/static_files/index.js"></script>
