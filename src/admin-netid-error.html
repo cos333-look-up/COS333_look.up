@@ -15,19 +15,24 @@
 
 <body class="bg-slate-50">
     {% include "header.html" %}
+    {% include "dashboard.html" %}
 
-    <div class="header-font text-2xl px-7 py-5">
-        <span class="text-slate-700">netid</span>
-        <span class="text-amber-400">error</span>
-    </div>
+    <div class="sm:ml-72 sm:px-14 sm:pt-4">
 
-    <div class="flex flex-col items-center justify-center">
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-            <span>The Netid You Have Entered Does Not Exist or is an Admin</span>
+        <div class="flex items-center justify-between px-7 pt-7">
+            <div class="header-font text-lg">
+                <span class="text-text font-bold">Banned Users</span>
+            </div>
+            <div class="bg-red-400 px-3 pb-1 rounded-3xl">
+                <a href="/admin-console" class="text-xs text-white font-medium">Back</a>
+            </div>
         </div>
-    </div>
-    <div class="flex justify-center mx-32 my-2 py-3 bg-amber-400 rounded-3xl">
-        <a href="/admin-console" class="text-sm">Return</a>
+
+        <div class="flex flex-col items-center justify-center">
+            <div class="text-lg text-center mt-5 font-medium text-slate-800">
+                <span>The Netid You Have Entered Does Not Exist or is an Admin</span>
+            </div>
+        </div>
     </div>
 </body>
 
