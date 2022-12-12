@@ -15,48 +15,52 @@
 
 <body class="bg-slate-50" onload="getResults()">
     {% include "header.html" %}
+    {% include "dashboard.html" %}
 
-    <div class="flex items-center justify-between px-7 pt-7">
-        <div class="header-font text-lg">
-            <span class="text-text font-bold">Join Requests</span>
-        </div>
-        <div class="bg-red-400 px-3 pb-1 rounded-3xl">
-            <a href="/group-members?clubid={{clubid}}" class="text-xs text-white font-medium">Back</a>
-        </div>
-    </div>
+    <div class="sm:ml-72 sm:px-14 sm:pt-4">
 
-    <div class="browse mx-4">
-        {% if students|length != 0: %}
-        {% for student in students: %}
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-            <div class="info-box">
-                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{student.photo}}">
-                <br>
-
-                <div class="text-base">
-                    {{student.display_name}}
-                </div>
-
-                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
-                    <form action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=1"
-                        method="post">
-                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                        <button class="text-sm" type="submit" name="Accept" value="Accept">Accept</button>
-                    </form>
-                </div>
-
-                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
-                    <form action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=0"
-                        method="post">
-                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                        <button class="text-sm" type="submit" name="Deny" value="Deny">Deny</button>
-                    </form>
-                </div>
-
+        <div class="flex items-center justify-between px-7 pt-7">
+            <div class="header-font text-lg">
+                <span class="text-text font-bold">Join Requests</span>
+            </div>
+            <div class="bg-red-400 px-3 pb-1 rounded-3xl">
+                <a href="/group-members?clubid={{clubid}}" class="text-xs text-white font-medium">Back</a>
             </div>
         </div>
-        {% endfor %}
-        {% endif %}
+
+        <div class="browse mx-4">
+            {% if students|length != 0: %}
+            {% for student in students: %}
+            <div class="text-lg text-center mt-5 font-medium text-slate-800">
+                <div class="info-box">
+                    <img class="dot cursor-pointer !h-20 !w-20 border" src="{{student.photo}}">
+                    <br>
+
+                    <div class="text-base">
+                        {{student.display_name}}
+                    </div>
+
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                        <form action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=1"
+                            method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <button class="text-sm" type="submit" name="Accept" value="Accept">Accept</button>
+                        </form>
+                    </div>
+
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                        <form action="/groupjoinfulfill?clubid={{clubid}}&join_netid={{student.netid}}&accept=0"
+                            method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <button class="text-sm" type="submit" name="Deny" value="Deny">Deny</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
     </div>
 </body>
 

@@ -15,39 +15,43 @@
 
 <body class="bg-slate-50 reveal">
     {% include "header.html" %}
+    {% include "dashboard.html" %}
 
-    <div class="flex items-center justify-between px-7 pt-7">
-        <div class="header-font text-lg">
-            <span class="text-text font-bold">Moderator Upgrade</span>
-        </div>
-        <div class="bg-red-400 px-3 pb-1 rounded-3xl">
-            <a href="/group-members?clubid={{club.clubid}}" class="text-xs text-white font-medium">Back</a>
-        </div>
-    </div>
+    <div class="sm:ml-72 sm:px-14 sm:pt-4">
 
-    <div class="browse mx-4">
-        {% for member in members: %}
-        {% if not member[0] %}
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-            <div class="info-box">
-                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member[1].photo}}">
-                <br>
-
-                <div class="text-base">
-                    {{member[1].first_name}} {{member[1].last_name}}
-                </div>
-
-                <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
-                    <form action="/upgrademember?clubid={{club.clubid}}&netid={{member[1].netid}}" method="post">
-                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                        <button class="text-sm" type="submit" name="Upgrade" value="Upgrade">Upgrade</button>
-                    </form>
-                </div>
-
+        <div class="flex items-center justify-between px-7 pt-7">
+            <div class="header-font text-lg">
+                <span class="text-text font-bold">Moderator Upgrade</span>
+            </div>
+            <div class="bg-red-400 px-3 pb-1 rounded-3xl">
+                <a href="/group-members?clubid={{club.clubid}}" class="text-xs text-white font-medium">Back</a>
             </div>
         </div>
-        {% endif %}
-        {% endfor %}
+
+        <div class="browse mx-4">
+            {% for member in members: %}
+            {% if not member[0] %}
+            <div class="text-lg text-center mt-5 font-medium text-slate-800">
+                <div class="info-box">
+                    <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member[1].photo}}">
+                    <br>
+
+                    <div class="text-base">
+                        {{member[1].first_name}} {{member[1].last_name}}
+                    </div>
+
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                        <form action="/upgrademember?clubid={{club.clubid}}&netid={{member[1].netid}}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <button class="text-sm" type="submit" name="Upgrade" value="Upgrade">Upgrade</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
     </div>
 </body>
 
