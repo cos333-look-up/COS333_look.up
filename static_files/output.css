@@ -1728,5 +1728,9 @@ input:invalid {
   .sm\:pt-4 {
     padding-top: 1rem;
   }
+
+  .sm\:pt-5 {
+    padding-top: 1.25rem;
+  }
 }
 
