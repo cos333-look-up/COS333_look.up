@@ -22,7 +22,7 @@
 
       <form class="px-7 flex items-center mb-5">
         <input class="border px-3 py-2 w-full border-text" id="search" name="search" type="text" placeholder="Search a person">
-        <button type="submit" class="ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
+        <button type="submit" class="cursor-pointer ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
           <input type="submit">
         </button>
       </form>
@@ -49,7 +49,7 @@
           </div>
 
           <div class="flex justify-center mt-4 px-4 py-3 bg-dark-pton rounded-xl">
-            <span class="font-medium text-center text-black" onclick="window.location='user-info?netid={{indiv.netid}}'">See More</span>
+            <span class="cursor-pointer font-medium text-center text-black" onclick="window.location='user-info?netid={{indiv.netid}}'">See More</span>
           </div>
         </div>
         {% endfor %}
