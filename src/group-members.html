@@ -2,113 +2,133 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Look.Up: Members of {{name}}</title>
-    <link rel="stylesheet" href='/static_files/output.css' />
-    <link rel="icon" href="/static_files/icon.png">
-    <!-- import fonts -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Look.Up: Members of {{name}}</title>
+  <link rel="stylesheet" href='/static_files/output.css' />
+  <link rel="icon" href="/static_files/icon.png">
 </head>
 
 <body class="bg-offwhite">
-    {% include "header.html" %}
+  {% include "header.html" %}
+  {% include "dashboard.html" %}
 
-    <div class="header-font text-2xl px-7 py-5">
-        <span class="text-slate-700 font-bold">{{name}}</span>
+  <div class="sm:ml-72 sm:px-14 sm:pt-4">
+
+    <div class="flex items-center justify-between px-7 pt-7">
+      <div class="header-font text-lg">
+        <span class="text-text font-bold">{{name}}</span>
+      </div>
+      <div class="bg-red-400 px-3 pb-1 rounded-3xl">
+        <a href="/group-leave?clubid={{clubid}}" class="text-xs text-white font-medium">Leave Group</a>
+      </div>
     </div>
 
     {% if clubmember.is_moderator %}
+    <div class="flex items-center mx-7 mt-3">
+      <div class="w-1/2">Admin Controls</div>
 
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-invite-request?clubid={{clubid}}" class="text-sm font-bold">Invite</a>
+      <div onclick="chevron()" id="chevron" class="chevron">
+        <svg style="width: 4%; margin-left: 7%;" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 256 256" xml:space="preserve">
+          <defs>
+          </defs>
+          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+            transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+            <path
+              d="M 90 24.25 c 0 -0.896 -0.342 -1.792 -1.025 -2.475 c -1.366 -1.367 -3.583 -1.367 -4.949 0 L 45 60.8 L 5.975 21.775 c -1.367 -1.367 -3.583 -1.367 -4.95 0 c -1.366 1.367 -1.366 3.583 0 4.95 l 41.5 41.5 c 1.366 1.367 3.583 1.367 4.949 0 l 41.5 -41.5 C 89.658 26.042 90 25.146 90 24.25 z"
+              style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"
+              transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+          </g>
+        </svg>
+      </div>
     </div>
 
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/pending-invites?clubid={{clubid}}" class="text-sm font-bold">Pending Invites</a>
-    </div>
-
-
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-requests?clubid={{clubid}}" class="text-sm font-bold">Join Requests</a>
-    </div>
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-remove-member?clubid={{clubid}}" class="text-sm font-bold">Remove Members</a>
-    </div>
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-moderator-upgrade?clubid={{clubid}}" class="text-sm font-bold">Promote Members</a>
-    </div>
-
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/toggle-visibility?clubid={{clubid}}" class="text-sm font-bold">
-            {% if is_public: %}
-                Make Private
-            {% else: %}
-                Make Public
-            {% endif %}
+    <div id="dropdown" class="dropdown flex flex-col items-left mx-7 mt-2 font-light">
+      <div class="mb-1">
+        <a href="/group-invite-request?clubid={{clubid}}">Invite a Person</a>
+      </div>
+      <div class="mb-1">
+        <a href="/pending-invites?clubid={{clubid}}">Pending Invites</a>
+      </div>
+      <div class="mb-1">
+        <a href="/group-requests?clubid={{clubid}}">Join Requests</a>
+      </div>
+      <div class="mb-1">
+        <a href="/group-remove-member?clubid={{clubid}}">Remove Members</a>
+      </div>
+      <div class="mb-1">
+        <a href="/group-moderator-upgrade?clubid={{clubid}}">Promote Members</a>
+      </div>
+      <div class="mb-1">
+        <a href="/toggle-visibility?clubid={{clubid}}">
+          {% if is_public: %}
+          Make Private
+          {% else: %}
+          Make Public
+          {% endif %}
         </a>
+      </div>
     </div>
 
     {% endif %}
-    <div class="flex justify-center mx-32 my-2 py-3 bg-orange-400 rounded-3xl">
-        <a href="/group-leave?clubid={{clubid}}" class="text-sm font-bold">Leave Group</a>
-    </div>
+
 
     {% if adminmembers|length != 0: %}
-    <div class="text-lg px-7">
-        Admin
+    <div class="text-lg mx-7 mt-5">
+      Admin
     </div>
 
 
     <div class="browse mx-4">
-        {% for member in adminmembers: %}
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-            <div class="info-box">
-                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member.photo}}">
-                <br>
+      {% for member in adminmembers: %}
+      <div class="text-lg text-center mt-5 font-medium">
+        <div class="info-box flex flex-col justify-center items-center" style="height: 30vh;">
+          <div class="mt-2 !h-24 !w-24 dot border cursor-pointer bg-cover"
+            style="background-image: url({{member.photo}})"></div>
 
-                <div class="text-base font-bold">
-                    {{member.display_name}}
-                </div>
+          <div class="mt-2 text-sm font-medium">
+            {{member.display_name}}
+          </div>
 
-                <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
-                    <a href="/user-info?netid={{member.netid}}" class="text-sm font-bold">See More</a>
-                </div>
+          <div class="flex justify-center mt-2 my-2 py-2 px-3 bg-dark-pton rounded-3xl">
+            <a href="/user-info?netid={{member.netid}}" class="text-xs font-medium">See More</a>
+          </div>
 
-            </div>
         </div>
-        {% endfor %}
+      </div>
+      {% endfor %}
     </div>
     {% endif %}
 
     {% if nonadminmembers|length != 0: %}
-    <div class="text-lg px-7">
-        Members
+    <div class="text-lg mx-7 mt-5">
+      Members
     </div>
 
 
     <div class="browse mx-4">
-        {% for member in nonadminmembers: %}
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-            <div class="info-box">
-                <img class="dot cursor-pointer !h-20 !w-20 border" src="{{member.photo}}">
-                <br>
+      {% for member in nonadminmembers: %}
+      <div class="text-lg text-center mt-5 font-medium">
+        <div class="info-box flex flex-col justify-center items-center" style="height: 30vh;">
+          <div class="mt-2 !h-24 !w-24 dot border cursor-pointer bg-cover"
+            style="background-image: url({{member.photo}})"></div>
 
-                <div class="text-base font-bold">
-                    {{member.display_name}}
-                </div>
+          <div class="mt-2 text-sm font-medium">
+            {{member.display_name}}
+          </div>
 
-                <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
-                    <a href="/user-info?netid={{member.netid}}" class="text-sm font-bold">See More</a>
-                </div>
+          <div class="flex justify-center mt-2 my-2 py-2 px-3 bg-dark-pton rounded-3xl">
+            <a href="/user-info?netid={{member.netid}}" class="text-xs font-medium">See More</a>
+          </div>
 
-            </div>
         </div>
-        {% endfor %}
+      </div>
+      {% endfor %}
     </div>
     {% endif %}
+
+  </div>
 </body>
 
 {% include "navigation-menu.html" %}

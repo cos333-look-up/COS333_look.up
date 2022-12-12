@@ -10,85 +10,98 @@
 </head>
 
 <body class="bg-offwhite reveal">
+  {% include "dashboard.html" %}
   {% include "header.html" %}
 
-  <div class="header-font text-2xl px-7 py-5">
-    <span class="text-text">Find your friends!</span>
-  </div>
+  <div class="sm:ml-72">
 
-  <form class="px-7 flex items-center mb-5">
-    <input class="border px-3 py-2 w-full border-text" id="search" name="search" type="text" placeholder="Search a person">
-    <button type="submit" class="ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
-      <input type="submit">
-    </button>
-  </form>
+    <div class="sm:mx-14 sm:mt-5">
+      <div class="header-font text-2xl px-7 py-5">
+        <span class="text-text">Find your friends!</span>
+      </div>
 
-  {% if no_search: %}
-    <div class="flex items-center justify-center info-box" style="min-height: 39vh">
-      <span class="text-center w-3/4">No results yet. Make a search!</span>
+      <form class="px-7 flex items-center mb-5">
+        <input class="border px-3 py-2 w-full border-text" id="search" name="search" type="text" placeholder="Search a person">
+        <button type="submit" class="ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
+          <input type="submit">
+        </button>
+      </form>
     </div>
 
-  {% else: %}
-    <div class="overflow-x-scroll relative" style="min-height: 43vh; display: -webkit-box;">
-      {% for indiv in users: %}
-      <div class="flex flex-col justify-center items-center info-box !ml-7 !mr-0" style="min-height: 38vh; width: 25vh">
-        {% if indiv.photo: %}
-          <div class="mt-2 w-5/6 bg-cover border-2" style="background-image: url({{indiv.photo}}); height: 20vh"></div>
-        {% else: %}
-          <div class="mt-2 w-5/6 h-3/5 bg-cover border-2" style="height: 20vh; background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg)"></div>
-        {% endif %}
-
-          <!-- <img src="{{indiv.photo}}"> -->
-        <div class="mt-4 font-medium text-center truncate" style="max-width: 40vw;">
-          <span>{{indiv.display_name}}</span>
-        </div>
-
-        <div class="flex justify-center mt-4 px-4 py-3 bg-dark-pton rounded-xl">
-          <span class="font-medium text-center text-black" onclick="window.location='user-info?netid={{indiv.netid}}'">See More</span>
-        </div>
+    {% if no_search: %}
+      <div class="flex items-center justify-center info-box" style="min-height: 39vh">
+        <span class="text-center w-3/4">No results yet. Make a search!</span>
       </div>
-      {% endfor %}
-      <div class="w-7">
 
-      </div>
-    </div>
-
-    <div class="mx-7 mb-5 text-sm font-light">
-    {% if results_length == 1: %}
-      <span>Showing 1 result.</span>
-    {% elif results_length < 10: %}
-      <span>Showing all {{results_length}} results.</span>
     {% else: %}
-      <span>Displaying 10 of {{results_length}} results. Click <u><a href="/users?search={{search_string}}">here</a></u> to see all.</span>
+      <div class="overflow-x-scroll relative" style="min-height: 43vh; display: -webkit-box;">
+        {% for indiv in users: %}
+        <div class="flex flex-col justify-center items-center info-box !ml-7 !mr-0" style="min-height: 38vh; width: 25vh">
+          {% if "cloudinary" in indiv.photo: %}
+            <div class="mt-2 w-5/6 bg-cover border-2" style="background-image: url({{indiv.photo}}); height: 20vh"></div>
+          {% else: %}
+            <div class="mt-2 w-5/6 h-3/5 bg-cover border-2" style="height: 20vh; background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg)"></div>
+          {% endif %}
+
+            <!-- <img src="{{indiv.photo}}"> -->
+          <div class="mt-4 font-medium text-center truncate" style="max-width: 40vw;">
+            <span>{{indiv.display_name}}</span>
+          </div>
+
+          <div class="flex justify-center mt-4 px-4 py-3 bg-dark-pton rounded-xl">
+            <span class="font-medium text-center text-black" onclick="window.location='user-info?netid={{indiv.netid}}'">See More</span>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="w-7">
+
+        </div>
+      </div>
+
+      <div class="mx-7 mb-5 text-sm font-light">
+      {% if results_length == 1: %}
+        <span>Showing 1 result.</span>
+      {% elif results_length < 10: %}
+        <span>Showing all {{results_length}} results.</span>
+      {% else: %}
+        <span>Displaying 10 of {{results_length}} results. Click <u><a href="/users?search={{search_string}}">here</a></u> to see all.</span>
+      {% endif %}
+      </div>
     {% endif %}
-    </div>
-  {% endif %}
 
 
 
 
 
-  <div class="info-box">
-    <div class="text-xl mb-3">
-      <span>New to</span>
-      <span class="text-slate-700 header-font">look.</span><span
-        class="text-amber-400 header-font">up</span><span>?</span>
+    <div class="info-box">
+      <div class="text-xl mb-3">
+        <span>New to</span>
+        <span class="text-slate-700 header-font">look.</span><span
+          class="text-amber-400 header-font">up</span><span>?</span>
+      </div>
+      <span class="text-sm">Welcome to Princeton's student facebook! Here's how it works.</span>
+      <div class="my-3 items-center">
+        <div class="font-bold">Find anyone.</div>
+        <div class="text-sm ml-3">Scroll up and search a name! We promise you'll find them.</div>
+      </div>
+      <div class="my-3 items-center">
+        <div class="font-bold">In any group.</div>
+        <div class="text-sm ml-3">See all your favorite clubs by navigating to <span class="font-bold">All Groups</span>.</div>
+      </div>
+      <div class="my-3 items-center">
+        <!-- <div class="dot !h-7 !w-7 !bg-amber-400 text-center pt-0.5">3</div> -->
+        <div class="font-bold">Especially your friends.</div>
+        <div class="text-sm ml-3">Keep track of your fellow group members in <span class="font-bold">My Contacts</span>.</div>
+      </div>
     </div>
-    <span class="text-sm">Welcome to Princeton's student facebook! Here's how it works.</span>
-    <div class="my-3 items-center">
-      <div class="font-bold">Find anyone.</div>
-      <div class="text-sm ml-3">Scroll up and search a name! We promise you'll find them.</div>
-    </div>
-    <div class="my-3 items-center">
-      <div class="font-bold">In any group.</div>
-      <div class="text-sm ml-3">See all your favorite clubs by navigating to <span class="font-bold">All Groups</span>.</div>
-    </div>
-    <div class="my-3 items-center">
-      <!-- <div class="dot !h-7 !w-7 !bg-amber-400 text-center pt-0.5">3</div> -->
-      <div class="font-bold">Especially your friends.</div>
-      <div class="text-sm ml-3">Keep track of your fellow group members in <span class="font-bold">My Contacts</span>.</div>
-    </div>
+
+
   </div>
+
+
+
+  </div>
+
 
 </body>
 
