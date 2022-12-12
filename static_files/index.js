@@ -1,5 +1,14 @@
 console.log("hi")
 
+function toggleUserMenu() {
+  let menu = document.getElementById("user-menu")
+    if (menu.style.display !== "none") {
+      menu.style.display = "none";
+    } else {
+      menu.style.display = "block"
+    }
+  }
+
 function toggleMenu() {
   let filter = document.getElementById("filter")
   let menu = document.getElementById("menu")
@@ -34,4 +43,3 @@ function profileNext(currId, nextId) {
   nextForm.classList.toggle("hidden")
   return
 }
-
