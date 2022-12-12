@@ -62,7 +62,7 @@ with engine.connect() as connection:
 
 
         # go to some page
-        start = 127
+        start = 0
         for i in range(start):
             next = driver.find_element("xpath", '//*[@id="app"]/div/div/div[2]/div[3]/div/div/div[1]/div/div[2]/button[3]')
             next.click()
@@ -86,9 +86,9 @@ with engine.connect() as connection:
 
                 netid_path_string = '//*[@id="app"]/div/div/div[2]/div[3]/div/div/div[2]/ul/li[' + \
                     str(key) + ']/div[2]/div[2]/a'
-                netid = student.find_element("xpath", netid_path_string).text
-                netid = netid.lower()
-                netid = netid.removesuffix("@princeton.edu")
+                email = student.find_element("xpath", netid_path_string).text
+                email = email.lower()
+                email = email.removesuffix("@princeton.edu")
                 # print(netid)
                 # print(picture)
 
