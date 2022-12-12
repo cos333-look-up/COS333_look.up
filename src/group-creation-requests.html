@@ -37,19 +37,19 @@
                         {{request.name}}
                     </div>
 
-                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
                         <form action="/groupfulfill?reqid={{request.reqid}}&netid={{request.netid}}&accept=1"
                             method="post">
                             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                            <button class="text-sm" type="submit" name="Accept" value="Accept">Accept</button>
+                            <button class="text-sm font-bold" type="submit" name="Accept" value="Accept">Accept</button>
                         </form>
                     </div>
 
-                    <div class="flex justify-center mx-2 my-2 py-3 bg-amber-400 rounded-3xl">
+                    <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
                         <form action="/groupfulfill?reqid={{request.reqid}}&netid={{request.netid}}&accept=0"
                             method="post">
                             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                            <button class="text-sm" type="submit" name="Deny" value="Deny">Deny</button>
+                            <button class="text-sm font-bold" type="submit" name="Deny" value="Deny">Deny</button>
                         </form>
                     </div>
 
