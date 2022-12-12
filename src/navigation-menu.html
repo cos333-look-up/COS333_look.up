@@ -22,20 +22,20 @@ px-8 py-10 overflow-y-scroll">
   </div>
 
   <div>
-    <div class="header-font opacity-50 text-xs my-3">personal</div>
+    <div class="header-font opacity-50 text-xs mt-3">personal</div>
     <div class="mobile-pointer" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
     <div class="mobile-pointer" onclick="window.location='/my-contacts'">My Contacts</div>
 
     <hr class="mt-3 bg-text h-0.25">
 
-    <div class="header-font opacity-50 text-xs my-3">groups</div>
+    <div class="header-font opacity-50 text-xs mt-3">groups</div>
     <div class="mobile-pointer" onclick="window.location='group-create-request'">Create a Group</div>
     <div class="mobile-pointer" onclick="window.location='groups-search'">All Groups</div>
     <div class="mobile-pointer" onclick="window.location='groups'">My Groups</div>
     <div class="mobile-pointer" onclick="window.location='my-invites'">My Invites</div>
 
     {% if user.is_admin: %}
-    <hr class="bg-text h-0.25">
+    <hr class="mt-3 bg-text h-0.25">
 
     <div class="my-3 mobile-pointer" onclick="window.location='admin-console'">Admin Console</div>
     {% endif %}
