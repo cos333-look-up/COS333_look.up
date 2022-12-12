@@ -7,100 +7,47 @@
   <title>Look.Up: Group Creation Request</title>
   <link rel="stylesheet" href='/static_files/output.css' />
   <link rel="icon" href="/static_files/icon.png">
-  <!-- import fonts -->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-  </style>
 </head>
 
-<body class="bg-slate-50">
+<body class="bg-offwhite">
+  {% include "header.html" %}
+  <div class="text-xl ml-7 mt-5 header-font font-medium text-text">
+    <span>Let's create your group!</span>
+  </div>
+
   <form id="FormId" action="/grouprequestpost" method="post">
-    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-    <div id="name-form" class="flex h-screen justify-center items-center">
-      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="name">
-        <div class="text-2xl text-center header-font">
-          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-        </div>
-
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Let's create your group.<br>What is your group name?</span>
-        </div>
-
-        <input class="px-3 mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="text" id="name" name="name">
-
-        <div onclick="profileNext('name-form', 'share-socials-form')"
-          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-          <div class="font-medium text-lg">Next</div>
-        </div>
+    <div class="flex flex-col mx-7">
+      <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+      <div id="name-form" class="flex items-center mt-5">
+        <span class="font-light text-xl">Name:</span>
+        <input class="px-3 bg-gray-200 rounded-3xl w-3/4 h-10 ml-3" type="text" id="name" name="name">
       </div>
-    </div>
 
-    <div id="share-socials-form" class="hidden flex h-screen justify-center items-center">
-      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="share_socials">
-        <div class="text-2xl text-center header-font">
-          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-        </div>
-
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Would you like your group to share social media?</span>
-        </div>
-
-        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="share_socials" name="share_socials">
-
-        <div onclick="profileNext('share-socials-form', 'share-phone-form')"
-          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-          <div class="font-medium text-lg">Next</div>
-        </div>
+      <div id="share-socials-form" class="flex items-center mt-5">
+        <span class="font-light text-xl">Members share social media:</span>
+        <input class="bg-gray-200 rounded-3xl w-8 h-10 ml-3" type="checkbox" id="share_socials" name="share_socials">
       </div>
-    </div>
 
-    <div id="share-phone-form" class="hidden flex h-screen justify-center items-center">
-      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="share_phone">
-        <div class="text-2xl text-center header-font">
-          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-        </div>
-
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Would you like your group to share phone numbers?</span>
-        </div>
-
-        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="share_phone" name="share_phone">
-
-        <div onclick="profileNext('share-phone-form', 'public-form')"
-          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-          <div class="font-medium text-lg">Next</div>
-        </div>
+      <div id="share-phone-form" class="flex items-center mt-5">
+        <span class="font-light text-xl">Members share phone numbers:</span>
+        <input class="bg-gray-200 rounded-3xl w-8 h-10 ml-3" type="checkbox" id="share_phone" name="share_phone">
       </div>
-    </div>
 
-    <div id="public-form" class="hidden flex h-screen justify-center items-center">
-      <div class="info-box align-middle !py-20 !px-10 flex flex-col justify-center items-center" id="public">
-        <div class="text-2xl text-center header-font">
-          <span class="text-slate-700">look.</span><span class="text-amber-400">up</span>
-        </div>
+      <div id="public-form" class="flex items-center mt-5">
+        <span class="font-light text-xl">Make group public:</span>
+        <input class="bg-gray-200 rounded-3xl w-8 h-10 ml-3" type="checkbox" id="public" name="public">
+      </div>
 
-        <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Would you like your group to be public?</span>
-        </div>
-
-        <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="public" name="public">
-
+      <center>
         <div onclick="document.getElementById('FormId').submit();"
-          class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-          <div class="font-medium text-sm">Submit Group for Admin Approval</div>
+          class="bg-dark-pton mt-5 px-3 py-3 w-1/2 header-font text-sm text-white text-center">
+          <span>Submit Group for Admin Approval</span>
         </div>
-      </div>
+      </center>
+
+
     </div>
   </form>
-  <script>
-    var input = document.getElementById("name");
-    input.addEventListener("keypress", function (event) {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        profileNext('name-form', 'share-socials-form')
-      }
-    });
-  </script>
 </body>
 
 <script src="/static_files/index.js"></script>
