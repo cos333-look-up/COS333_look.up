@@ -1028,6 +1028,11 @@ def users():
             .filter(
                 (UsersModel.netid.ilike("%" + lowercase + "%"))
                 | (UsersModel.display_name.ilike("%" + lowercase + "%"))
+                | (
+                    (
+                        UsersModel.first_name + UsersModel.last_name
+                    ).ilike("%" + lowercase + "%")
+                )
             )
             .filter(UsersModel.is_banned == False)
             .order_by(UsersModel.netid)
