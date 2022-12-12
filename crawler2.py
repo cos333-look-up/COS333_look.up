@@ -92,32 +92,33 @@ with engine.connect() as connection:
                 # query to get user by email
                 stmt = "SELECT netid FROM users WHERE users.email='" + email + "'"
                 result = connection.execute(sqlalchemy.text(stmt))
-                for i in result:
-                    print(i)
 
-                # print(netid)
-                # print(picture)
+                netid=""
+                for element in result:
+                    netid = element[0]
+
+                print(netid)
 
                 # download picture and then upload to cloudinary
 
                 # GOOD CODE
-                # open('test.txt', 'wb').close()
-                # img_data = requests.get(picture).content
-                # with open('temp.jpg', 'wb') as handler:
-                #     handler.write(img_data)
+                open('test.txt', 'wb').close()
+                img_data = requests.get(picture).content
+                with open('temp.jpg', 'wb') as handler:
+                    handler.write(img_data)
 
-                # cloudinary_photo = cloudinary.uploader.upload(
-                #     'temp.jpg', public_id=netid
-                # )["url"]
+                cloudinary_photo = cloudinary.uploader.upload(
+                    'temp.jpg', public_id=netid
+                )["url"]
                 # GOOD CODE
 
                 # print(cloudinary_photo)
 
                 # GOOD CODE
-                # update = sqlalchemy.update(users_table).where(
-                #     users_table.c.email == email).values({"photo": cloudinary_photo})
-                # connection.execute(update)
-                # print("Made it here!")
+                update = sqlalchemy.update(users_table).where(
+                    users_table.c.email == email).values({"photo": cloudinary_photo})
+                connection.execute(update)
+                print("Made it here!")
                 # GOOD CODE
 
             next = driver.find_element("xpath", '//*[@id="app"]/div/div/div[2]/div[3]/div/div/div[1]/div/div[2]/button[3]')
