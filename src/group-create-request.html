@@ -42,7 +42,7 @@
         </div>
 
         <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Would you like your club to share social media?</span>
+          <span>Would you like your group to share social media?</span>
         </div>
 
         <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="share_socials" name="share_socials">
@@ -61,7 +61,7 @@
         </div>
 
         <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Would you like your club to share phone numbers?</span>
+          <span>Would you like your group to share phone numbers?</span>
         </div>
 
         <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="share_phone" name="share_phone">
@@ -80,18 +80,27 @@
         </div>
 
         <div class="text-lg text-center mt-5 font-medium text-slate-800">
-          <span>Would you like your club to be public?</span>
+          <span>Would you like your group to be public?</span>
         </div>
 
         <input class="mt-5 bg-gray-200 rounded-3xl w-3/4 h-10" type="checkbox" id="public" name="public">
 
         <div onclick="document.getElementById('FormId').submit();"
           class="flex flex-col justify-center mt-5 px-16 py-2 bg-amber-300 rounded-3xl">
-          <div class="font-medium text-lg">Submit</div>
+          <div class="font-medium text-sm">Submit Group for Admin Approval</div>
         </div>
       </div>
     </div>
   </form>
+  <script>
+    var input = document.getElementById("name");
+    input.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        profileNext('name-form', 'share-socials-form')
+      }
+    });
+  </script>
 </body>
 
 <script src="/static_files/index.js"></script>
