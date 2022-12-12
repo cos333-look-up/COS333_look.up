@@ -15,89 +15,94 @@
 
 <body class="bg-slate-50">
   {% include "header.html" %}
+  {% include "dashboard.html" %}
 
-  <div class="header-font text-2xl px-7 py-5">
-    <span class="text-text">Individual Lookup</span>
-  </div>
+  <div class="sm:ml-72 sm:px-14 sm:pt-4">
 
-  <center>
-    <form class="px-7 flex items-center mb-5" type="submit">
-      <input class="border px-3 py-2 w-full border-text" id="search" name="search" type="text" placeholder="Search a person">
-      <button type="submit" class="ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
-        <input type="submit">
-      </button>
-    </form>
-  </center>
+    <div class="header-font text-2xl px-7 py-5">
+      <span class="text-text">Individual Lookup</span>
+    </div>
 
-  {% for row in users_pages[page_number]: %}
-  <div class="browse mx-4">
-    {% for person in row: %}
-    <div class="text-lg text-center mt-5 font-medium text-slate-800">
-      <div class="info-box">
-        {% if person.photo: %}
-        <img class="dot cursor-pointer !h-20 !w-20 border" src="{{person.photo}}">
-        {% else: %}
-        <img class="dot cursor-pointer !h-20 !w-20 border"
-          src="http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg">
-        {% endif %}
-        <br>
+    <center>
+      <form class="px-7 flex items-center mb-5" type="submit">
+        <input class="border px-3 py-2 w-full border-text" id="search" name="search" type="text"
+          placeholder="Search a person">
+        <button type="submit" class="ml-3 bg-dark-pton px-3 py-1 header-font text-sm">
+          <input type="submit">
+        </button>
+      </form>
+    </center>
 
-        <div class="text-base font-bold">
-          {{person.display_name}}
+    {% for row in users_pages[page_number]: %}
+    <div class="browse mx-4">
+      {% for person in row: %}
+      <div class="text-lg text-center mt-5 font-medium text-slate-800">
+        <div class="info-box">
+          {% if person.photo: %}
+          <img class="dot cursor-pointer !h-20 !w-20 border" src="{{person.photo}}">
+          {% else: %}
+          <img class="dot cursor-pointer !h-20 !w-20 border"
+            src="http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg">
+          {% endif %}
+          <br>
+
+          <div class="text-base font-bold">
+            {{person.display_name}}
+          </div>
+
+          <div class="text-base font-bold">
+            {{person.netid}}
+          </div>
+
+          <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
+            <a href="/user-info?netid={{person.netid}}" class="text-sm font-bold">See More</a>
+          </div>
+
         </div>
-
-        <div class="text-base font-bold">
-          {{person.netid}}
-        </div>
-
-        <div class="flex justify-center mx-2 my-2 py-3 bg-orange-400 rounded-3xl">
-          <a href="/user-info?netid={{person.netid}}" class="text-sm font-bold">See More</a>
-        </div>
-
       </div>
+      {% endfor %}
     </div>
     {% endfor %}
-  </div>
-  {% endfor %}
 
-  <center>
-    <span class="text-base font-bold">
-      <!-- if you have 5 pages of results or less, show all page numbers -->
-      {% if max_pages <= 5: %} {% for page in range([max_pages, 5] | min): %} <a
-        href="/users?search={{search_string}}&page={{page}}">
-        {{ page + 1 }}
-        </a>
-        {% endfor %}
-
-        <!-- otherwise -->
-        {% else: %}
-        <!-- for low page numbers, show pages 1-5 -->
-        {% if (page_number) | abs <= 1: %} {% for page in range(5): %} <a
+    <center>
+      <span class="text-base font-bold">
+        <!-- if you have 5 pages of results or less, show all page numbers -->
+        {% if max_pages <= 5: %} {% for page in range([max_pages, 5] | min): %} <a
           href="/users?search={{search_string}}&page={{page}}">
           {{ page + 1 }}
           </a>
           {% endfor %}
 
-          <!-- for high page numbers, show pages max_pages - 4 through max_pages -->
-          {% elif (max_pages - page_number - 1) | abs <= 1: %} {% for page in range(max_pages - 5, max_pages): %} <a
+          <!-- otherwise -->
+          {% else: %}
+          <!-- for low page numbers, show pages 1-5 -->
+          {% if (page_number) | abs <= 1: %} {% for page in range(5): %} <a
             href="/users?search={{search_string}}&page={{page}}">
             {{ page + 1 }}
             </a>
             {% endfor %}
 
-            <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
-            {% else: %}
-            {% for page in range(max_pages): %}
-            {% if (page >= page_number - 2) and (page <= page_number + 2): %} <a
+            <!-- for high page numbers, show pages max_pages - 4 through max_pages -->
+            {% elif (max_pages - page_number - 1) | abs <= 1: %} {% for page in range(max_pages - 5, max_pages): %} <a
               href="/users?search={{search_string}}&page={{page}}">
               {{ page + 1 }}
               </a>
-              {% endif %}
               {% endfor %}
-              {% endif %}
-              {% endif %}
-    </span>
-  </center>
+
+              <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
+              {% else: %}
+              {% for page in range(max_pages): %}
+              {% if (page >= page_number - 2) and (page <= page_number + 2): %} <a
+                href="/users?search={{search_string}}&page={{page}}">
+                {{ page + 1 }}
+                </a>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+      </span>
+    </center>
+  </div>
 </body>
 
 {% include "navigation-menu.html" %}
