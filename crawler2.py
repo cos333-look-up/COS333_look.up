@@ -61,8 +61,14 @@ with engine.connect() as connection:
         pages = int(pages[-1])
 
 
+        # go to some page
+        start = 127
+        for i in range(start):
+            next = driver.find_element("xpath", '//*[@id="app"]/div/div/div[2]/div[3]/div/div/div[1]/div/div[2]/button[3]')
+            next.click()
+
         # go through the pages
-        for i in range(pages):
+        for i in range(start, pages):
 
             students = driver.find_elements(
                 "xpath", "//*[contains(@class, 'card border-0 student')]")
