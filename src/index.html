@@ -13,6 +13,19 @@
   {% include "dashboard.html" %}
   {% include "header.html" %}
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var scrollpos = localStorage.getItem('scrollpos');
+        if (scrollpos) window.scrollTo(0, scrollpos);
+    });
+
+    window.onbeforeunload = function(e) {
+        var path = window.location.pathname;
+        if (path == '/index') localStorage.setItem('scrollpos', window.scrollY);
+        else localStorage.setItem('scrollpos', 0);
+    };
+  </script>
+
   <div class="sm:ml-72">
 
     <div class="sm:mx-14 sm:mt-5">
@@ -34,32 +47,31 @@
       </div>
 
     {% else: %}
+    <!-- Mobile Search Results -->
+    <div class="flex hidden max-sm:block">
       <div class="overflow-x-scroll relative" style="min-height: 43vh; display: -webkit-box;">
-        {% for indiv in users: %}
+        {% for indiv in users[:10]: %}
         <div class="flex flex-col justify-center items-center info-box !ml-7 !mr-0" style="min-height: 38vh; width: 25vh">
           {% if indiv.photo: %}
             <div class="mt-2 w-5/6 bg-cover border-2" style="background-image: url({{indiv.photo}}); height: 20vh"></div>
           {% else: %}
             <div class="mt-2 w-5/6 h-3/5 bg-cover border-2" style="height: 20vh; background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg)"></div>
           {% endif %}
-
-            <!-- <img src="{{indiv.photo}}"> -->
           <div class="mt-4 font-medium text-center truncate" style="max-width: 40vw;">
             <span>{{indiv.display_name}}</span>
           </div>
-
           <div class="flex justify-center mt-4 px-4 py-3 bg-dark-pton rounded-xl">
             <span class="font-medium text-center text-black" onclick="window.location='user-info?netid={{indiv.netid}}'">See More</span>
           </div>
         </div>
         {% endfor %}
-        <div class="w-7">
-
-        </div>
+        <div class="w-7"></div>
       </div>
 
       <div class="mx-7 mb-5 text-sm font-light">
-      {% if results_length == 1: %}
+      {% if results_length == 0: %}
+        <span>No results.</span>
+      {% elif results_length == 1: %}
         <span>Showing 1 result.</span>
       {% elif results_length < 10: %}
         <span>Showing all {{results_length}} results.</span>
@@ -67,11 +79,189 @@
         <span>Displaying 10 of {{results_length}} results. Click <u><a href="/users?search={{search_string}}">here</a></u> to see all.</span>
       {% endif %}
       </div>
-    {% endif %}
+      </div>
+    <!--  -->
+    <!-- Desktop Search Results -->
+   <div class="max-sm:hidden items-center">
+      <div class="items-center px-3 m-10">
+        <div class="flex grid items-center lg:grid-cols-5 md:max-lg:grid-cols-2 gap-3 ml-7 mr-3">
+          {% for indiv in users_pages[page_number]: %}
+          <div class="flex flex-col justify-center items-center info-box" style="min-height: 36vh; width: 22vh">
+            {% if indiv.photo: %}
+              <div class="mt-2 w-5/6 bg-cover border-2" style="background-image: url({{indiv.photo}}); height: 20vh"></div>
+            {% else: %}
+              <div class="mt-2 w-5/6 h-3/5 bg-cover border-2" style="height: 20vh; background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg)"></div>
+            {% endif %}
+            <div class="mt-4 font-medium text-center truncate" style="max-width: 40vw;">
+              <span>{{indiv.display_name}}</span>
+            </div>
+            <span class="cursor-pointer text-sm text-center text-black">NetID: {{indiv.netid}}</span>
+            <div class="mt-2">
+              <u><span class="cursor-pointer text-[10px] text-center text-black" onclick="window.location='user-info?netid={{indiv.netid}}'">See More</span></u>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="flex justify-center ml-1">
 
+          <div class="m-1">
+            {% if page_number == 0: %}
+            <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+              </svg>
+            </button>
+            {% else: %}
+            <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button"
+            onclick="window.location='/index?search={{search_string}}&page=0'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+              </svg>
+            </button>
+            {% endif %}
+          </div>
+          <div class="m-1">
+            {% if page_number >= 1: %}
+            <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button"
+            onclick="window.location='/index?search={{search_string}}&page={{page_number-1}}'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+              </svg>
+            </button>
+            {% else: %}
+            <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+              </svg>
+            </button>
+            {% endif %}
+          </div>
 
+          <span class="border-text mt-2">
+            <!-- if you have 5 pages of results or less, show all page numbers -->
+            {% if max_pages <= 5: %}
+                {% for page in range([max_pages, 5] | min): %}
+                  {% if page == page_number: %}
+                  <a class="m-1 font-bold"
+                  href="/index?search={{search_string}}&page={{page}}">
+                  {{ page + 1 }}
+                  </a>
 
+                  {% else: %}
+                  <a class="m-1 font-light"
+                  href="/index?search={{search_string}}&page={{page}}">
+                  {{ page + 1 }}
+                  </a>
+                  {% endif %}
+                {% endfor %}
+            <!-- otherwise -->
+            {% else: %}
+              <!-- for low page numbers, show pages 1-5 -->
+              {% if (page_number) | abs <= 1: %}
+                  {% for page in range(5): %}
+                    {% if page == page_number: %}
+                    <a class="m-1 font-bold"
+                    href="/index?search={{search_string}}&page={{page}}">
+                    {{ page + 1 }}
+                    </a>
 
+                    {% else: %}
+                    <a class="m-1 font-light"
+                    href="/index?search={{search_string}}&page={{page}}">
+                    {{ page + 1 }}
+                    </a>
+                    {% endif %}
+                  {% endfor %}
+
+              <!-- for high page numbers, show pages max_pages - 4 through max_pages -->
+              {% elif (max_pages - page_number - 1) | abs <= 1: %}
+                  {% for page in range(max_pages - 5, max_pages): %}
+                    {% if page == page_number: %}
+                    <a class="m-1 font-bold"
+                    href="/index?search={{search_string}}&page={{page}}">
+                    {{ page + 1 }}
+                    </a>
+
+                    {% else: %}
+                    <a class="m-1 font-light"
+                    href="/index?search={{search_string}}&page={{page}}">
+                    {{ page + 1 }}
+                    </a>
+                    {% endif %}
+                  {% endfor %}
+
+              <!-- otherwise, show 5 page numbers, with the middle page number as the current page -->
+              {% else: %}
+                  {% for page in range(max_pages): %}
+                    {% if (page >= page_number - 2) and (page <= page_number + 2): %}
+                      {% if page == page_number: %}
+                      <a class="m-1 font-bold"
+                      href="/index?search={{search_string}}&page={{page}}">
+                      {{ page + 1 }}
+                      </a>
+
+                      {% else: %}
+                      <a class="m-1 font-light"
+                      href="/index?search={{search_string}}&page={{page}}">
+                      {{ page + 1 }}
+                      </a>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+              {% endif %}
+            {% endif %}
+          </span>
+
+          <div class="m-1">
+            {% if page_number < max_pages - 1: %}
+              <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button"
+              onclick="window.location='/index?search={{search_string}}&page={{page_number + 1}}'"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+              </button>
+            {% else: %}
+              <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+              </button>
+            {% endif %}
+          </div>
+
+          <div class="m-1">
+            {% if page_number == max_pages - 1: %}
+            <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+                <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+            </button>
+            {% else: %}
+            <button class="btn btn-secondary bg-dark-pton px-1 py-2" type="button"
+            onclick="window.location='/index?search={{search_string}}&page={{max_pages - 1}}'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"/>
+                <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+            </button>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+   </div>
+   {% endif %}
+
+    <!--  -->
 
     <div class="info-box">
       <div class="text-xl mb-3">
@@ -94,15 +284,7 @@
         <div class="text-sm ml-3">Keep track of your fellow group members in <span class="font-bold">My Contacts</span>.</div>
       </div>
     </div>
-
-
   </div>
-
-
-
-  </div>
-
-
 </body>
 
 {% include "navigation-menu.html" %}

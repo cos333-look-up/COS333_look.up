@@ -114,6 +114,11 @@ def landing():
     user = checkValidUser()
     search_string = flask.request.args.get("search")
 
+    # get the string that user searched and current page number
+    page_number = flask.request.args.get("page")
+    if not page_number:
+        page_number = 0
+
     if search_string == None:
         html_code = flask.render_template(
             "index.html", user=user, no_search=True
@@ -139,6 +144,9 @@ def landing():
             .order_by(UsersModel.netid)
             .all()
         )
+        # split users up into pages of 50. Each page is split into lists of 10.
+        # Later on, allow user to select number of results per page.
+        users_pages = list(mit.chunked(users, 10))
 
         results_length = len(users)
         if results_length > 10:
@@ -150,6 +158,9 @@ def landing():
             search_string=search_string,
             users=users,
             results_length=results_length,
+            users_pages=users_pages,
+            max_pages=len(users_pages),
+            page_number=int(page_number),
             no_search=False,
         )
         response = flask.make_response(html_code)
