@@ -9,7 +9,7 @@ module.exports = {
         'light-pton': '#FFE092',
         'dark-pton': '#F4A261',
         'text': '#3C444D',
-        'dark-brown': "#352922"
+        'dark-brown': "#191E27"
       },
     },
 

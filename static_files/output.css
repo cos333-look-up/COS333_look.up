@@ -31,7 +31,7 @@
 }
 
 /*
-! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com
+! tailwindcss v3.2.1 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -62,7 +62,6 @@
 2. Prevent adjustments of font size after orientation changes in iOS.
 3. Use a more readable tab size.
 4. Use the user's configured `sans` font-family by default.
-5. Use the user's configured `sans` font-feature-settings by default.
 */
 
 html {
@@ -77,8 +76,6 @@ html {
   /* 3 */
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
-  font-feature-settings: normal;
-  /* 5 */
 }
 
 /*
@@ -498,6 +495,53 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+::-webkit-backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
 ::backdrop {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -577,18 +621,6 @@ video {
   z-index: 10;
 }
 
-.m-8 {
-  margin: 2rem;
-}
-
-.m-2 {
-  margin: 0.5rem;
-}
-
-.m-0 {
-  margin: 0px;
-}
-
 .m-10 {
   margin: 2.5rem;
 }
@@ -622,29 +654,19 @@ video {
   margin-right: 1.75rem;
 }
 
-.mx-6 {
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-}
-
 .my-5 {
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
 }
 
+.mx-6 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
-}
-
-.mx-10 {
-  margin-left: 2.5rem;
-  margin-right: 2.5rem;
-}
-
-.mx-14 {
-  margin-left: 3.5rem;
-  margin-right: 3.5rem;
 }
 
 .mt-5 {
@@ -675,10 +697,6 @@ video {
   margin-right: 1.25rem;
 }
 
-.ml-7 {
-  margin-left: 1.75rem;
-}
-
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -693,6 +711,10 @@ video {
 
 .mb-3 {
   margin-bottom: 0.75rem;
+}
+
+.ml-7 {
+  margin-left: 1.75rem;
 }
 
 .mb-5 {
@@ -731,56 +753,24 @@ video {
   margin-top: 1rem;
 }
 
-.\!mt-5 {
-  margin-top: 1.25rem !important;
+.mr-3 {
+  margin-right: 0.75rem;
 }
 
 .mr-6 {
   margin-right: 1.5rem;
 }
 
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.\!mt-5 {
+  margin-top: 1.25rem !important;
+}
+
 .ml-4 {
   margin-left: 1rem;
-}
-
-.mb-0 {
-  margin-bottom: 0px;
-}
-
-.ml-6 {
-  margin-left: 1.5rem;
-}
-
-.mr-7 {
-  margin-right: 1.75rem;
-}
-
-.mr-4 {
-  margin-right: 1rem;
-}
-
-.mr-2 {
-  margin-right: 0.5rem;
-}
-
-.mr-1 {
-  margin-right: 0.25rem;
-}
-
-.mr-3 {
-  margin-right: 0.75rem;
-}
-
-.ml-10 {
-  margin-left: 2.5rem;
-}
-
-.mr-10 {
-  margin-right: 2.5rem;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
 }
 
 .block {
@@ -907,24 +897,12 @@ video {
   cursor: pointer;
 }
 
-.grid-cols-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .flex-col {
   flex-direction: column;
 }
 
-.content-center {
-  align-content: center;
-}
-
 .items-center {
   align-items: center;
-}
-
-.justify-end {
-  justify-content: flex-end;
 }
 
 .justify-center {
@@ -933,14 +911,6 @@ video {
 
 .justify-between {
   justify-content: space-between;
-}
-
-.gap-4 {
-  gap: 1rem;
-}
-
-.gap-5 {
-  gap: 1.25rem;
 }
 
 .gap-3 {
@@ -1015,14 +985,9 @@ video {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
-.bg-orange-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 186 116 / var(--tw-bg-opacity));
-}
-
 .bg-dark-brown {
   --tw-bg-opacity: 1;
-  background-color: rgb(53 41 34 / var(--tw-bg-opacity));
+  background-color: rgb(25 30 39 / var(--tw-bg-opacity));
 }
 
 .bg-dark-pton {
@@ -1147,6 +1112,11 @@ video {
   padding-right: 1rem;
 }
 
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -1170,11 +1140,6 @@ video {
 .px-16 {
   padding-left: 4rem;
   padding-right: 4rem;
-}
-
-.px-1 {
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
 }
 
 .pt-7 {
@@ -1253,17 +1218,13 @@ video {
   line-height: 2.5rem;
 }
 
+.text-\[10px\] {
+  font-size: 10px;
+}
+
 .text-5xl {
   font-size: 3rem;
   line-height: 1;
-}
-
-.text-\[14px\] {
-  font-size: 14px;
-}
-
-.text-\[10px\] {
-  font-size: 10px;
 }
 
 .font-bold {
@@ -1392,7 +1353,7 @@ input::placeholder {
   /* 20px */
   line-height: 1.75rem;
   /* 28px */
-  padding: 3% 0;
+  padding: 1% 0;
 }
 
 .hidden {
@@ -1443,19 +1404,34 @@ div#menu.reveal {
 .typewriter::before {
   /* background: teal; */
   background: #FFE092;
-  animation: typewriter 0.75s steps(6) forwards;
+  -webkit-animation: typewriter 0.75s steps(6) forwards;
+          animation: typewriter 0.75s steps(6) forwards;
 }
 
 .typewriter::after {
   width: 0.04em;
   background: #3C444D;
-  animation: typewriter 0.75s steps(6) forwards,
+  -webkit-animation: typewriter 0.75s steps(6) forwards,
     blink 0.75s infinite;
+          animation: typewriter 0.75s steps(6) forwards,
+    blink 0.75s infinite;
+}
+
+@-webkit-keyframes typewriter {
+  to {
+    left: 100%;
+  }
 }
 
 @keyframes typewriter {
   to {
     left: 100%;
+  }
+}
+
+@-webkit-keyframes blink {
+  to {
+    background: transparent;
   }
 }
 
@@ -1468,11 +1444,31 @@ div#menu.reveal {
 /* cloud movement on landing page */
 
 #cloud1 {
-  animation: MoveLeftRight1 10s linear infinite;
+  -webkit-animation: MoveLeftRight1 10s linear infinite;
+          animation: MoveLeftRight1 10s linear infinite;
 }
 
 #cloud2 {
-  animation: MoveLeftRight2 10s linear infinite;
+  -webkit-animation: MoveLeftRight2 10s linear infinite;
+          animation: MoveLeftRight2 10s linear infinite;
+}
+
+@-webkit-keyframes MoveLeftRight1 {
+  0% {
+    left: 10%;
+  }
+
+  40% {
+    left: 100%
+  }
+
+  90% {
+    left: 0%
+  }
+
+  100% {
+    left: 10%;
+  }
 }
 
 @keyframes MoveLeftRight1 {
@@ -1490,6 +1486,24 @@ div#menu.reveal {
 
   100% {
     left: 10%;
+  }
+}
+
+@-webkit-keyframes MoveLeftRight2 {
+  0% {
+    left: 50%;
+  }
+
+  40% {
+    left: 100%
+  }
+
+  70% {
+    left: 0%
+  }
+
+  100% {
+    left: 50%;
   }
 }
 
@@ -1543,17 +1557,7 @@ input:invalid {
   transition: all 0.5s ease;
 }
 
-@media not all and (min-width: 1024px) {
-  .max-lg\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
 @media not all and (min-width: 640px) {
-  .max-sm\:ml-7 {
-    margin-left: 1.75rem;
-  }
-
   .max-sm\:block {
     display: block;
   }
@@ -1586,16 +1590,8 @@ input:invalid {
     margin-top: 1.25rem;
   }
 
-  .sm\:mt-4 {
-    margin-top: 1rem;
-  }
-
   .sm\:mt-3 {
     margin-top: 0.75rem;
-  }
-
-  .sm\:block {
-    display: block;
   }
 
   .sm\:hidden {
@@ -1615,14 +1611,14 @@ input:invalid {
     padding-right: 3.5rem;
   }
 
-  .sm\:px-20 {
-    padding-left: 5rem;
-    padding-right: 5rem;
-  }
-
   .sm\:py-5 {
     padding-top: 1.25rem;
     padding-bottom: 1.25rem;
+  }
+
+  .sm\:px-20 {
+    padding-left: 5rem;
+    padding-right: 5rem;
   }
 
   .sm\:pt-5 {
@@ -1635,27 +1631,7 @@ input:invalid {
 }
 
 @media (min-width: 768px) {
-  .md\:flex {
-    display: flex;
-  }
-
-  .md\:hidden {
-    display: none;
-  }
-
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .md\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   @media not all and (min-width: 1024px) {
-    .md\:max-lg\:grid-cols-4 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
     .md\:max-lg\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -1663,10 +1639,6 @@ input:invalid {
 }
 
 @media (min-width: 1024px) {
-  .lg\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
   .lg\:grid-cols-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }

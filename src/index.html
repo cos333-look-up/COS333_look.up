@@ -91,7 +91,7 @@
             {% else: %}
               <div class="mt-2 w-5/6 h-3/5 bg-cover border-2" style="height: 20vh; background-image: url(http://res.cloudinary.com/dqv7e2cyi/image/upload/v1667248786/Additional%20Files/default_user_icon.jpg)"></div>
             {% endif %}
-            <div class="mt-4 font-medium text-center truncate" style="max-width: 40vw;">
+            <div class="mt-4 font-medium text-center truncate" style="max-width: 10vw;">
               <span>{{indiv.display_name}}</span>
             </div>
             <span class="cursor-pointer text-sm text-center text-black">NetID: {{indiv.netid}}</span>
@@ -288,5 +288,10 @@
 {% include "navigation-menu.html" %}
 
 <script src="/static_files/index.js"></script>
+<script>
+  // make dashboard tab glow orange
+  let tab = document.getElementById("dashboard-home")
+  tab.style.color = "#F4A261"
+</script>
 
 </html>

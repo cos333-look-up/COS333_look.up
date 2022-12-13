@@ -6,19 +6,19 @@ px-10 py-14 overflow-y-scroll text-white no-scrollbar">
   </div>
 
   <div class="ml-5 mt-10 mb-10 font-medium">
-    <div class="cursor-pointer" onclick="window.location='/'">Home</div>
+    <div id="dashboard-home" class="cursor-pointer" onclick="window.location='/'">Home</div>
     <div class="header-font opacity-50 text-xs mt-7">personal</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='/my-contacts'">My Contacts</div>
+    <div id="dashboard-profile" class="cursor-pointer mt-3" onclick="window.location='/user-info?netid={{user.netid}}'">My Profile</div>
+    <div id="dashboard-contacts" class="cursor-pointer mt-3" onclick="window.location='/my-contacts'">My Contacts</div>
 
     <div class="mt-7 header-font opacity-50 text-xs">groups</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='group-create-request'">Create a Group</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='groups-search'">All Groups</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='groups'">My Groups</div>
-    <div class="cursor-pointer mt-3" onclick="window.location='my-invites'">My Invites</div>
+    <div id="dashboard-create-group" class="cursor-pointer mt-3" onclick="window.location='group-create-request'">Create a Group</div>
+    <div id="dashboard-all-groups" class="cursor-pointer mt-3" onclick="window.location='groups-search'">All Groups</div>
+    <div id="dashboard-my-groups" class="cursor-pointer mt-3" onclick="window.location='groups'">My Groups</div>
+    <div id="dashboard-my-invites" class="cursor-pointer mt-3" onclick="window.location='my-invites'">My Invites</div>
 
     {% if user.is_admin: %}
-    <div class="cursor-pointer mt-7" onclick="window.location='admin-console'">Admin Console</div>
+    <div id="dashboard-admin" class="cursor-pointer mt-7" onclick="window.location='admin-console'">Admin Console</div>
     {% endif %}
 
     <div class="cursor-pointer mt-7 menu-item" onclick="window.location='logout'">Logout</div>
