@@ -21,16 +21,17 @@
 
     window.onbeforeunload = function(e) {
         var path = window.location.pathname;
+        console.log(path)
         if (path == '/index') localStorage.setItem('scrollpos', window.scrollY);
         else localStorage.setItem('scrollpos', 0);
     };
   </script>
 
-  <div class="sm:ml-72">
+  <div class="sm:ml-72 sm:pt-5">
 
-    <div class="sm:mx-14 sm:mt-5">
+    <div class="sm:mx-14 sm:mt-3">
       <div class="header-font text-2xl px-7 py-5">
-        <span class="text-text">Find your friends!</span>
+        <span class="text-text font-bold">Find your friends!</span>
       </div>
 
       <form class="px-7 flex items-center mb-5">
@@ -100,7 +101,7 @@
           </div>
           {% endfor %}
         </div>
-        <div class="flex justify-center ml-1">
+        <div class="flex justify-center ml-1 mt-2">
 
           <div class="m-1">
             {% if page_number == 0: %}
