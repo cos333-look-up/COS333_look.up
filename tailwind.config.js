@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./static_files/**/*.{html,js}",
-    "./src/**/*.{html,js}"],
+    "./src/**/*.{html,js}",
+    './node_modules/tw-elements/dist/js/**/*.js',
+  ],
   theme: {
     extend: {
       colors: {
@@ -14,5 +16,5 @@ module.exports = {
     },
 
   },
-  plugins: [],
+  plugins: [require('tw-elements/dist/plugin')],
 }

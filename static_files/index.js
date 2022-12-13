@@ -1,5 +1,4 @@
-console.log("hi")
-
+console.log('index.js working')
 function toggleUserMenu() {
   let menu = document.getElementById("user-menu")
     if (menu.style.display !== "none") {
