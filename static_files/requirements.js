@@ -27,12 +27,20 @@ const enforceFormat = (event) => {
 const formatToPhone = (event) => {
     if(isModifierKey(event)) {return;}
 
-    const input = event.target.value.replace(/\D/g,'').substring(0,10); // First ten digits of input only
-    const areaCode = input.substring(0,3);
-    const middle = input.substring(3,6);
-    const last = input.substring(6,10);
-
-    if(input.length > 6){event.target.value = `(${areaCode}) ${middle}-${last}`;}
+    const input = event.target.value.replace(/\D/g,'')
+    let areaCode = input.substring(0, 3);
+    let middle = input.substring(3, 6);
+    let last = input.substring(6, 10);
+    
+    if(input.length > 10)
+    {
+        let countryCode = input.substring(0, input.length - 10);
+        let areaCode = input.substring(input.length - 10, input.length - 7);
+        let middle = input.substring(input.length - 7, input.length - 4);
+        let last = input.substring(input.length - 4, input.length);
+        event.target.value = `+${countryCode} (${areaCode}) ${middle}-${last}`;
+    }
+    else if(input.length > 6){event.target.value = `(${areaCode}) ${middle}-${last}`;}
     else if(input.length > 3){event.target.value = `(${areaCode}) ${middle}`;}
     else if(input.length > 0){event.target.value = `(${areaCode}`;}
 };
