@@ -1,5 +1,5 @@
 alembic==1.8.1
-certifi==2021.10.8
+certifi==2022.12.7
 charset-normalizer==2.0.11
 cloudinary==1.30.0
 colorama==0.4.4
